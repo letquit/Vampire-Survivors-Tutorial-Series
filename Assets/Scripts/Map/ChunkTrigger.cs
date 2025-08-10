@@ -14,7 +14,7 @@ public class ChunkTrigger : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        mc = FindObjectOfType<MapController>();
+        mc = FindFirstObjectByType<MapController>();
     }
 
     /// <summary>

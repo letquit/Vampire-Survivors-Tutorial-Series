@@ -29,6 +29,9 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector]
     public Vector2 moveDir;
 
+    [HideInInspector]
+    public Vector2 lastMovedVector;
+
     /// <summary>
     /// 初始化函数，在游戏对象启用时调用
     /// 获取并缓存Rigidbody2D组件引用
@@ -36,6 +39,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        lastMovedVector = new Vector2(1, 0f);
     }
 
     /// <summary>
@@ -64,19 +68,27 @@ public class PlayerMovement : MonoBehaviour
     {
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveY = Input.GetAxisRaw("Vertical");
-        
+
         moveDir = new Vector2(moveX, moveY).normalized;
 
-        // 当存在水平移动时，更新最后的水平移动方向
+        /// 如果存在水平方向输入，则更新最后水平移动方向
         if (moveDir.x != 0)
         {
             lastHorizontalVector = moveDir.x;
+            lastMovedVector = new Vector2(lastHorizontalVector, 0f);    //Last moved x
         }
-        
-        // 当存在垂直移动时，更新最后的垂直移动方向
+
+        /// 如果存在垂直方向输入，则更新最后垂直移动方向
         if (moveDir.y != 0)
         {
             lastVerticalVector = moveDir.y;
+            lastMovedVector = new Vector2(0f, lastVerticalVector);    //Last moved y
+        }
+
+        /// 如果当前有移动输入，则更新最后移动向量为当前方向
+        if (moveDir != Vector2.zero)
+        {
+            lastMovedVector = moveDir;
         }
     }
 
@@ -89,4 +101,3 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = new Vector2(moveDir.x * moveSpeed, moveDir.y * moveSpeed);
     }
 }
-

@@ -47,10 +47,10 @@ public class MapController : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        pm = FindObjectOfType<PlayerMovement>();
+        pm = FindFirstObjectByType<PlayerMovement>();
         
         // 生成初始地块的道具
-        PropRandomizer propRandomizer = FindObjectOfType<PropRandomizer>();
+        PropRandomizer propRandomizer = FindFirstObjectByType<PropRandomizer>();
         if (propRandomizer != null)
         {
             propRandomizer.SpawnInitialProps();
@@ -106,7 +106,7 @@ public class MapController : MonoBehaviour
         int rand = Random.Range(0, terrainChunks.Count);
         latestChunk = Instantiate(terrainChunks[rand], noTerrainPosition, Quaternion.identity);
         
-        PropRandomizer propRandomizer = FindObjectOfType<PropRandomizer>();
+        PropRandomizer propRandomizer = FindFirstObjectByType<PropRandomizer>();
         if (propRandomizer != null)
         {
             propRandomizer.SpawnPropsOnChunk(latestChunk);
