@@ -24,7 +24,7 @@ public class KnifeController : WeaponController
         base.Attack();
         
         // 实例化刀具预制体并设置位置
-        GameObject spawnedKnife = Instantiate(prefab);
+        GameObject spawnedKnife = Instantiate(weaponData.Prefab);
         spawnedKnife.transform.position = transform.position; //Assign the position to be the same as this object which is parented to the player
         
         // 获取刀具行为组件并设置方向

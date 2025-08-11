@@ -1,22 +1,11 @@
-using System;
 using UnityEngine;
 
 /// <summary>
 /// 抛射体武器行为类，用于控制抛射体的飞行方向和自动销毁
 /// </summary>
-public class ProjectileWeaponBehaviour : MonoBehaviour
+public class ProjectileWeaponBehaviour : WeaponBehaviour
 {
     protected Vector3 direction;
-    public float destroyAfterSeconds;
-
-    /// <summary>
-    /// 初始化函数，在对象启动时调用
-    /// 设置抛射体在指定时间后自动销毁
-    /// </summary>
-    protected virtual void Start()
-    {
-        Destroy(gameObject, destroyAfterSeconds);
-    }
 
     /// <summary>
     /// 检查并设置抛射体的飞行方向
@@ -38,10 +27,23 @@ public class ProjectileWeaponBehaviour : MonoBehaviour
         {
             zAngle = -zAngle;
         }
-        
 
         transform.localScale = scale;
-        transform.rotation = Quaternion.Euler(0, 0, zAngle-45f );    //Can't simply set the vector because cannot convert
+        transform.rotation = Quaternion.Euler(0, 0, zAngle - 45f);
+    }
+
+    protected override void OnEnemyHit(EnemyStats enemy)
+    {
+        enemy.TakeDamage(currentDamage);
+        ReducePierce();
+    }
+
+    private void ReducePierce()
+    {
+        currentPierce--;
+        if (currentPierce <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }
-

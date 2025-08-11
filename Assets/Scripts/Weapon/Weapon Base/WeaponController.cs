@@ -7,12 +7,8 @@ using UnityEngine;
 public class WeaponController : MonoBehaviour
 {
     [Header("Weapon Stats")] 
-    public GameObject prefab;           // 武器预制体
-    public float damage;                // 武器伤害值
-    public float speed;                 // 武器攻击速度
-    public float cooldownDuration;      // 武器冷却时间间隔
+    public WeaponScriptableObject weaponData;
     private float currentCooldown;      // 当前冷却剩余时间
-    public int pierce;                  // 武器穿透次数
 
     protected PlayerMovement pm;        // 玩家移动组件引用
     
@@ -22,7 +18,7 @@ public class WeaponController : MonoBehaviour
     protected virtual void Start()
     {
         pm = FindFirstObjectByType<PlayerMovement>();
-        currentCooldown = cooldownDuration;
+        currentCooldown = weaponData.CooldownDuration;
     }
 
     /// <summary>
@@ -43,6 +39,6 @@ public class WeaponController : MonoBehaviour
     /// </summary>
     protected virtual void Attack()
     {
-        currentCooldown = cooldownDuration;
+        currentCooldown = weaponData.CooldownDuration;
     }
 }

@@ -7,7 +7,6 @@ using UnityEngine;
 /// </summary>
 public class KnifeBehaviour : ProjectileWeaponBehaviour
 {
-    private KnifeController kc;
 
     /// <summary>
     /// 初始化函数，在对象启用时调用
@@ -16,7 +15,6 @@ public class KnifeBehaviour : ProjectileWeaponBehaviour
     protected override void Start()
     {
         base.Start();
-        kc = FindFirstObjectByType<KnifeController>();
     }
 
     /// <summary>
@@ -26,7 +24,7 @@ public class KnifeBehaviour : ProjectileWeaponBehaviour
     private void Update()
     {
         // 根据方向、时间和速度计算刀具的新位置
-        transform.position += direction * Time.deltaTime * kc.speed;
+        transform.position += direction * Time.deltaTime * weaponData.Speed;
     }
 }
 
