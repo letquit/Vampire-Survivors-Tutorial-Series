@@ -9,11 +9,6 @@ public class PlayerMovement : MonoBehaviour
 {
     //Movement
     /// <summary>
-    /// 移动速度，用于控制玩家移动的快慢
-    /// </summary>
-    public float moveSpeed;
-    private Rigidbody2D rb;
-    /// <summary>
     /// 隐藏字段，记录最后的水平移动方向
     /// </summary>
     [HideInInspector]
@@ -31,6 +26,10 @@ public class PlayerMovement : MonoBehaviour
 
     [HideInInspector]
     public Vector2 lastMovedVector;
+    
+    //References
+    private Rigidbody2D rb;
+    public CharacterScriptableObject characterData;
 
     /// <summary>
     /// 初始化函数，在游戏对象启用时调用
@@ -98,6 +97,6 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void Move()
     {
-        rb.linearVelocity = new Vector2(moveDir.x * moveSpeed, moveDir.y * moveSpeed);
+        rb.linearVelocity = new Vector2(moveDir.x * characterData.moveSpeed, moveDir.y * characterData.moveSpeed);
     }
 }

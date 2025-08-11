@@ -15,10 +15,10 @@ public abstract class WeaponBehaviour : MonoBehaviour
 
     protected virtual void Awake()
     {
-        currentDamage = weaponData.Damage;
-        currentSpeed = weaponData.Speed;
-        currentCooldownDuration = weaponData.CooldownDuration;
-        currentPierce = weaponData.Pierce;
+        currentDamage = weaponData.damage;
+        currentSpeed = weaponData.speed;
+        currentCooldownDuration = weaponData.cooldownDuration;
+        currentPierce = weaponData.pierce;
     }
 
     protected virtual void Start()
@@ -32,6 +32,26 @@ public abstract class WeaponBehaviour : MonoBehaviour
         {
             EnemyStats enemy = other.GetComponent<EnemyStats>();
             OnEnemyHit(enemy);
+        }
+        else if (other.CompareTag("Prop"))
+        {
+            if (other.gameObject.TryGetComponent(out BreakableProps breakable))
+            {
+                breakable.TakeDamage(currentDamage);
+                if (this is ProjectileWeaponBehaviour)
+                {
+                    ReducePierce();
+                }
+            }
+        }
+    }
+    
+    private void ReducePierce()
+    {
+        currentPierce--;
+        if (currentPierce <= 0)
+        {
+            Destroy(gameObject);
         }
     }
 

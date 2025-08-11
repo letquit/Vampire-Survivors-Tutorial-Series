@@ -18,9 +18,9 @@ public class EnemyStats : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        currentMoveSpeed = enemyData.MoveSpeed;
-        currentHealth = enemyData.MaxHealth;
-        currentDamage = enemyData.Damage;
+        currentMoveSpeed = enemyData.moveSpeed;
+        currentHealth = enemyData.maxHealth;
+        currentDamage = enemyData.damage;
     }
     
     /// <summary>
@@ -43,6 +43,15 @@ public class EnemyStats : MonoBehaviour
     private void Kill()
     {
         Destroy(gameObject);
+    }
+
+    private void OnCollisionStay2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            PlayerStats player = other.gameObject.GetComponent<PlayerStats>();
+            player.TakeDamage(currentDamage);
+        }
     }
 }
 

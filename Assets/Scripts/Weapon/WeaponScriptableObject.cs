@@ -1,22 +1,18 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "WeaponScriptableObject", menuName = "ScriptableObjects/Weapon")]
 public class WeaponScriptableObject : ScriptableObject
 {
-    [SerializeField]
-    private GameObject prefab;
-    public GameObject Prefab => prefab;
+    [field:SerializeField]
+    public GameObject prefab { get; private set; }
 
-    [SerializeField]
-    private float damage;
-    public float Damage => damage;
-    [SerializeField]
-    private float speed;
-    public float Speed => speed;
-    [SerializeField]
-    private float cooldownDuration;
-    public float CooldownDuration => cooldownDuration;
-    [SerializeField]
-    private int pierce;
-    public int Pierce => pierce;
+    [field:SerializeField]
+    public float damage { get; private set; }
+    [field:SerializeField]
+    public float speed { get; private set; }
+    [field:SerializeField]
+    public float cooldownDuration { get; private set; }
+    [field:SerializeField]
+    public int pierce { get; private set; }
 }

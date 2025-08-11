@@ -3,13 +3,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "EnemyScriptableObject", menuName = "ScriptableObjects/Enemy")]
 public class EnemyScriptableObject : ScriptableObject
 {
-    [SerializeField]
-    private float moveSpeed;
-    public float MoveSpeed => moveSpeed;
-    [SerializeField]
-    private float maxHealth;
-    public float MaxHealth => maxHealth;
-    [SerializeField]
-    private float damage;
-    public float Damage => damage;
+    [field:SerializeField]
+    public float moveSpeed { get; private set; }
+    [field:SerializeField]
+    public float maxHealth { get; private set; }
+    [field:SerializeField]
+    public float damage { get; private set; }
 }

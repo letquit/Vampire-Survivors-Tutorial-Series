@@ -134,6 +134,8 @@ GameObject:
   - component: {fileID: 253802141}
   - component: {fileID: 253802145}
   - component: {fileID: 253802144}
+  - component: {fileID: 253802147}
+  - component: {fileID: 253802146}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -225,11 +227,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66210a609e9dd9e4cba2d1dd24e2d59e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
   lastHorizontalVector: 0
   lastVerticalVector: 0
   moveDir: {x: 0, y: 0}
   lastMovedVector: {x: 0, y: 0}
+  characterData: {fileID: 11400000, guid: 8996519ca3d723b4e900813240ab4b22, type: 2}
 --- !u!61 &253802142
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -337,6 +339,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49978c97e64fb624492f59076ed8becc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &253802146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 253802138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 887396e8512e95d4e8e209da3877dc1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &253802147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 253802138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 093246a1e5d764949a90b665872a7f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterData: {fileID: 11400000, guid: 8996519ca3d723b4e900813240ab4b22, type: 2}
+  experience: 0
+  level: 1
+  experienceCap: 0
+  invincibilityDuration: 0.5
+  levelRanges:
+  - startLevel: 1
+    endLevel: 3
+    experienceCapIncrease: 100
+  - startLevel: 4
+    endLevel: 5
+    experienceCapIncrease: 200
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -660,6 +698,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -4524081301311461132, guid: b7ab234b9310a824f8db7ca2f5a8f005, type: 3}
+      propertyPath: drops.Array.data[0].dropRate
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 663451398103869204, guid: b7ab234b9310a824f8db7ca2f5a8f005, type: 3}
       propertyPath: m_Name
       value: Bat

@@ -24,7 +24,7 @@ public class KnifeBehaviour : ProjectileWeaponBehaviour
     private void Update()
     {
         // 根据方向、时间和速度计算刀具的新位置
-        transform.position += direction * Time.deltaTime * weaponData.Speed;
+        transform.position += direction * Time.deltaTime * weaponData.speed;
     }
 }
 

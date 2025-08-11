@@ -23,7 +23,7 @@ public class GarlicController : WeaponController
     {
         base.Attack();
         // 实例化大蒜预制体并设置其位置
-        GameObject spawnedGarlic = Instantiate(weaponData.Prefab, transform);
+        GameObject spawnedGarlic = Instantiate(weaponData.prefab, transform);
         spawnedGarlic.transform.position = transform.position;
     }
 }
