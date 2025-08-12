@@ -7,10 +7,13 @@ using UnityEngine;
 public class EnemyStats : MonoBehaviour
 {
     public EnemyScriptableObject enemyData;
-
-    private float currentMoveSpeed;
-    private float currentHealth;
-    private float currentDamage;
+    
+    [HideInInspector]
+    public float currentMoveSpeed;
+    [HideInInspector]
+    public float currentHealth;
+    [HideInInspector]
+    public float currentDamage;
 
     /// <summary>
     /// 在对象唤醒时初始化敌人的各项属性值
@@ -45,8 +48,13 @@ public class EnemyStats : MonoBehaviour
         Destroy(gameObject);
     }
 
+    /// <summary>
+    /// 当敌人与玩家发生碰撞时，对玩家造成伤害
+    /// </summary>
+    /// <param name="other">碰撞的另一个游戏对象的碰撞信息</param>
     private void OnCollisionStay2D(Collision2D other)
     {
+        // 检查碰撞的对象是否为玩家
         if (other.gameObject.CompareTag("Player"))
         {
             PlayerStats player = other.gameObject.GetComponent<PlayerStats>();

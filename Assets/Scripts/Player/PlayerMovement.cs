@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
     
     //References
     private Rigidbody2D rb;
-    public CharacterScriptableObject characterData;
+    private PlayerStats player;
 
     /// <summary>
     /// 初始化函数，在游戏对象启用时调用
@@ -37,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void Start()
     {
+        player = GetComponent<PlayerStats>();
         rb = GetComponent<Rigidbody2D>();
         lastMovedVector = new Vector2(1, 0f);
     }
@@ -97,6 +98,6 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void Move()
     {
-        rb.linearVelocity = new Vector2(moveDir.x * characterData.moveSpeed, moveDir.y * characterData.moveSpeed);
+        rb.linearVelocity = new Vector2(moveDir.x * player.currentMoveSpeed, moveDir.y * player.currentMoveSpeed);
     }
 }

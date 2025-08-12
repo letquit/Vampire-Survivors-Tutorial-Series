@@ -15,4 +15,6 @@ public class CharacterScriptableObject : ScriptableObject
     public float might { get; private set; }
     [field:SerializeField]
     public float projectileSpeed { get; private set; }
+    [field:SerializeField]
+    public float magnet { get; private set; }
 }

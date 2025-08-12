@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public class EnemyMovement : MonoBehaviour
 {
-    public EnemyScriptableObject enemyData;
+    private EnemyStats enemy;
     private Transform player;
 
     /// <summary>
@@ -15,6 +15,7 @@ public class EnemyMovement : MonoBehaviour
     /// </summary>
     private void Start()
     {
+        enemy = GetComponent<EnemyStats>();
         player = FindFirstObjectByType<PlayerMovement>().transform;
     }
 
@@ -25,7 +26,7 @@ public class EnemyMovement : MonoBehaviour
     private void Update()
     {
         // 计算敌人向玩家移动的新位置
-        transform.position = Vector2.MoveTowards(transform.position, player.transform.position, enemyData.moveSpeed * Time.deltaTime);
+        transform.position = Vector2.MoveTowards(transform.position, player.transform.position, enemy.currentMoveSpeed * Time.deltaTime);
     }
 }
 

@@ -32,12 +32,20 @@ public class ProjectileWeaponBehaviour : WeaponBehaviour
         transform.rotation = Quaternion.Euler(0, 0, zAngle - 45f);
     }
 
+    /// <summary>
+    /// 当抛射体击中敌人时触发的回调方法
+    /// 对敌人造成伤害并减少穿透次数
+    /// </summary>
+    /// <param name="enemy">被击中的敌人对象</param>
     protected override void OnEnemyHit(EnemyStats enemy)
     {
         enemy.TakeDamage(currentDamage);
         ReducePierce();
     }
 
+    /// <summary>
+    /// 减少抛射体的穿透次数，当穿透次数用尽时销毁抛射体
+    /// </summary>
     private void ReducePierce()
     {
         currentPierce--;
@@ -47,3 +55,4 @@ public class ProjectileWeaponBehaviour : WeaponBehaviour
         }
     }
 }
+

@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ed286855882e344bb44cefde012904d, type: 3}
   m_Name: Knife Character
   m_EditorClassIdentifier: 
-  <startingWeapon>k__BackingField: {fileID: 0}
+  <startingWeapon>k__BackingField: {fileID: 7788552244655619030, guid: b31a91504e45b9f4aba4e87a9db79518, type: 3}
   <maxHealth>k__BackingField: 1000
-  <recovery>k__BackingField: 0
+  <recovery>k__BackingField: 1
   <moveSpeed>k__BackingField: 5
   <might>k__BackingField: 0
   <projectileSpeed>k__BackingField: 0
+  <magnet>k__BackingField: 1.6
