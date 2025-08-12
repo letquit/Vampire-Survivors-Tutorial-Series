@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -4035013812406659977}
   - component: {fileID: -4524081301311461132}
   m_Layer: 0
-  m_Name: Bat
+  m_Name: Red Bat
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -82,7 +82,7 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 2373175670222840925, guid: d19b2e4cfd84c9c4eb0d3c3edecc2e4c, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67f59d07ea7f78b4d9c2f50c53ba4fa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyData: {fileID: 11400000, guid: 8df20639c6afee443aa42913ad9d06d8, type: 2}
+  enemyData: {fileID: 11400000, guid: e969da4eb9e7a5b46a89f2756269aa44, type: 2}
   currentMoveSpeed: 0
   currentHealth: 0
   currentDamage: 0
