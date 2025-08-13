@@ -23,8 +23,6 @@ public class PlayerStats : MonoBehaviour
     [HideInInspector]
     public float currentMagnet;
 
-    public List<GameObject> spawnedWeapons;
-
     [Header("Experience/Level")]
     public int experience = 0;
     public int level = 1;
@@ -41,6 +39,13 @@ public class PlayerStats : MonoBehaviour
     private bool isInvincible;
 
     public List<LevelRange> levelRanges;
+
+    private InventoryManager inventory;
+    public int weaponIndex;
+    public int passiveItemIndex;
+
+    public GameObject secondWeaponTest;
+    public GameObject firstPassiveItemTest, secondPassiveItemTest;
     
     /// <summary>
     /// 在 Awake 阶段初始化角色数据，设置初始属性并生成初始武器。
@@ -50,6 +55,8 @@ public class PlayerStats : MonoBehaviour
         characterData = CharacterSelector.GetData();
         CharacterSelector.Instance.DestroySingleton();
         
+        inventory = GetComponent<InventoryManager>();
+        
         currentHealth = characterData.maxHealth;
         currentRecovery = characterData.recovery;
         currentMoveSpeed = characterData.moveSpeed;
@@ -58,6 +65,9 @@ public class PlayerStats : MonoBehaviour
         currentMagnet = characterData.magnet;
         
         SpawnWeapon(characterData.startingWeapon);
+        SpawnWeapon(secondWeaponTest);
+        SpawnPassiveItem(firstPassiveItemTest);
+        SpawnPassiveItem(secondPassiveItemTest);
     }
 
     // public void IncreaseExperience(int amount)
@@ -205,9 +215,36 @@ public class PlayerStats : MonoBehaviour
     /// <param name="weapon">要生成的武器预制体。</param>
     public void SpawnWeapon(GameObject weapon)
     {
+        if (weaponIndex >= inventory.weaponSlots.Count - 1)
+        {
+            Debug.LogError("InventorySlots already full");
+            return;
+        }
+        
         GameObject spawnedWeapon = Instantiate(weapon, transform.position, Quaternion.identity);
         spawnedWeapon.transform.SetParent(transform);
-        spawnedWeapons.Add(spawnedWeapon);
+        inventory.AddWeapon(weaponIndex, spawnedWeapon.GetComponent<WeaponController>());
+
+        weaponIndex++;
+    }
+    
+    /// <summary>
+    /// 在玩家位置生成一个被动道具实例，并将其添加到已生成被动道具列表中。
+    /// </summary>
+    /// <param name="passiveItem">要生成的被动道具预制体。</param>
+    public void SpawnPassiveItem(GameObject passiveItem)
+    {
+        if (passiveItemIndex >= inventory.passiveItemSlots.Count - 1)
+        {
+            Debug.LogError("InventorySlots already full");
+            return;
+        }
+        
+        GameObject spawnedPassiveItem = Instantiate(passiveItem, transform.position, Quaternion.identity);
+        spawnedPassiveItem.transform.SetParent(transform);
+        inventory.AddPassiveItem(passiveItemIndex, spawnedPassiveItem.GetComponent<PassiveItem>());
+
+        passiveItemIndex++;
     }
 
     /// <summary>

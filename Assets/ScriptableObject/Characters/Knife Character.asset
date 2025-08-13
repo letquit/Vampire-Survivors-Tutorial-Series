@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ed286855882e344bb44cefde012904d, type: 3}
+  m_Name: Knife Character
+  m_EditorClassIdentifier: 
+  <startingWeapon>k__BackingField: {fileID: 7788552244655619030, guid: b31a91504e45b9f4aba4e87a9db79518, type: 3}
+  <maxHealth>k__BackingField: 1000
+  <recovery>k__BackingField: 1
+  <moveSpeed>k__BackingField: 5
+  <might>k__BackingField: 1
+  <projectileSpeed>k__BackingField: 0
+  <magnet>k__BackingField: 1.6

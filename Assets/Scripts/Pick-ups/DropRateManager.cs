@@ -15,6 +15,13 @@ public class DropRateManager : MonoBehaviour
     /// </summary>
     private void OnDestroy()
     {
+        // 检查游戏对象所在的场景是否已加载，如果未加载则直接返回
+        if (!gameObject.scene.isLoaded)
+        {
+            return;
+        }
+
+        
         // 生成0到100之间的随机数，用于概率判断
         float randomNumber = Random.Range(0f, 100f);
         List<Drops> possiableDrops = new List<Drops>();
