@@ -4,6 +4,10 @@ using UnityEngine;
 public class CharacterScriptableObject : ScriptableObject
 {
     [field:SerializeField]
+    public Sprite icon { get; private set; }
+    [field:SerializeField]
+    public string name { get; private set; }
+    [field:SerializeField]
     public GameObject startingWeapon { get; private set; }
     [field:SerializeField]
     public float maxHealth { get; private set; }

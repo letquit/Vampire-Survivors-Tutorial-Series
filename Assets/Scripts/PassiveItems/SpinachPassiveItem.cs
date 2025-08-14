@@ -13,6 +13,6 @@ public class SpinachPassiveItem : PassiveItem
     protected override void ApplyModifier()
     {
         // 根据百分比倍率增加玩家的当前攻击力
-        player.currentMight *= 1 + passiveItemData.multipler / 100f;
+        player.CurrentMight *= 1 + passiveItemData.multipler / 100f;
     }
 }

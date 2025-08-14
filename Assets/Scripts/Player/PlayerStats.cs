@@ -10,19 +10,129 @@ public class PlayerStats : MonoBehaviour
 {
     private CharacterScriptableObject characterData;
 
-    [HideInInspector]
-    public float currentHealth;
-    [HideInInspector]
-    public float currentRecovery;
-    [HideInInspector]
-    public float currentMoveSpeed;
-    [HideInInspector]
-    public float currentMight;
-    [HideInInspector]
-    public float currentProjectileSpeed;
-    [HideInInspector]
-    public float currentMagnet;
+    float currentHealth;
+    float currentRecovery;
+    float currentMoveSpeed;
+    float currentMight;
+    float currentProjectileSpeed;
+    float currentMagnet;
 
+    #region Current Stats Properties
+    /// <summary>
+    /// 获取或设置当前生命值，并更新UI显示。
+    /// </summary>
+    public float CurrentHealth
+    {
+        get { return currentHealth; }
+        set
+        {
+            if (currentHealth != value)
+            {
+                currentHealth = value;
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.currentHealthDisplay.text = "Health: " + currentHealth;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 获取或设置当前恢复速度，并更新UI显示。
+    /// </summary>
+    public float CurrentRecovery
+    {
+        get { return currentRecovery; }
+        set
+        {
+            if (currentRecovery != value)
+            {
+                currentRecovery = value;
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.currentRecoveryDisplay.text = "Recovery: " + currentRecovery;
+                }
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 获取或设置当前移动速度，并更新UI显示。
+    /// </summary>
+    public float CurrentMoveSpeed
+    {
+        get { return currentMoveSpeed; }
+        set
+        {
+            if (currentMoveSpeed != value)
+            {
+                currentMoveSpeed = value;
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.currentMoveSpeedDisplay.text = "Move Speed: " + currentMoveSpeed;
+                }
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 获取或设置当前力量值，并更新UI显示。
+    /// </summary>
+    public float CurrentMight
+    {
+        get { return currentMight; }
+        set
+        {
+            if (currentMight != value)
+            {
+                currentMight = value;
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.currentMightDisplay.text = "Might: " + currentMight;
+                }
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 获取或设置当前投射物速度，并更新UI显示。
+    /// </summary>
+    public float CurrentProjectileSpeed
+    {
+        get { return currentProjectileSpeed; }
+        set
+        {
+            if (currentProjectileSpeed != value)
+            {
+                currentProjectileSpeed = value;
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.currentProjectileSpeedDisplay.text = "Projectile Speed: " + currentProjectileSpeed;
+                }
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 获取或设置当前磁力值，并更新UI显示。
+    /// </summary>
+    public float CurrentMagnet
+    {
+        get { return currentMagnet; }
+        set
+        {
+            if (currentMagnet != value)
+            {
+                currentMagnet = value;
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.currentMagnetDisplay.text = "Magnet: " + currentMagnet;
+                }
+            }
+        }
+    }
+    #endregion
+    
     [Header("Experience/Level")]
     public int experience = 0;
     public int level = 1;
@@ -57,12 +167,12 @@ public class PlayerStats : MonoBehaviour
         
         inventory = GetComponent<InventoryManager>();
         
-        currentHealth = characterData.maxHealth;
-        currentRecovery = characterData.recovery;
-        currentMoveSpeed = characterData.moveSpeed;
-        currentMight = characterData.might;
-        currentProjectileSpeed = characterData.projectileSpeed;
-        currentMagnet = characterData.magnet;
+        CurrentHealth = characterData.maxHealth;
+        CurrentRecovery = characterData.recovery;
+        CurrentMoveSpeed = characterData.moveSpeed;
+        CurrentMight = characterData.might;
+        CurrentProjectileSpeed = characterData.projectileSpeed;
+        CurrentMagnet = characterData.magnet;
         
         SpawnWeapon(characterData.startingWeapon);
         SpawnWeapon(secondWeaponTest);
@@ -93,6 +203,15 @@ public class PlayerStats : MonoBehaviour
     private void Start()
     {
         experienceCap = levelRanges[0].experienceCapIncrease;
+
+        GameManager.Instance.currentHealthDisplay.text = "Health: " + currentHealth;
+        GameManager.Instance.currentRecoveryDisplay.text = "Recovery: " + currentRecovery;
+        GameManager.Instance.currentMoveSpeedDisplay.text = "Move Speed: " + currentMoveSpeed;
+        GameManager.Instance.currentMightDisplay.text = "Might: " + currentMight;
+        GameManager.Instance.currentProjectileSpeedDisplay.text = "Projectile Speed: " + currentProjectileSpeed;
+        GameManager.Instance.currentMagnetDisplay.text = "Magnet: " + currentMagnet;
+        
+        GameManager.Instance.AssignChosenCharacterUI(characterData);
     }
 
     /// <summary>
@@ -156,12 +275,12 @@ public class PlayerStats : MonoBehaviour
     {
         if (!isInvincible)
         {
-            currentHealth -= dmg;
+            CurrentHealth -= dmg;
             
             invincibilityTimer = invincibilityDuration;
             isInvincible = true;
         
-            if (currentHealth <= 0)
+            if (CurrentHealth <= 0)
             {
                 Kill();
             }   
@@ -173,7 +292,12 @@ public class PlayerStats : MonoBehaviour
     /// </summary>
     public void Kill()
     {
-        Debug.Log("PLAYER IS DEAD");
+        if (!GameManager.Instance.isGameOver)
+        {
+            GameManager.Instance.AssignLevelReachedUI(level);
+            GameManager.Instance.AssignChosenWeaponsAndPassiveItemsUI(inventory.weaponUISlots, inventory.passiveItemUISlots);
+            GameManager.Instance.GameOver();
+        }
     }
 
     /// <summary>
@@ -182,13 +306,13 @@ public class PlayerStats : MonoBehaviour
     /// <param name="amount">要恢复的生命值数量。</param>
     public void RestoreHealth(int amount)
     {
-        if (currentHealth < characterData.maxHealth)
+        if (CurrentHealth < characterData.maxHealth)
         {
-            currentHealth += amount;
+            CurrentHealth += amount;
 
-            if (currentHealth > characterData.maxHealth)
+            if (CurrentHealth > characterData.maxHealth)
             {
-                currentHealth = characterData.maxHealth;
+                CurrentHealth = characterData.maxHealth;
             }
         }
     }
@@ -198,13 +322,13 @@ public class PlayerStats : MonoBehaviour
     /// </summary>
     private void Recover()
     {
-        if (currentHealth < characterData.maxHealth)
+        if (CurrentHealth < characterData.maxHealth)
         {
-            currentHealth += currentRecovery * Time.deltaTime;
+            CurrentHealth += currentRecovery * Time.deltaTime;
             
-            if (currentHealth > characterData.maxHealth)
+            if (CurrentHealth > characterData.maxHealth)
             {
-                currentHealth = characterData.maxHealth;
+                CurrentHealth = characterData.maxHealth;
             }
         }
     }

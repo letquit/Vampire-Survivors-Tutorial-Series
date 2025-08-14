@@ -11,6 +11,6 @@ public class WingsPassiveItem : PassiveItem
     protected override void ApplyModifier()
     {
         // 根据被动物品数据中的倍数增加玩家当前移动速度
-        player.currentMoveSpeed *= 1 + passiveItemData.multipler / 100f;
+        player.CurrentMoveSpeed *= 1 + passiveItemData.multipler / 100f;
     }
 }

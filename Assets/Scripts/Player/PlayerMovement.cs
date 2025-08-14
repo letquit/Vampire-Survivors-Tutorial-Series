@@ -66,6 +66,12 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void InputManagement()
     {
+        /// 如果游戏已结束，则不处理输入
+        if (GameManager.Instance.isGameOver)
+        {
+            return;
+        }
+        
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveY = Input.GetAxisRaw("Vertical");
 
@@ -98,6 +104,12 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void Move()
     {
-        rb.linearVelocity = new Vector2(moveDir.x * player.currentMoveSpeed, moveDir.y * player.currentMoveSpeed);
+        /// 如果游戏已结束，则停止移动
+        if (GameManager.Instance.isGameOver)
+        {
+            return;
+        }
+        
+        rb.linearVelocity = new Vector2(moveDir.x * player.CurrentMoveSpeed, moveDir.y * player.CurrentMoveSpeed);
     }
 }
