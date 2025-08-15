@@ -15,7 +15,7 @@ MonoBehaviour:
   <icon>k__BackingField: {fileID: 3390433575002291553, guid: 5de9d50db39618d42800f68ef903f479, type: 3}
   <name>k__BackingField: Knife Character
   <startingWeapon>k__BackingField: {fileID: 7788552244655619030, guid: b31a91504e45b9f4aba4e87a9db79518, type: 3}
-  <maxHealth>k__BackingField: 10
+  <maxHealth>k__BackingField: 1000
   <recovery>k__BackingField: 1
   <moveSpeed>k__BackingField: 5
   <might>k__BackingField: 1

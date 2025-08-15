@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// 玩家状态管理类，继承自 MonoBehaviour。
@@ -154,6 +156,11 @@ public class PlayerStats : MonoBehaviour
     public int weaponIndex;
     public int passiveItemIndex;
 
+    [Header("UI")]
+    public Image healthBar;
+    public Image expBar;
+    public TextMeshProUGUI levelText;
+
     public GameObject secondWeaponTest;
     public GameObject firstPassiveItemTest, secondPassiveItemTest;
     
@@ -175,8 +182,8 @@ public class PlayerStats : MonoBehaviour
         CurrentMagnet = characterData.magnet;
         
         SpawnWeapon(characterData.startingWeapon);
-        SpawnWeapon(secondWeaponTest);
-        SpawnPassiveItem(firstPassiveItemTest);
+        // SpawnWeapon(secondWeaponTest);
+        // SpawnPassiveItem(firstPassiveItemTest);
         SpawnPassiveItem(secondPassiveItemTest);
     }
 
@@ -212,6 +219,10 @@ public class PlayerStats : MonoBehaviour
         GameManager.Instance.currentMagnetDisplay.text = "Magnet: " + currentMagnet;
         
         GameManager.Instance.AssignChosenCharacterUI(characterData);
+
+        UpdateHealthBar();
+        UpdateExpBar();
+        UpdateLevelText();
     }
 
     /// <summary>
@@ -241,6 +252,8 @@ public class PlayerStats : MonoBehaviour
         experience += amount;
     
         LevelUpChecker();
+        
+        UpdateExpBar();
     }
     
     /// <summary>
@@ -263,8 +276,29 @@ public class PlayerStats : MonoBehaviour
                 }
             }
             experienceCap += experienceCapIncrease;
+            
+            UpdateLevelText();
+            
+            GameManager.Instance.StartLevelUp();
         }
     }
+
+    /// <summary>
+    /// 更新经验条的填充比例。
+    /// </summary>
+    private void UpdateExpBar()
+    {
+        expBar.fillAmount = (float)experience / experienceCap;
+    }
+
+    /// <summary>
+    /// 更新等级文本显示。
+    /// </summary>
+    private void UpdateLevelText()
+    {
+        levelText.text = "LV " + level.ToString();
+    }
+    
 
     /// <summary>
     /// 对玩家造成伤害，若处于无敌状态则忽略伤害。
@@ -283,8 +317,18 @@ public class PlayerStats : MonoBehaviour
             if (CurrentHealth <= 0)
             {
                 Kill();
-            }   
+            }
+
+            UpdateHealthBar();
         }
+    }
+
+    /// <summary>
+    /// 更新生命条的填充比例。
+    /// </summary>
+    private void UpdateHealthBar()
+    {
+        healthBar.fillAmount = currentHealth / characterData.maxHealth;
     }
 
     /// <summary>
@@ -377,8 +421,19 @@ public class PlayerStats : MonoBehaviour
     [Serializable]
     public class LevelRange
     {
+        /// <summary>
+        /// 当前等级范围的起始等级。
+        /// </summary>
         public int startLevel;
+
+        /// <summary>
+        /// 当前等级范围的结束等级。
+        /// </summary>
         public int endLevel;
+
+        /// <summary>
+        /// 经验值上限的增长量。
+        /// </summary>
         public int experienceCapIncrease;
     }
 }

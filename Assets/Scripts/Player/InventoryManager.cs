@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// 管理玩家的武器和被动道具库存，包括添加、升级以及UI显示更新。
@@ -15,6 +18,51 @@ public class InventoryManager : MonoBehaviour
     public List<Image> passiveItemUISlots = new List<Image>(6);
 
     /// <summary>
+    /// 武器升级选项的数据结构。
+    /// </summary>
+    [Serializable]
+    public class WeaponUpgrade
+    {
+        public int weaponUpgradeIndex;
+        public GameObject initialWeapon;
+        public WeaponScriptableObject weaponData;
+    }
+    
+    /// <summary>
+    /// 被动道具升级选项的数据结构。
+    /// </summary>
+    [Serializable]
+    public class PassiveItemUpgrade
+    {
+        public int passiveItemUpgradeIndex;
+        public GameObject initialPassiveItem;
+        public PassiveItemScriptableObject passiveItemData;
+    }
+    
+    /// <summary>
+    /// 升级界面UI元素的数据结构。
+    /// </summary>
+    [Serializable]
+    public class UpgradeUI
+    {
+        public TextMeshProUGUI upgradeNameDisplay;
+        public TextMeshProUGUI upgradeDescriptionDisplay;
+        public Image upgradeIcon;
+        public Button upgradeButton;
+    }
+    
+    public List<WeaponUpgrade> weaponUpgradeOptions = new List<WeaponUpgrade>();
+    public List<PassiveItemUpgrade> passiveItemUpgradeOptions = new List<PassiveItemUpgrade>();
+    public List<UpgradeUI> upgradeUIOptions = new List<UpgradeUI>();
+
+    private PlayerStats player;
+
+    private void Start()
+    {
+        player = GetComponent<PlayerStats>();
+    }
+
+    /// <summary>
     /// 在指定槽位添加武器，并更新对应的UI显示。
     /// </summary>
     /// <param name="slotIndex">要添加武器的槽位索引。</param>
@@ -25,6 +73,11 @@ public class InventoryManager : MonoBehaviour
         weaponLevels[slotIndex] = weapon.weaponData.level;
         weaponUISlots[slotIndex].enabled = true;
         weaponUISlots[slotIndex].sprite = weapon.weaponData.icon;
+
+        if (GameManager.Instance != null && GameManager.Instance.choosingUpgrade)
+        {
+            GameManager.Instance.EndLevelUp();
+        }
     }
 
     /// <summary>
@@ -38,6 +91,11 @@ public class InventoryManager : MonoBehaviour
         passiveItemLevels[slotIndex] = passiveItem.passiveItemData.level;
         passiveItemUISlots[slotIndex].enabled = true;
         passiveItemUISlots[slotIndex].sprite = passiveItem.passiveItemData.icon;
+
+        if (GameManager.Instance != null && GameManager.Instance.choosingUpgrade)
+        {
+            GameManager.Instance.EndLevelUp();
+        }
     }
 
     /// <summary>
@@ -45,7 +103,8 @@ public class InventoryManager : MonoBehaviour
     /// 若无下一级预设则输出错误日志。
     /// </summary>
     /// <param name="slotIndex">要升级武器的槽位索引。</param>
-    public void LevelUpWeapon(int slotIndex)
+    /// <param name="upgradeIndex">用于更新升级选项数据的索引。</param>
+    public void LevelUpWeapon(int slotIndex, int upgradeIndex)
     {
         // 检查槽位是否有效
         if (weaponSlots.Count > slotIndex)
@@ -66,6 +125,13 @@ public class InventoryManager : MonoBehaviour
             AddWeapon(slotIndex, upgradedWeapon.GetComponent<WeaponController>());
             Destroy(weapon.gameObject);
             weaponLevels[slotIndex] = upgradedWeapon.GetComponent<WeaponController>().weaponData.level;
+
+            weaponUpgradeOptions[upgradeIndex].weaponData = upgradedWeapon.GetComponent<WeaponController>().weaponData;
+            
+            if (GameManager.Instance != null && GameManager.Instance.choosingUpgrade)
+            {
+                GameManager.Instance.EndLevelUp();
+            }
         }
     }
     
@@ -74,7 +140,8 @@ public class InventoryManager : MonoBehaviour
     /// 若无下一级预设则输出错误日志。
     /// </summary>
     /// <param name="slotIndex">要升级被动道具的槽位索引。</param>
-    public void LevelUpPassiveItem(int slotIndex)
+    /// <param name="upgradeIndex">用于更新升级选项数据的索引。</param>
+    public void LevelUpPassiveItem(int slotIndex, int upgradeIndex)
     {
         // 检查槽位是否有效
         if (passiveItemSlots.Count > slotIndex)
@@ -95,6 +162,188 @@ public class InventoryManager : MonoBehaviour
             AddPassiveItem(slotIndex, upgradedPassiveItem.GetComponent<PassiveItem>());
             Destroy(passiveItem.gameObject);
             passiveItemLevels[slotIndex] = upgradedPassiveItem.GetComponent<PassiveItem>().passiveItemData.level;
+
+            passiveItemUpgradeOptions[upgradeIndex].passiveItemData =
+                upgradedPassiveItem.GetComponent<PassiveItem>().passiveItemData;
+            
+            if (GameManager.Instance != null && GameManager.Instance.choosingUpgrade)
+            {
+                GameManager.Instance.EndLevelUp();
+            }
         }
+    }
+
+    /// <summary>
+    /// 根据当前拥有的武器和被动道具，随机生成可选的升级选项，并绑定到UI上。
+    /// </summary>
+    private void ApplyUpgradeOptions()
+    {
+        List<WeaponUpgrade> availableWeaponUpgrades = new List<WeaponUpgrade>(weaponUpgradeOptions);
+        List<PassiveItemUpgrade> availablePassiveItemUpgrades = new List<PassiveItemUpgrade>(passiveItemUpgradeOptions);
+        
+        foreach (var upgradeOption in upgradeUIOptions)
+        {
+            if (availableWeaponUpgrades.Count == 0 && availablePassiveItemUpgrades.Count == 0)
+            {
+                return;
+            }
+
+            int upgradeType;
+
+            if (availableWeaponUpgrades.Count == 0)
+            {
+                upgradeType = 2;
+            }
+            else if (availablePassiveItemUpgrades.Count == 0)
+            {
+                upgradeType = 1;
+            }
+            else
+            {
+                upgradeType = Random.Range(1, 3);
+            }
+            
+            if (upgradeType == 1)
+            {
+                WeaponUpgrade chosenWeaponUpgrade = availableWeaponUpgrades[Random.Range(0, availableWeaponUpgrades.Count)];
+
+                availableWeaponUpgrades.Remove(chosenWeaponUpgrade);
+
+                if (chosenWeaponUpgrade != null)
+                {
+                    EnableUpgradeUI(upgradeOption);
+                    
+                    bool newWeapon = false;
+                    
+                    for (int i = 0; i < weaponSlots.Count; i++)
+                    {
+                        if (weaponSlots[i] != null && weaponSlots[i].weaponData == chosenWeaponUpgrade.weaponData)
+                        {
+                            newWeapon = false;
+                            if (!newWeapon)
+                            {
+                                if (!chosenWeaponUpgrade.weaponData.nextLevelPrefab)
+                                {
+                                    DisableUpgradeUI(upgradeOption);
+                                    break;
+                                }
+                                
+                                upgradeOption.upgradeButton.onClick.AddListener(() => LevelUpWeapon(i, chosenWeaponUpgrade.weaponUpgradeIndex));
+                                
+                                upgradeOption.upgradeDescriptionDisplay.text = chosenWeaponUpgrade.weaponData
+                                    .nextLevelPrefab.GetComponent<WeaponController>().weaponData.description;
+                                upgradeOption.upgradeNameDisplay.text = chosenWeaponUpgrade.weaponData
+                                    .nextLevelPrefab.GetComponent<WeaponController>().weaponData.name;
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            newWeapon = true;
+                        }
+                    }
+
+                    if (newWeapon)
+                    {
+                        upgradeOption.upgradeButton.onClick.AddListener(() => player.SpawnWeapon(chosenWeaponUpgrade.initialWeapon));
+                        
+                        upgradeOption.upgradeDescriptionDisplay.text = chosenWeaponUpgrade.weaponData.description;
+                        upgradeOption.upgradeNameDisplay.text = chosenWeaponUpgrade.weaponData.name;
+                    }
+
+                    upgradeOption.upgradeIcon.sprite = chosenWeaponUpgrade.weaponData.icon;
+                }
+            }
+            else if (upgradeType == 2)
+            { 
+                PassiveItemUpgrade chosenPassiveItemUpgrade = availablePassiveItemUpgrades[Random.Range(0, availablePassiveItemUpgrades.Count)];
+
+                availablePassiveItemUpgrades.Remove(chosenPassiveItemUpgrade);
+                
+                if (chosenPassiveItemUpgrade != null)
+                {
+                    EnableUpgradeUI(upgradeOption);
+
+                    bool newPassiveItem = false;
+                    for (int i = 0; i < passiveItemSlots.Count; i++)
+                    {
+                        if (passiveItemSlots[i] != null && passiveItemSlots[i].passiveItemData == chosenPassiveItemUpgrade.passiveItemData)
+                        {
+                            newPassiveItem = false;
+                            
+                            if (!newPassiveItem)
+                            {
+                                if (!chosenPassiveItemUpgrade.passiveItemData.nextLevelPrefab)
+                                {
+                                    DisableUpgradeUI(upgradeOption);
+                                    break;
+                                }
+                                
+                                upgradeOption.upgradeButton.onClick.AddListener(() => LevelUpPassiveItem(i, chosenPassiveItemUpgrade.passiveItemUpgradeIndex));
+                                
+                                upgradeOption.upgradeDescriptionDisplay.text = chosenPassiveItemUpgrade.passiveItemData
+                                    .nextLevelPrefab.GetComponent<PassiveItem>().passiveItemData.description;
+                                upgradeOption.upgradeNameDisplay.text = chosenPassiveItemUpgrade.passiveItemData
+                                    .nextLevelPrefab.GetComponent<PassiveItem>().passiveItemData.name;
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            newPassiveItem = true;
+                        }
+                    }
+
+                    if (newPassiveItem)
+                    {
+                        upgradeOption.upgradeButton.onClick.AddListener(() => player.SpawnPassiveItem(chosenPassiveItemUpgrade.initialPassiveItem));
+                        
+                        upgradeOption.upgradeDescriptionDisplay.text = chosenPassiveItemUpgrade.passiveItemData.description;
+                        upgradeOption.upgradeNameDisplay.text = chosenPassiveItemUpgrade.passiveItemData.name;
+                    }
+
+                    upgradeOption.upgradeIcon.sprite = chosenPassiveItemUpgrade.passiveItemData.icon;
+                }
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 清除所有升级选项UI上的事件监听器，并隐藏UI。
+    /// </summary>
+    private void RemoveUpgradeOptions()
+    {
+        foreach (var upgradeOption in upgradeUIOptions)
+        {
+            upgradeOption.upgradeButton.onClick.RemoveAllListeners();
+            DisableUpgradeUI(upgradeOption);
+        }
+    }
+
+    /// <summary>
+    /// 先清除旧的升级选项，再重新生成新的升级选项。
+    /// </summary>
+    public void RemoveAndApplyUpgrades()
+    {
+        RemoveUpgradeOptions();
+        ApplyUpgradeOptions();
+    }
+
+    /// <summary>
+    /// 隐藏指定的升级UI。
+    /// </summary>
+    /// <param name="ui">要隐藏的升级UI对象。</param>
+    private void DisableUpgradeUI(UpgradeUI ui)
+    {
+        ui.upgradeNameDisplay.transform.parent.gameObject.SetActive(false);
+    }
+    
+    /// <summary>
+    /// 显示指定的升级UI。
+    /// </summary>
+    /// <param name="ui">要显示的升级UI对象。</param>
+    private void EnableUpgradeUI(UpgradeUI ui)
+    {
+        ui.upgradeNameDisplay.transform.parent.gameObject.SetActive(true);
     }
 }

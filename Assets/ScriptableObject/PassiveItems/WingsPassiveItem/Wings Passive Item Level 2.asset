@@ -15,4 +15,6 @@ MonoBehaviour:
   <multipler>k__BackingField: 75
   <level>k__BackingField: 2
   <nextLevelPrefab>k__BackingField: {fileID: 0}
+  <name>k__BackingField: Wings Level 2
+  <description>k__BackingField: Increases Movement Speed by 75%
   <icon>k__BackingField: {fileID: -6180373133180794851, guid: d8af08889eb7b094294fc10933f5c295, type: 3}

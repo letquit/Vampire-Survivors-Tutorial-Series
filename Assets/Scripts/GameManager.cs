@@ -18,7 +18,8 @@ public class GameManager : MonoBehaviour
     {
         Gameplay,
         Paused,
-        GameOver
+        GameOver,
+        LevelUp,
     }
 
     public GameState currentState;
@@ -28,6 +29,7 @@ public class GameManager : MonoBehaviour
     [Header("Screens")] 
     public GameObject pauseScreen;
     public GameObject resultsScreen;
+    public GameObject levelUpScreen;
     
     [Header("Current Stat Displays")] 
     public TextMeshProUGUI currentHealthDisplay;
@@ -41,10 +43,20 @@ public class GameManager : MonoBehaviour
     public Image chosenCharacterImage;
     public TextMeshProUGUI chosenCharacterName;
     public TextMeshProUGUI levelReachedDisplay;
+    public TextMeshProUGUI timeSurvivedDisplay;
     public List<Image> chosenWeaponsUI = new List<Image>(6);
     public List<Image> chosenPassiveItemsUI = new List<Image>(6);
 
+    [Header("Stopwatch")] 
+    public float timeLimit;
+    private float stopwatchTime;
+    public TextMeshProUGUI stopwatchDisplay;
+    
     public bool isGameOver = false;
+
+    public bool choosingUpgrade;
+
+    public GameObject playerObject;
 
     /// <summary>
     /// 初始化单例实例，并禁用所有屏幕UI。
@@ -61,6 +73,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         } 
         
+        stopwatchTime = timeLimit;
         DisableScreens();
     }
 
@@ -73,6 +86,7 @@ public class GameManager : MonoBehaviour
         {
             case GameState.Gameplay:
                 CheckForPauseAndResume();
+                UpdateStopwatch();
                 break;
             case GameState.Paused:
                 CheckForPauseAndResume();
@@ -84,6 +98,15 @@ public class GameManager : MonoBehaviour
                     Time.timeScale = 0f;
                     Debug.Log("GAME IS OVER");
                     DisplayResults();
+                }
+                break;
+            case GameState.LevelUp:
+                if (!choosingUpgrade)
+                {
+                    choosingUpgrade = true;
+                    Time.timeScale = 0f;
+                    levelUpScreen.SetActive(true);
+                    Debug.Log("LEVEL UP");
                 }
                 break;
             default:
@@ -156,6 +179,7 @@ public class GameManager : MonoBehaviour
     {
         pauseScreen.SetActive(false);
         resultsScreen.SetActive(false);
+        levelUpScreen.SetActive(false);
     }
 
     /// <summary>
@@ -163,6 +187,11 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void GameOver()
     {
+        float timeSurvived = timeLimit - stopwatchTime;
+        int survivedMinutes = Mathf.FloorToInt(timeSurvived / 60);
+        int survivedSeconds = Mathf.FloorToInt(timeSurvived % 60);
+        timeSurvivedDisplay.text = string.Format("{0:00}:{1:00}", survivedMinutes, survivedSeconds);
+    
         ChangeState(GameState.GameOver);
     }
 
@@ -234,5 +263,52 @@ public class GameManager : MonoBehaviour
                 chosenPassiveItemsUI[i].enabled = false;
             }
         }
+    }
+
+    /// <summary>
+    /// 更新倒计时计时器，当时间归零时触发游戏结束。
+    /// </summary>
+    private void UpdateStopwatch()
+    {
+        stopwatchTime -= Time.deltaTime;
+
+        UpdateStopwatchDisplay();
+    
+        if (stopwatchTime <= 0)
+        {
+            stopwatchTime = 0;
+            GameOver();
+        }
+    }
+
+    /// <summary>
+    /// 更新倒计时UI显示。
+    /// </summary>
+    private void UpdateStopwatchDisplay()
+    {
+        int minutes = Mathf.FloorToInt(stopwatchTime / 60);
+        int seconds = Mathf.FloorToInt(stopwatchTime % 60);
+    
+        stopwatchDisplay.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+
+    /// <summary>
+    /// 开始升级流程，切换到升级状态并通知玩家对象处理升级逻辑。
+    /// </summary>
+    public void StartLevelUp()
+    {
+        ChangeState(GameState.LevelUp);
+        playerObject.SendMessage("RemoveAndApplyUpgrades");
+    }
+
+    /// <summary>
+    /// 结束升级流程，恢复正常游戏状态。
+    /// </summary>
+    public void EndLevelUp()
+    {
+        choosingUpgrade = false;
+        Time.timeScale = 1f;
+        levelUpScreen.SetActive(false);
+        ChangeState(GameState.Gameplay);
     }
 }
