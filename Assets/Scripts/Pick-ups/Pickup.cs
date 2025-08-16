@@ -5,7 +5,7 @@ using UnityEngine;
 /// </summary>
 public class Pickup : MonoBehaviour, ICollectible
 {
-    protected bool hasBeenCollected = false;
+    public bool hasBeenCollected = false;
 
     /// <summary>
     /// 收集物品的方法，将物品标记为已收集状态

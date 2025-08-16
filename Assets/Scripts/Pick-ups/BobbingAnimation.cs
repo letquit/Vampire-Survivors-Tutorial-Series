@@ -11,6 +11,7 @@ public class BobbingAnimation : MonoBehaviour
     public float magnitude;
     public Vector3 direction;
     private Vector3 initialPosition;
+    private Pickup pickup;
     
     /// <summary>
     /// Start函数在物体启用时调用，用于初始化物体的初始位置
@@ -18,6 +19,7 @@ public class BobbingAnimation : MonoBehaviour
     /// </summary>
     private void Start()
     {
+        pickup = GetComponent<Pickup>();
         initialPosition = transform.localPosition;
     }
 
@@ -27,7 +29,10 @@ public class BobbingAnimation : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        // 根据正弦波函数计算当前位置：初始位置 + 方向向量 * 正弦值 * 幅度
-        transform.position = initialPosition + direction * Mathf.Sin(Time.time * frequency) * magnitude;
+        if (pickup && !pickup.hasBeenCollected)
+        {
+            // 根据正弦波函数计算当前位置：初始位置 + 方向向量 * 正弦值 * 幅度
+            transform.position = initialPosition + direction * Mathf.Sin(Time.time * frequency) * magnitude;
+        }
     }
 }
