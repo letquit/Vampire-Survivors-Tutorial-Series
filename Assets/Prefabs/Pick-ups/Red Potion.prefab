@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2252153069152550215}
   - component: {fileID: -4373555401623519868}
   - component: {fileID: 8339404850855197661}
+  - component: {fileID: 707532995602083501}
   m_Layer: 0
   m_Name: Red Potion
   m_TagString: Prop
@@ -176,3 +177,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &707532995602083501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767526044589934936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf1450b208696a6498a16c5ca558cc0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frequency: 3
+  magnitude: 0.1
+  direction: {x: 0, y: 1, z: 0}

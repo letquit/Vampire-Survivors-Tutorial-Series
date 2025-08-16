@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
+using Quaternion = UnityEngine.Quaternion;
 using Random = UnityEngine.Random;
+using Vector3 = UnityEngine.Vector3;
 
 /// <summary>
 /// 地图控制器，用于管理地形区块的生成与优化。
@@ -11,10 +14,10 @@ public class MapController : MonoBehaviour
     public List<GameObject> terrainChunks;
     public GameObject player;
     public float checkerRadius;
-    private Vector3 noTerrainPosition;
     public LayerMask terrainMask;
     public GameObject currentChunk;
-    private PlayerMovement pm;
+    private Vector3 playerLastPosition;
+    // private PlayerMovement pm;
 
     [Header("Optimization")] 
     public List<GameObject> spawnedChunks;
@@ -23,31 +26,13 @@ public class MapController : MonoBehaviour
     private float opDist;
     private float optimizerCooldown;
     public float optimizerCooldownDur;
-    
-    // 九宫格方向偏移
-    private Vector3[] directionOffsets = {
-        new Vector3(0, 0, 0),      // 中心(当前区块)
-        new Vector3(20, 0, 0),     // 右
-        new Vector3(-20, 0, 0),    // 左
-        new Vector3(0, 20, 0),     // 上
-        new Vector3(0, -20, 0),    // 下
-        new Vector3(20, 20, 0),    // 右上
-        new Vector3(20, -20, 0),   // 右下
-        new Vector3(-20, 20, 0),   // 左上
-        new Vector3(-20, -20, 0)   // 左下
-    };
-    
-    private string[] directionNames = {
-        "", "Right", "Left", "Up", "Down", 
-        "Right Up", "Right Down", "Left Up", "Left Down"
-    };
 
     /// <summary>
     /// 初始化组件引用并生成初始道具。
     /// </summary>
     private void Start()
     {
-        pm = FindFirstObjectByType<PlayerMovement>();
+        playerLastPosition = player.transform.position;
         
         // 生成初始地块的道具
         PropRandomizer propRandomizer = FindFirstObjectByType<PropRandomizer>();
@@ -75,36 +60,78 @@ public class MapController : MonoBehaviour
         {
             return;
         }
-        
-        for (int i = 1; i < directionOffsets.Length; i++)
+    
+        Vector3 moveDir = player.transform.position - playerLastPosition;
+        playerLastPosition = player.transform.position;
+
+        // 只在有明显移动时才检查，但检查所有九个方向
+        if (moveDir.magnitude >= 0.1f) 
         {
-            Vector3 checkPosition;
-            
-            Transform directionTransform = currentChunk.transform.Find(directionNames[i]);
-            if (directionTransform != null)
-            {
-                checkPosition = directionTransform.position;
-            }
-            else
-            {
-                checkPosition = currentChunk.transform.position + directionOffsets[i];
-            }
-            
-            if (!Physics2D.OverlapCircle(checkPosition, checkerRadius, terrainMask))
-            {
-                noTerrainPosition = checkPosition;
-                SpawnChunk();
-            }
+            // 检查九宫格内的所有方向
+            CheckAndSpawnChunk("Right");
+            CheckAndSpawnChunk("Left");
+            CheckAndSpawnChunk("Up");
+            CheckAndSpawnChunk("Down");
+            CheckAndSpawnChunk("Right Up");
+            CheckAndSpawnChunk("Right Down");
+            CheckAndSpawnChunk("Left Up");
+            CheckAndSpawnChunk("Left Down");
         }
+    }
+
+    /// <summary>
+    /// 检查指定方向是否存在地形区块，若不存在则生成新地块。
+    /// </summary>
+    /// <param name="direction">要检查的方向名称（如 "Right", "Up" 等）</param>
+    private void CheckAndSpawnChunk(string direction)
+    {
+        if (string.IsNullOrEmpty(direction)) return;
+    
+        Transform directionTransform = currentChunk.transform.Find(direction);
+        if (directionTransform == null) return;
+    
+        if (!Physics2D.OverlapCircle(directionTransform.position, checkerRadius, terrainMask))
+        {
+            SpawnChunk(directionTransform.position);
+        }
+    }
+
+    /// <summary>
+    /// 根据给定的方向向量获取对应的方向名称。
+    /// </summary>
+    /// <param name="direction">表示移动方向的向量</param>
+    /// <returns>返回方向名称字符串，例如 "Right Up"、"Left" 等</returns>
+    private string GetDirectionName(Vector3 direction)
+    {
+        if (direction == Vector3.zero) return "";
+    
+        direction = direction.normalized;
+    
+        bool right = direction.x > 0.3f;
+        bool left = direction.x < -0.3f;
+        bool up = direction.y > 0.3f;
+        bool down = direction.y < -0.3f;
+    
+        if (right && up) return "Right Up";
+        if (right && down) return "Right Down";
+        if (left && up) return "Left Up";
+        if (left && down) return "Left Down";
+        if (right) return "Right";
+        if (left) return "Left";
+        if (up) return "Up";
+        if (down) return "Down";
+    
+        return "";
     }
 
     /// <summary>
     /// 在指定位置生成一个随机地形区块，并为其生成道具。
     /// </summary>
-    private void SpawnChunk()
+    /// <param name="spawnPosition">新地形区块的生成位置</param>
+    private void SpawnChunk(Vector3 spawnPosition)
     {
         int rand = Random.Range(0, terrainChunks.Count);
-        latestChunk = Instantiate(terrainChunks[rand], noTerrainPosition, Quaternion.identity);
+        latestChunk = Instantiate(terrainChunks[rand], spawnPosition, Quaternion.identity);
         
         PropRandomizer propRandomizer = FindFirstObjectByType<PropRandomizer>();
         if (propRandomizer != null)

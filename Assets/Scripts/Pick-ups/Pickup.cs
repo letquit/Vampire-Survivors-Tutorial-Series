@@ -3,8 +3,18 @@ using UnityEngine;
 /// <summary>
 /// 拾取物品类，用于处理玩家拾取物品的逻辑
 /// </summary>
-public class Pickup : MonoBehaviour
+public class Pickup : MonoBehaviour, ICollectible
 {
+    protected bool hasBeenCollected = false;
+
+    /// <summary>
+    /// 收集物品的方法，将物品标记为已收集状态
+    /// </summary>
+    public virtual void Collect()
+    {
+        hasBeenCollected = true; 
+    }
+    
     /// <summary>
     /// 当触发器碰撞发生时调用此方法，用于检测玩家拾取物品
     /// </summary>
@@ -19,3 +29,4 @@ public class Pickup : MonoBehaviour
         }
     }
 }
+

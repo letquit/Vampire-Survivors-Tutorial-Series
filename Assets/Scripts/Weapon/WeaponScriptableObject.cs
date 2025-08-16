@@ -20,7 +20,7 @@ public class WeaponScriptableObject : ScriptableObject
     [field:SerializeField]
     public GameObject nextLevelPrefab { get; private set; }
     [field:SerializeField]
-    public string name { get; private set; }
+    public new string name { get; private set; }
     [field:SerializeField]
     public string description { get; private set; }
     [field:SerializeField]

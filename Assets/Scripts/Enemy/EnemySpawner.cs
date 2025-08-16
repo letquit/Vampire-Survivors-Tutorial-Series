@@ -22,6 +22,8 @@ public class EnemySpawner : MonoBehaviour
     public int maxEnemiesAllowed;
     public bool maxEnemiesReached = false;
     public float waveInterval;
+
+    private bool isWaveActive = false;
     
     private Transform player;
 
@@ -40,7 +42,7 @@ public class EnemySpawner : MonoBehaviour
     private void Update()
     {
         // 如果当前波次已结束，则开始下一波
-        if (currentWaveCount < waves.Count && waves[currentWaveCount].spawnCount == 0)
+        if (currentWaveCount < waves.Count && waves[currentWaveCount].spawnCount == 0 && !isWaveActive)
         {
             StartCoroutine(BeginNextWave());
         }
@@ -61,11 +63,14 @@ public class EnemySpawner : MonoBehaviour
     /// <returns>IEnumerator，用于协程执行</returns>
     IEnumerator BeginNextWave()
     {
+        isWaveActive = true;
+        
         yield return new WaitForSeconds(waveInterval);
 
         // 切换到下一波并重新计算配额
         if (currentWaveCount < waves.Count - 1)
         {
+            isWaveActive = false;
             currentWaveCount++;
             CalculateWaveQuota();
         }
@@ -83,7 +88,6 @@ public class EnemySpawner : MonoBehaviour
         }
 
         waves[currentWaveCount].waveQuota = currentWaveQuota;
-        Debug.LogWarning(currentWaveQuota);
     }
 
     /// <summary>
@@ -99,13 +103,6 @@ public class EnemySpawner : MonoBehaviour
                 // 判断该敌人群组是否还有未生成的敌人
                 if (enemyGroup.spawnCount < enemyGroup.enemyCount)
                 {
-                    // 判断是否达到最大敌人数量限制
-                    if (enemiesAlive >= maxEnemiesAllowed)
-                    {
-                        maxEnemiesReached = true;
-                        return;
-                    }
-
                     // 使用工具类生成随机位置
                     Vector3 randomOffset = EnemyUtilities.GetRandomEnemyPosition(minSpawnDistance, maxSpawnDistance);
 
@@ -116,14 +113,16 @@ public class EnemySpawner : MonoBehaviour
                     enemyGroup.spawnCount++;
                     waves[currentWaveCount].spawnCount++;
                     enemiesAlive++;
+                    
+                    
+                    // 判断是否达到最大敌人数量限制
+                    if (enemiesAlive >= maxEnemiesAllowed)
+                    {
+                        maxEnemiesReached = true;
+                        return;
+                    }
                 }
             }
-        }
-
-        // 如果当前敌人数量未达上限，则重置最大敌人数量标记
-        if (enemiesAlive < maxEnemiesAllowed)
-        {
-            maxEnemiesReached = false;
         }
     }
 
@@ -133,6 +132,12 @@ public class EnemySpawner : MonoBehaviour
     public void OnEnemyKilled()
     {
         enemiesAlive--;
+        
+        // 如果当前敌人数量未达上限，则重置最大敌人数量标记
+        if (enemiesAlive < maxEnemiesAllowed)
+        {
+            maxEnemiesReached = false;
+        }
     }
     
     /// <summary>

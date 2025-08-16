@@ -35,6 +35,7 @@ public class PlayerStats : MonoBehaviour
                 {
                     GameManager.Instance.currentHealthDisplay.text = "Health: " + currentHealth;
                 }
+                UpdateHealthBar();
             }
         }
     }
@@ -318,8 +319,6 @@ public class PlayerStats : MonoBehaviour
             {
                 Kill();
             }
-
-            UpdateHealthBar();
         }
     }
 
@@ -353,7 +352,6 @@ public class PlayerStats : MonoBehaviour
         if (CurrentHealth < characterData.maxHealth)
         {
             CurrentHealth += amount;
-
             if (CurrentHealth > characterData.maxHealth)
             {
                 CurrentHealth = characterData.maxHealth;

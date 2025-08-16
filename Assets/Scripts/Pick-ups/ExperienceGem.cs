@@ -5,7 +5,7 @@ using UnityEngine;
 /// 经验宝石类，继承自Pickup类并实现ICollectible接口
 /// 用于玩家收集后获得经验值的游戏对象
 /// </summary>
-public class ExperienceGem : Pickup, ICollectible
+public class ExperienceGem : Pickup
 {
     public int experienceGranted;
     
@@ -13,8 +13,18 @@ public class ExperienceGem : Pickup, ICollectible
     /// 收集经验宝石的方法
     /// 查找玩家状态组件并增加相应经验值
     /// </summary>
-    public void Collect()
+    public override void Collect()
     {
+        // 检查是否已经被收集，避免重复收集
+        if (hasBeenCollected)
+        {
+            return;
+        }
+        else
+        {
+            base.Collect();
+        }
+        
         // 查找场景中的玩家状态组件
         PlayerStats player = FindFirstObjectByType<PlayerStats>();
         // 为玩家增加经验奖励
@@ -23,3 +33,4 @@ public class ExperienceGem : Pickup, ICollectible
 
     
 }
+
