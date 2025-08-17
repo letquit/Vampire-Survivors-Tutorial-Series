@@ -25,4 +25,8 @@ public class WeaponScriptableObject : ScriptableObject
     public string description { get; private set; }
     [field:SerializeField]
     public Sprite icon { get; private set; }
+    [field:SerializeField]
+    public int evolvedUpgradeToRemove { get; private set; }
+    [field:SerializeField]
+    public WeaponScriptableObject baseWeaponData { get; private set; }
 }

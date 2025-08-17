@@ -22,3 +22,5 @@ MonoBehaviour:
   <name>k__BackingField: Garlic
   <description>k__BackingField: Deals damage to every enemy inside
   <icon>k__BackingField: {fileID: 4641043289130053377, guid: d8af08889eb7b094294fc10933f5c295, type: 3}
+  <evolvedUpgradeToRemove>k__BackingField: 0
+  <baseWeaponData>k__BackingField: {fileID: 11400000}

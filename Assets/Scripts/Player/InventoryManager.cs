@@ -55,6 +55,8 @@ public class InventoryManager : MonoBehaviour
     public List<PassiveItemUpgrade> passiveItemUpgradeOptions = new List<PassiveItemUpgrade>();
     public List<UpgradeUI> upgradeUIOptions = new List<UpgradeUI>();
 
+    public List<WeaponEvolutionBlueprint> WeaponEvolutions = new List<WeaponEvolutionBlueprint>();
+    
     private PlayerStats player;
 
     private void Start()
@@ -345,5 +347,94 @@ public class InventoryManager : MonoBehaviour
     private void EnableUpgradeUI(UpgradeUI ui)
     {
         ui.upgradeNameDisplay.transform.parent.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// 获取当前可能触发的武器进化蓝图列表。
+    /// 匹配条件包括：武器类型、催化剂类型、武器等级精确匹配、催化剂等级大于等于要求。
+    /// </summary>
+    /// <returns>满足条件的武器进化蓝图列表。</returns>
+    public List<WeaponEvolutionBlueprint> GetPossibleEvolutions()
+    {
+        List<WeaponEvolutionBlueprint> possibleEvolutions = new List<WeaponEvolutionBlueprint>();
+
+        foreach (WeaponController weapon in weaponSlots)
+        {
+            if (weapon != null)
+            {
+                foreach (PassiveItem catalyst in passiveItemSlots)
+                {
+                    if (catalyst != null)
+                    {
+                        foreach (WeaponEvolutionBlueprint evolution in WeaponEvolutions)
+                        {
+                            // 1. 检查武器的基础类型是否匹配
+                            bool weaponTypeMatch = weapon.weaponData.baseWeaponData == evolution.baseWeaponData.baseWeaponData;
+                            
+                            // 2. 检查被动物品的基础类型是否匹配
+                            bool catalystTypeMatch = catalyst.passiveItemData.basePassiveItemData == evolution.catalystPassiveItemData;
+                            
+                            // 3. 武器等级必须精确匹配蓝图要求（不是大于等于）
+                            bool weaponLevelMatch = weapon.weaponData.level == evolution.baseWeaponData.level;
+                            
+                            // 4. 被动物品等级仍然保持大于等于的判断
+                            bool catalystLevelMatch = catalyst.passiveItemData.level >= evolution.catalystPassiveItemData.level;
+
+                            if (weaponTypeMatch && catalystTypeMatch && weaponLevelMatch && catalystLevelMatch)
+                            {
+                                possibleEvolutions.Add(evolution);
+                                Debug.Log($"Found evolution match: Weapon({weapon.weaponData.name} Level {weapon.weaponData.level}) + Catalyst({catalyst.passiveItemData.name} Level {catalyst.passiveItemData.level})");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return possibleEvolutions;
+    }
+
+    /// <summary>
+    /// 执行一次武器进化操作。
+    /// 查找符合条件的武器与催化剂组合，将其替换为进化后的武器。
+    /// </summary>
+    /// <param name="evolution">要执行的武器进化蓝图。</param>
+    public void EvolveWeapon(WeaponEvolutionBlueprint evolution)
+    {
+        for (int weaponSlotIndex = 0; weaponSlotIndex < weaponSlots.Count; weaponSlotIndex++)
+        {
+            WeaponController weapon = weaponSlots[weaponSlotIndex];
+            if (!weapon) continue;
+
+            for (int catalystSlotIndex = 0; catalystSlotIndex < passiveItemSlots.Count; catalystSlotIndex++)
+            {
+                PassiveItem catalyst = passiveItemSlots[catalystSlotIndex];
+                if (!catalyst) continue;
+                
+                bool weaponTypeMatch = weapon.weaponData.baseWeaponData == evolution.baseWeaponData.baseWeaponData;
+                bool catalystTypeMatch = catalyst.passiveItemData.basePassiveItemData == evolution.catalystPassiveItemData;
+                bool weaponLevelMatch = weapon.weaponData.level == evolution.baseWeaponData.level;
+                bool catalystLevelMatch = catalyst.passiveItemData.level >= evolution.catalystPassiveItemData.level;
+
+                if (weaponTypeMatch && catalystTypeMatch && weaponLevelMatch && catalystLevelMatch)
+                {
+                    GameObject evolvedWeapon = Instantiate(evolution.evolvedWeapon, transform.position, Quaternion.identity);
+                    WeaponController evolvedWeaponController = evolvedWeapon.GetComponent<WeaponController>();
+                    
+                    evolvedWeapon.transform.SetParent(transform);
+                    AddWeapon(weaponSlotIndex, evolvedWeaponController);
+                    Destroy(weapon.gameObject);
+
+                    weaponLevels[weaponSlotIndex] = evolvedWeaponController.weaponData.level;
+                    weaponUISlots[weaponSlotIndex].sprite = evolvedWeaponController.weaponData.icon;
+                    
+                    weaponUpgradeOptions.RemoveAt(evolvedWeaponController.weaponData.evolvedUpgradeToRemove);
+                    
+                    Debug.Log($"Successfully evolved {weapon.weaponData.name} (Level {weapon.weaponData.level}) with {catalyst.passiveItemData.name} (Level {catalyst.passiveItemData.level})!");
+                    
+                    return;
+                }
+            }
+        }
     }
 }

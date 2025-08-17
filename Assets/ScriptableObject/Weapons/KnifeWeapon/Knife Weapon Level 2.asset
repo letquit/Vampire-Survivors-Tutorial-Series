@@ -22,3 +22,5 @@ MonoBehaviour:
   <name>k__BackingField: Knife Level 2
   <description>k__BackingField: Speed is up by 5
   <icon>k__BackingField: {fileID: 4899227789284837310, guid: d8af08889eb7b094294fc10933f5c295, type: 3}
+  <evolvedUpgradeToRemove>k__BackingField: 0
+  <baseWeaponData>k__BackingField: {fileID: 11400000, guid: bbe9c488fd3dd71408e83aa5d4c92532, type: 2}

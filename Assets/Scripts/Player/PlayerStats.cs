@@ -140,11 +140,6 @@ public class PlayerStats : MonoBehaviour
     public int experience = 0;
     public int level = 1;
     public int experienceCap;
-    // [Header("Experience/Level")]
-    // public int experience = 0;
-    // public int level = 1;
-    // public int experienceCap = 100;
-    // public int experienceCapIncrease;
 
     [Header("I-Frames")] 
     public float invincibilityDuration;
@@ -161,9 +156,6 @@ public class PlayerStats : MonoBehaviour
     public Image healthBar;
     public Image expBar;
     public TextMeshProUGUI levelText;
-
-    public GameObject secondWeaponTest;
-    public GameObject firstPassiveItemTest, secondPassiveItemTest;
     
     /// <summary>
     /// 在 Awake 阶段初始化角色数据，设置初始属性并生成初始武器。
@@ -183,27 +175,7 @@ public class PlayerStats : MonoBehaviour
         CurrentMagnet = characterData.magnet;
         
         SpawnWeapon(characterData.startingWeapon);
-        // SpawnWeapon(secondWeaponTest);
-        // SpawnPassiveItem(firstPassiveItemTest);
-        SpawnPassiveItem(secondPassiveItemTest);
     }
-
-    // public void IncreaseExperience(int amount)
-    // {
-    //     experience += amount;
-    //
-    //     LevelUpChecker();
-    // }
-    //
-    // private void LevelUpChecker()
-    // {
-    //     if (experience >= experienceCap)
-    //     {
-    //         level++;
-    //         experience -= experienceCap;
-    //         experienceCap += experienceCapIncrease;
-    //     }
-    // }
 
     /// <summary>
     /// 在 Start 阶段初始化经验上限，根据第一个等级范围设定初始经验值上限。

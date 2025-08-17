@@ -15,4 +15,6 @@ public class PassiveItemScriptableObject : ScriptableObject
     public string description { get; private set; }
     [field:SerializeField]
     public Sprite icon { get; private set; }
+    [field:SerializeField]
+    public PassiveItemScriptableObject basePassiveItemData { get; private set; }
 }
