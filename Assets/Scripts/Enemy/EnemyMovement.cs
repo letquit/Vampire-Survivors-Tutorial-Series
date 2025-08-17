@@ -9,6 +9,9 @@ public class EnemyMovement : MonoBehaviour
     private EnemyStats enemy;
     private Transform player;
 
+    private Vector2 knockbackVelocity;
+    private float knockbackDuration;
+
     /// <summary>
     /// 初始化函数，在对象启用时执行一次
     /// 主要用于获取玩家对象的Transform组件引用
@@ -25,8 +28,24 @@ public class EnemyMovement : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        // 计算敌人向玩家移动的新位置
-        transform.position = Vector2.MoveTowards(transform.position, player.transform.position, enemy.currentMoveSpeed * Time.deltaTime);
+        if (knockbackDuration > 0)
+        {
+            transform.position += (Vector3)knockbackVelocity * Time.deltaTime;
+            knockbackDuration -= Time.deltaTime;
+        }
+        else
+        {
+            // 计算敌人向玩家移动的新位置
+            transform.position = Vector2.MoveTowards(transform.position, player.transform.position, enemy.currentMoveSpeed * Time.deltaTime);
+        }
+    }
+
+    public void Knockback(Vector2 velocity, float duration)
+    {
+        if (knockbackDuration > 0) return;
+        
+        knockbackVelocity = velocity;
+        knockbackDuration = duration;
     }
 }
 

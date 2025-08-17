@@ -39,7 +39,7 @@ public class ProjectileWeaponBehaviour : WeaponBehaviour
     /// <param name="enemy">被击中的敌人对象</param>
     protected override void OnEnemyHit(EnemyStats enemy)
     {
-        enemy.TakeDamage(GetCurrentDamage());
+        enemy.TakeDamage(GetCurrentDamage(), transform.position);
         ReducePierce();
     }
 

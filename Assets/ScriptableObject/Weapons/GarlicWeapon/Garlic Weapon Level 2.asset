@@ -21,6 +21,6 @@ MonoBehaviour:
   <nextLevelPrefab>k__BackingField: {fileID: 2381175056562780021, guid: b3cbb14bb5152f84fb5396cb2ee76928, type: 3}
   <name>k__BackingField: Garlic Level 2
   <description>k__BackingField: Cooldown reduced by 2.5
-  <icon>k__BackingField: {fileID: 4641043289130053377, guid: d8af08889eb7b094294fc10933f5c295, type: 3}
+  <icon>k__BackingField: {fileID: 579569563849759094, guid: 013078397ef695344bfa0b5513fd00b5, type: 3}
   <evolvedUpgradeToRemove>k__BackingField: 0
   <baseWeaponData>k__BackingField: {fileID: 11400000, guid: 5aae20e7326f6304b98930001e49b786, type: 2}

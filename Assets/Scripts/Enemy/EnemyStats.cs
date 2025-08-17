@@ -1,10 +1,12 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 /// <summary>
 /// 敌人属性管理类，用于控制敌人的移动速度、生命值和伤害等属性
 /// </summary>
+[RequireComponent(typeof(SpriteRenderer))]
 public class EnemyStats : MonoBehaviour
 {
     public EnemyScriptableObject enemyData;
@@ -17,9 +19,16 @@ public class EnemyStats : MonoBehaviour
     public float currentDamage;
 
     public float despawnDistance = 20f;
-    
     private Transform player;
     private EnemySpawner enemySpawner;
+
+    [Header("Damage Feedback")]
+    public Color damageColor = new Color(1, 0, 0, 1);
+    public float damageFlashDuration = 0.2f;
+    public float deathFadeTime = 0.6f;
+    private Color originalColor;
+    private SpriteRenderer sr;
+    private EnemyMovement movement;
     
     /// <summary>
     /// 在对象唤醒时初始化敌人的各项属性值
@@ -39,6 +48,11 @@ public class EnemyStats : MonoBehaviour
     {
         player = FindFirstObjectByType<PlayerStats>().transform;
         enemySpawner = FindFirstObjectByType<EnemySpawner>();
+
+        sr = GetComponent<SpriteRenderer>();
+        originalColor = sr.color;
+        
+        movement = GetComponent<EnemyMovement>();
     }
 
     /// <summary>
@@ -52,13 +66,18 @@ public class EnemyStats : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 对敌人造成伤害
-    /// </summary>
-    /// <param name="damage">造成的伤害值</param>
-    public void TakeDamage(float damage)
+    
+    public void TakeDamage(float dmg, Vector2 sourcePosition, float knockbackForce = 5f, float knockbackDuration = 0.2f) 
     {
-        currentHealth -= damage;
+        currentHealth -= dmg;
+        StartCoroutine(DamageFlash());
+
+        if (knockbackForce > 0)
+        {
+            Vector2 dir = (Vector2)transform.position - sourcePosition;
+            movement.Knockback(dir.normalized * knockbackForce, knockbackDuration);
+        }
+        
         // 检查敌人是否死亡
         if (currentHealth <= 0)
         {
@@ -66,11 +85,34 @@ public class EnemyStats : MonoBehaviour
         }
     }
 
+    IEnumerator DamageFlash()
+    {
+        sr.color = damageColor;
+        yield return new WaitForSeconds(damageFlashDuration);
+        sr.color = originalColor;
+    }
+    
     /// <summary>
     /// 销毁敌人游戏对象
     /// </summary>
     private void Kill()
     {
+        StartCoroutine(KillFade());
+    }
+
+    IEnumerator KillFade()
+    {
+        WaitForEndOfFrame w = new WaitForEndOfFrame();
+        float t = 0, origAlpha = sr.color.a;
+
+        while (t < deathFadeTime)
+        {
+            yield return w;
+            t += Time.deltaTime;
+
+            sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, (1 - t / deathFadeTime) * origAlpha);
+        }
+        
         Destroy(gameObject);
     }
 

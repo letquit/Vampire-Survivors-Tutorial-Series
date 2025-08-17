@@ -7,6 +7,6 @@ public class MeleeWeaponBehaviour : WeaponBehaviour
 {
     protected override void OnEnemyHit(EnemyStats enemy)
     {
-        enemy.TakeDamage(GetCurrentDamage());
+        enemy.TakeDamage(GetCurrentDamage(), transform.position);
     }
 }
