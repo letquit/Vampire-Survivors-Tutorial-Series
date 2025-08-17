@@ -66,7 +66,13 @@ public class EnemyStats : MonoBehaviour
         }
     }
 
-    
+    /// <summary>
+    /// 对敌人造成伤害，并触发击退效果和视觉反馈
+    /// </summary>
+    /// <param name="dmg">造成的伤害值</param>
+    /// <param name="sourcePosition">伤害来源的位置</param>
+    /// <param name="knockbackForce">击退力度，默认为5f</param>
+    /// <param name="knockbackDuration">击退持续时间，默认为0.2f</param>
     public void TakeDamage(float dmg, Vector2 sourcePosition, float knockbackForce = 5f, float knockbackDuration = 0.2f) 
     {
         currentHealth -= dmg;
@@ -90,6 +96,10 @@ public class EnemyStats : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 受伤时的闪烁效果协程
+    /// </summary>
+    /// <returns>IEnumerator用于协程执行</returns>
     IEnumerator DamageFlash()
     {
         sr.color = damageColor;
@@ -105,6 +115,10 @@ public class EnemyStats : MonoBehaviour
         StartCoroutine(KillFade());
     }
 
+    /// <summary>
+    /// 敌人死亡时淡出效果的协程
+    /// </summary>
+    /// <returns>IEnumerator用于协程执行</returns>
     IEnumerator KillFade()
     {
         WaitForEndOfFrame w = new WaitForEndOfFrame();

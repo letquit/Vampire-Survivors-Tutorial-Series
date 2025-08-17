@@ -122,6 +122,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 协程函数，生成浮动文字效果并在指定时间后销毁。
+    /// </summary>
+    /// <param name="text">要显示的文本内容</param>
+    /// <param name="target">目标位置变换组件</param>
+    /// <param name="duration">持续时间，默认为1秒</param>
+    /// <param name="speed">上升速度，默认为50单位/秒</param>
+    /// <returns>IEnumerator接口，用于协程控制</returns>
     IEnumerator GenerateFloatingTextCoroutine(string text, Transform target, float duration = 1f, float speed = 50f)
     {
         GameObject textObj = new GameObject("Damage Floating Text");
@@ -156,6 +164,13 @@ public class GameManager : MonoBehaviour
 
     }
     
+    /// <summary>
+    /// 静态方法，用于外部调用生成浮动文字效果。
+    /// </summary>
+    /// <param name="text">要显示的文字内容</param>
+    /// <param name="target">目标位置变换组件</param>
+    /// <param name="duration">持续时间，默认为1秒</param>
+    /// <param name="speed">上升速度，默认为1单位/秒</param>
     public static void GenerateFloatingText(string text, Transform target, float duration = 1f, float speed = 1f)
     {
         if (!Instance.damageTextCanvas) return;
