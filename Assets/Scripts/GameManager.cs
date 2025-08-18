@@ -10,7 +10,7 @@ using UnityEngine.UI;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
+    public static GameManager instance;
     
     /// <summary>
     /// 游戏状态枚举，包含游戏进行中、暂停和游戏结束三种状态。
@@ -70,9 +70,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        if (Instance == null)
+        if (instance == null)
         {
-            Instance = this;
+            instance = this;
         }
         else
         {
@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour
         
         Destroy(textObj, duration);
         
-        textObj.transform.SetParent(Instance.damageTextCanvas.transform);
+        textObj.transform.SetParent(instance.damageTextCanvas.transform);
 
         WaitForEndOfFrame w = new WaitForEndOfFrame();
         float t = 0;
@@ -173,11 +173,11 @@ public class GameManager : MonoBehaviour
     /// <param name="speed">上升速度，默认为1单位/秒</param>
     public static void GenerateFloatingText(string text, Transform target, float duration = 1f, float speed = 1f)
     {
-        if (!Instance.damageTextCanvas) return;
+        if (!instance.damageTextCanvas) return;
         
-        if (!Instance.referenceCamera) Instance.referenceCamera = Camera.main;
+        if (!instance.referenceCamera) instance.referenceCamera = Camera.main;
 
-        Instance.StartCoroutine(Instance.GenerateFloatingTextCoroutine(text, target, duration, speed));
+        instance.StartCoroutine(instance.GenerateFloatingTextCoroutine(text, target, duration, speed));
     }
 
     /// <summary>
@@ -272,10 +272,10 @@ public class GameManager : MonoBehaviour
     /// 将选中的角色信息显示在结果界面上。
     /// </summary>
     /// <param name="choseCharacterData">角色数据对象</param>
-    public void AssignChosenCharacterUI(CharacterScriptableObject choseCharacterData)
+    public void AssignChosenCharacterUI(CharacterData choseCharacterData)
     {
-        chosenCharacterImage.sprite = choseCharacterData.icon;
-        chosenCharacterName.text = choseCharacterData.name;
+        chosenCharacterImage.sprite = choseCharacterData.Icon;
+        chosenCharacterName.text = choseCharacterData.Name;
     }
 
     /// <summary>

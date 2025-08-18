@@ -74,7 +74,8 @@ namespace Terresquall {
         // Private variables.
         internal Vector2 desiredPosition, axis, origin, lastAxis;
         internal Color originalColor; // Stores the original color of the Joystick.
-        [HideInInspector] public int currentPointerId = -2;
+        [HideInInspector] 
+        public int currentPointerId = -2;
 
         internal static readonly Dictionary<int, VirtualJoystick> instances = new Dictionary<int, VirtualJoystick>();
 

@@ -8,7 +8,7 @@ namespace Terresquall {
 
     [CustomEditor(typeof(VirtualJoystick))]
     [CanEditMultipleObjects]
-    public class VirtualJoystickEditor : Editor {
+    public class VirtualJoystickEditor : UnityEditor.Editor {
 
         VirtualJoystick joystick;
         RectTransform rectTransform;

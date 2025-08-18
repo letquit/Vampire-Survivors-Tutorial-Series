@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -7,46 +6,50 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class TreasureChest : MonoBehaviour
 {
-    private InventoryManager inventory;
-
     /// <summary>
-    /// 初始化宝箱，获取游戏中的库存管理器实例
+    /// 当碰撞体进入触发器时调用此方法
     /// </summary>
-    private void Start()
+    /// <param name="col">进入触发器的碰撞体</param>
+    private void OnTriggerEnter2D(Collider2D col)
     {
-        inventory = FindFirstObjectByType<InventoryManager>();
-    }
-    
-    /// <summary>
-    /// 当碰撞体触发时调用，检测是否与玩家发生碰撞
-    /// </summary>
-    /// <param name="collision">触发碰撞的碰撞体对象</param>
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        // 检查碰撞对象是否为玩家
-        if (collision.gameObject.CompareTag("Player"))
+        // 获取碰撞对象的玩家背包组件
+        PlayerInventory p = col.GetComponent<PlayerInventory>();
+        if (p)
         {
-            OpenTreasureChest();
+            // 随机生成布尔值决定是否给予高级奖励
+            bool randomBool = Random.Range(0, 2) == 0;
+
+            // 打开宝箱并销毁宝箱对象
+            OpenTreasureChest(p, randomBool);
             Destroy(gameObject);
         }
     }
 
     /// <summary>
-    /// 打开宝箱，随机选择一个可进化的武器并执行进化
+    /// 打开宝箱，尝试进化玩家武器
     /// </summary>
-    private void OpenTreasureChest()
+    /// <param name="inventory">玩家背包，用于获取可进化的武器</param>
+    /// <param name="isHigherTier">是否为高级奖励，决定进化概率</param>
+    public void OpenTreasureChest(PlayerInventory inventory, bool isHigherTier)
     {
-        // 检查是否有可用的武器进化选项
-        if (inventory.GetPossibleEvolutions().Count <= 0)
+        // 遍历所有武器槽位，检查武器是否可以进化
+        foreach (PlayerInventory.Slot s in inventory.weaponSlots)
         {
-            Debug.LogWarning("No Available Evolutions");
-            return;
+            Weapon w = s.item as Weapon;
+            if (w.data.evolutionData == null) continue; // 如果武器无法进化则跳过
+
+            // 遍历该武器的所有可能进化路径
+            foreach (ItemData.Evolution e in w.data.evolutionData)
+            {
+                // 只尝试通过宝箱条件进化的武器
+                if (e.condition == ItemData.Evolution.Condition.treasureChest)
+                {
+                    // 尝试进化武器，使用0作为基础概率参数
+                    bool attempt = w.AttemptEvolution(e, 0);
+                    if (attempt) return; // 如果进化成功则停止处理
+                }
+            }
         }
-        
-        // 从可进化列表中随机选择一个武器进化蓝图
-        WeaponEvolutionBlueprint toEvolve =
-            inventory.GetPossibleEvolutions()[Random.Range(0, inventory.GetPossibleEvolutions().Count)];
-        inventory.EvolveWeapon(toEvolve);
     }
 }
 

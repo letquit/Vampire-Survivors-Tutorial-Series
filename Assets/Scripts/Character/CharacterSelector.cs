@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// 角色选择器类，用于管理游戏中角色的选择和数据存储
@@ -7,8 +8,8 @@ using UnityEngine;
 /// </summary>
 public class CharacterSelector : MonoBehaviour
 {
-    public static CharacterSelector Instance;
-    public CharacterScriptableObject characterData;
+    public static CharacterSelector instance;
+    public CharacterData characterData;
 
     /// <summary>
     /// 在对象唤醒时执行单例模式初始化
@@ -17,9 +18,9 @@ public class CharacterSelector : MonoBehaviour
     private void Awake()
     {
         // 检查是否已存在实例
-        if (Instance == null)
+        if (instance == null)
         {
-            Instance = this;
+            instance = this;
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -34,16 +35,27 @@ public class CharacterSelector : MonoBehaviour
     /// 获取当前选择的角色数据
     /// </summary>
     /// <returns>返回当前选择的CharacterScriptableObject角色数据对象</returns>
-    public static CharacterScriptableObject GetData()
+    public static CharacterData GetData()
     {
-        return Instance.characterData;
+        if (instance && instance.characterData)
+            return instance.characterData;
+        else
+        {
+            // 如果没有分配角色数据，则随机选择一个
+            CharacterData[] characters = Resources.FindObjectsOfTypeAll<CharacterData>();
+            if (characters.Length > 0)
+            {
+                return characters[Random.Range(0, characters.Length)];
+            }
+        }
+        return null;
     }
 
     /// <summary>
     /// 选择并设置角色数据
     /// </summary>
     /// <param name="character">要选择的角色数据对象</param>
-    public void SelectCharacter(CharacterScriptableObject character)
+    public void SelectCharacter(CharacterData character)
     {
         characterData = character;
     }
@@ -53,8 +65,7 @@ public class CharacterSelector : MonoBehaviour
     /// </summary>
     public void DestroySingleton()
     {
-        Instance = null;
+        instance = null;
         Destroy(gameObject);
     }
 }
-

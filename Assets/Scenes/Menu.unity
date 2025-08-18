@@ -296,8 +296,8 @@ MonoBehaviour:
         m_MethodName: SelectCharacter
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 923987120f5e04b4a85af5cce07a7ca3, type: 2}
-          m_ObjectArgumentAssemblyTypeName: CharacterScriptableObject, Assembly-CSharp
+          m_ObjectArgument: {fileID: 11400000, guid: ab287e0b37af48c4ba222535ffd8c9da, type: 2}
+          m_ObjectArgumentAssemblyTypeName: CharacterData, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -441,8 +441,8 @@ MonoBehaviour:
         m_MethodName: SelectCharacter
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 8996519ca3d723b4e900813240ab4b22, type: 2}
-          m_ObjectArgumentAssemblyTypeName: CharacterScriptableObject, Assembly-CSharp
+          m_ObjectArgument: {fileID: 11400000, guid: 3e50e41fbb4188d45abdb23b6da32d04, type: 2}
+          m_ObjectArgumentAssemblyTypeName: CharacterData, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 

@@ -10,126 +10,195 @@ using UnityEngine.UI;
 /// </summary>
 public class PlayerStats : MonoBehaviour
 {
-    private CharacterScriptableObject characterData;
+    private CharacterData characterData;
+    public CharacterData.Stats baseStats;
+    [SerializeField] 
+    private CharacterData.Stats actualStats;
 
-    float currentHealth;
-    float currentRecovery;
-    float currentMoveSpeed;
-    float currentMight;
-    float currentProjectileSpeed;
-    float currentMagnet;
+    private float health;
 
-    #region Current Stats Properties
+    #region 当前属性访问器
     /// <summary>
     /// 获取或设置当前生命值，并更新UI显示。
     /// </summary>
     public float CurrentHealth
     {
-        get { return currentHealth; }
+        get { return health; }
         set
         {
-            if (currentHealth != value)
+            if (health != value)
             {
-                currentHealth = value;
-                if (GameManager.Instance != null)
+                health = value;
+                if (GameManager.instance != null)
                 {
-                    GameManager.Instance.currentHealthDisplay.text = "Health: " + currentHealth;
+                    GameManager.instance.currentHealthDisplay.text = string.Format(
+                        "Health: {0} / {1}",
+                        health, actualStats.maxHealth
+                    );
                 }
-                UpdateHealthBar();
+                //TODO:
+                // UpdateHealthBar();
             }
         }
     }
 
     /// <summary>
-    /// 获取或设置当前恢复速度，并更新UI显示。
+    /// 获取或设置最大生命值，并更新UI显示。
+    /// </summary>
+    public float MaxHealth
+    {
+        get { return actualStats.maxHealth; }
+        set
+        {
+            if (actualStats.maxHealth != value)
+            {
+                actualStats.maxHealth = value;
+                if (GameManager.instance != null)
+                {
+                    GameManager.instance.currentHealthDisplay.text = string.Format(
+                        "Health: {0} / {1}",
+                        health, actualStats.maxHealth
+                    );
+                }
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 获取或设置当前恢复速度。
     /// </summary>
     public float CurrentRecovery
     {
-        get { return currentRecovery; }
+        get { return Recovery; }
+        set { Recovery = value; }
+    }
+
+    /// <summary>
+    /// 获取或设置恢复速度，并更新UI显示。
+    /// </summary>
+    public float Recovery
+    {
+        get { return actualStats.recovery; }
         set
         {
-            if (currentRecovery != value)
+            if (actualStats.recovery != value)
             {
-                currentRecovery = value;
-                if (GameManager.Instance != null)
+                actualStats.recovery = value;
+                if (GameManager.instance != null)
                 {
-                    GameManager.Instance.currentRecoveryDisplay.text = "Recovery: " + currentRecovery;
+                    GameManager.instance.currentRecoveryDisplay.text = "Recovery: " + actualStats.recovery;
                 }
             }
         }
     }
-    
+
     /// <summary>
-    /// 获取或设置当前移动速度，并更新UI显示。
+    /// 获取或设置当前移动速度。
     /// </summary>
     public float CurrentMoveSpeed
     {
-        get { return currentMoveSpeed; }
+        get { return MoveSpeed; }
+        set { MoveSpeed = value; }
+    }
+    
+    /// <summary>
+    /// 获取或设置移动速度，并更新UI显示。
+    /// </summary>
+    public float MoveSpeed
+    {
+        get { return actualStats.moveSpeed; }
         set
         {
-            if (currentMoveSpeed != value)
+            if (actualStats.moveSpeed != value)
             {
-                currentMoveSpeed = value;
-                if (GameManager.Instance != null)
+                actualStats.moveSpeed = value;
+                if (GameManager.instance != null)
                 {
-                    GameManager.Instance.currentMoveSpeedDisplay.text = "Move Speed: " + currentMoveSpeed;
+                    GameManager.instance.currentMoveSpeedDisplay.text = "Move Speed: " + actualStats.moveSpeed;
                 }
             }
         }
     }
-    
+
     /// <summary>
-    /// 获取或设置当前力量值，并更新UI显示。
+    /// 获取或设置当前力量值。
     /// </summary>
     public float CurrentMight
     {
-        get { return currentMight; }
+        get { return Might; }
+        set { Might = value; }
+    }
+
+    /// <summary>
+    /// 获取或设置力量值，并更新UI显示。
+    /// </summary>
+    public float Might
+    {
+        get { return actualStats.might; }
         set
         {
-            if (currentMight != value)
+            if (actualStats.might != value)
             {
-                currentMight = value;
-                if (GameManager.Instance != null)
+                actualStats.might = value;
+                if (GameManager.instance != null)
                 {
-                    GameManager.Instance.currentMightDisplay.text = "Might: " + currentMight;
+                    GameManager.instance.currentMightDisplay.text = "Might: " + actualStats.might;
                 }
             }
         }
     }
     
     /// <summary>
-    /// 获取或设置当前投射物速度，并更新UI显示。
+    /// 获取或设置当前弹道速度。
     /// </summary>
     public float CurrentProjectileSpeed
     {
-        get { return currentProjectileSpeed; }
+        get { return Speed; }
+        set { Speed = value; }
+    }
+
+    /// <summary>
+    /// 获取或设置弹道速度，并更新UI显示。
+    /// </summary>
+    public float Speed
+    {
+        get { return actualStats.speed; }
         set
         {
-            if (currentProjectileSpeed != value)
+            if (actualStats.speed != value)
             {
-                currentProjectileSpeed = value;
-                if (GameManager.Instance != null)
+                actualStats.speed = value;
+                if (GameManager.instance != null)
                 {
-                    GameManager.Instance.currentProjectileSpeedDisplay.text = "Projectile Speed: " + currentProjectileSpeed;
+                    GameManager.instance.currentProjectileSpeedDisplay.text = "Projectile Speed: " + actualStats.speed;
                 }
             }
         }
     }
-    
+
     /// <summary>
-    /// 获取或设置当前磁力值，并更新UI显示。
+    /// 获取或设置当前磁力值。
     /// </summary>
     public float CurrentMagnet
     {
-        get { return currentMagnet; }
+        get { return Magnet; }
+        set { Magnet = value; }
+    }
+    
+    /// <summary>
+    /// 获取或设置磁力值，并更新UI显示。
+    /// </summary>
+    public float Magnet
+    {
+        get { return actualStats.magnet; }
         set
         {
-            if (currentMagnet != value)
+            if (actualStats.magnet != value)
             {
-                currentMagnet = value;
-                if (GameManager.Instance != null)
+                actualStats.magnet = value;
+                if (GameManager.instance != null)
                 {
-                    GameManager.Instance.currentMagnetDisplay.text = "Magnet: " + currentMagnet;
+                    GameManager.instance.currentMagnetDisplay.text = "Magnet: " + actualStats.magnet;
                 }
             }
         }
@@ -138,19 +207,19 @@ public class PlayerStats : MonoBehaviour
 
     public ParticleSystem damageEffect;
     
-    [Header("Experience/Level")]
+    [Header("经验/等级")]
     public int experience = 0;
     public int level = 1;
     public int experienceCap;
 
-    [Header("I-Frames")] 
+    [Header("无敌帧")] 
     public float invincibilityDuration;
     private float invincibilityTimer;
     private bool isInvincible;
 
     public List<LevelRange> levelRanges;
 
-    private InventoryManager inventory;
+    private PlayerInventory inventory;
     public int weaponIndex;
     public int passiveItemIndex;
 
@@ -160,40 +229,40 @@ public class PlayerStats : MonoBehaviour
     public TextMeshProUGUI levelText;
     
     /// <summary>
-    /// 在 Awake 阶段初始化角色数据，设置初始属性并生成初始武器。
+    /// 初始化角色数据、基础属性和初始生命值。
     /// </summary>
-    private void Awake()
+    void Awake()
     {
         characterData = CharacterSelector.GetData();
-        CharacterSelector.Instance.DestroySingleton();
-        
-        inventory = GetComponent<InventoryManager>();
-        
-        CurrentHealth = characterData.maxHealth;
-        CurrentRecovery = characterData.recovery;
-        CurrentMoveSpeed = characterData.moveSpeed;
-        CurrentMight = characterData.might;
-        CurrentProjectileSpeed = characterData.projectileSpeed;
-        CurrentMagnet = characterData.magnet;
-        
-        SpawnWeapon(characterData.startingWeapon);
+        CharacterSelector.instance.DestroySingleton();
+
+        inventory = GetComponent<PlayerInventory>();
+
+        // 分配变量
+        baseStats = actualStats = characterData.stats;
+        health = actualStats.maxHealth;
     }
 
     /// <summary>
-    /// 在 Start 阶段初始化经验上限，根据第一个等级范围设定初始经验值上限。
+    /// 启动时添加初始武器、初始化经验上限并更新UI显示。
     /// </summary>
-    private void Start()
+    void Start()
     {
+        // 生成初始武器
+        inventory.Add(characterData.StartingWeapon);
+
+        // 初始化经验上限为第一个等级范围的经验增长量
         experienceCap = levelRanges[0].experienceCapIncrease;
 
-        GameManager.Instance.currentHealthDisplay.text = "Health: " + currentHealth;
-        GameManager.Instance.currentRecoveryDisplay.text = "Recovery: " + currentRecovery;
-        GameManager.Instance.currentMoveSpeedDisplay.text = "Move Speed: " + currentMoveSpeed;
-        GameManager.Instance.currentMightDisplay.text = "Might: " + currentMight;
-        GameManager.Instance.currentProjectileSpeedDisplay.text = "Projectile Speed: " + currentProjectileSpeed;
-        GameManager.Instance.currentMagnetDisplay.text = "Magnet: " + currentMagnet;
-        
-        GameManager.Instance.AssignChosenCharacterUI(characterData);
+        // 设置当前属性显示
+        GameManager.instance.currentHealthDisplay.text = "Health: " + CurrentHealth;
+        GameManager.instance.currentRecoveryDisplay.text = "Recovery: " + CurrentRecovery;
+        GameManager.instance.currentMoveSpeedDisplay.text = "Move Speed: " + CurrentMoveSpeed;
+        GameManager.instance.currentMightDisplay.text = "Might: " + CurrentMight;
+        GameManager.instance.currentProjectileSpeedDisplay.text = "Projectile Speed: " + CurrentProjectileSpeed;
+        GameManager.instance.currentMagnetDisplay.text = "Magnet: " + CurrentMagnet;
+
+        GameManager.instance.AssignChosenCharacterUI(characterData);
 
         UpdateHealthBar();
         UpdateExpBar();
@@ -216,6 +285,22 @@ public class PlayerStats : MonoBehaviour
         }
         
         Recover();
+    }
+
+    /// <summary>
+    /// 根据被动道具重新计算实际属性值。
+    /// </summary>
+    public void RecalculateStats()
+    {
+        actualStats = baseStats;
+        foreach (PlayerInventory.Slot s in inventory.passiveSlots)
+        {
+            Passive p = s.item as Passive;
+            if (p)
+            {
+                actualStats += p.GetBoosts();
+            }
+        }
     }
 
     /// <summary>
@@ -254,7 +339,7 @@ public class PlayerStats : MonoBehaviour
             
             UpdateLevelText();
             
-            GameManager.Instance.StartLevelUp();
+            GameManager.instance.StartLevelUp();
         }
     }
 
@@ -276,46 +361,49 @@ public class PlayerStats : MonoBehaviour
     
 
     /// <summary>
-    /// 对玩家造成伤害，若处于无敌状态则忽略伤害。
-    /// 若生命值降至0或以下，则调用死亡方法。
+    /// 处理玩家受到伤害的逻辑，包括减血、播放特效、进入无敌状态和死亡判断。
     /// </summary>
-    /// <param name="dmg">造成的伤害值。</param>
+    /// <param name="dmg">受到的伤害值。</param>
     public void TakeDamage(float dmg)
     {
+        // 如果玩家当前不是无敌状态，则减少生命值并启动无敌
         if (!isInvincible)
         {
             CurrentHealth -= dmg;
 
-            if (damageEffect) Instantiate(damageEffect, transform.position, Quaternion.identity);
-            
+            // 如果有伤害特效，则播放它
+            if (damageEffect) Destroy(Instantiate(damageEffect, transform.position, Quaternion.identity), 5f);
+
             invincibilityTimer = invincibilityDuration;
             isInvincible = true;
-        
+
             if (CurrentHealth <= 0)
             {
                 Kill();
             }
+
+            UpdateHealthBar();
         }
     }
 
     /// <summary>
     /// 更新生命条的填充比例。
     /// </summary>
-    private void UpdateHealthBar()
+    void UpdateHealthBar()
     {
-        healthBar.fillAmount = currentHealth / characterData.maxHealth;
+        // 更新生命条
+        healthBar.fillAmount = CurrentHealth / actualStats.maxHealth;
     }
 
     /// <summary>
-    /// 玩家死亡时调用的方法，输出日志信息。
+    /// 处理玩家死亡逻辑，调用游戏结束方法。
     /// </summary>
     public void Kill()
     {
-        if (!GameManager.Instance.isGameOver)
+        if (!GameManager.instance.isGameOver)
         {
-            GameManager.Instance.AssignLevelReachedUI(level);
-            GameManager.Instance.AssignChosenWeaponsAndPassiveItemsUI(inventory.weaponUISlots, inventory.passiveItemUISlots);
-            GameManager.Instance.GameOver();
+            GameManager.instance.AssignLevelReachedUI(level);
+            GameManager.instance.GameOver();
         }
     }
 
@@ -325,12 +413,13 @@ public class PlayerStats : MonoBehaviour
     /// <param name="amount">要恢复的生命值数量。</param>
     public void RestoreHealth(int amount)
     {
-        if (CurrentHealth < characterData.maxHealth)
+        if (CurrentHealth < actualStats.maxHealth)
         {
             CurrentHealth += amount;
-            if (CurrentHealth > characterData.maxHealth)
+            
+            if (CurrentHealth > actualStats.maxHealth)
             {
-                CurrentHealth = characterData.maxHealth;
+                CurrentHealth = actualStats.maxHealth;
             }
         }
     }
@@ -340,13 +429,14 @@ public class PlayerStats : MonoBehaviour
     /// </summary>
     private void Recover()
     {
-        if (CurrentHealth < characterData.maxHealth)
+        if (CurrentHealth < actualStats.maxHealth)
         {
-            CurrentHealth += currentRecovery * Time.deltaTime;
+            CurrentHealth += CurrentRecovery * Time.deltaTime;
+            CurrentHealth += Recovery * Time.deltaTime;
             
-            if (CurrentHealth > characterData.maxHealth)
+            if (CurrentHealth > actualStats.maxHealth)
             {
-                CurrentHealth = characterData.maxHealth;
+                CurrentHealth = actualStats.maxHealth;
             }
         }
     }
@@ -355,6 +445,7 @@ public class PlayerStats : MonoBehaviour
     /// 在玩家位置生成一个武器实例，并将其添加到已生成武器列表中。
     /// </summary>
     /// <param name="weapon">要生成的武器预制体。</param>
+    [System.Obsolete("旧函数，保留以兼容InventoryManager。将很快移除。")]
     public void SpawnWeapon(GameObject weapon)
     {
         if (weaponIndex >= inventory.weaponSlots.Count - 1)
@@ -365,7 +456,7 @@ public class PlayerStats : MonoBehaviour
         
         GameObject spawnedWeapon = Instantiate(weapon, transform.position, Quaternion.identity);
         spawnedWeapon.transform.SetParent(transform);
-        inventory.AddWeapon(weaponIndex, spawnedWeapon.GetComponent<WeaponController>());
+        // inventory.AddWeapon(weaponIndex, spawnedWeapon.GetComponent<WeaponController>());
 
         weaponIndex++;
     }
@@ -374,9 +465,11 @@ public class PlayerStats : MonoBehaviour
     /// 在玩家位置生成一个被动道具实例，并将其添加到已生成被动道具列表中。
     /// </summary>
     /// <param name="passiveItem">要生成的被动道具预制体。</param>
+    [System.Obsolete("现在不需要直接生成被动道具。")]
     public void SpawnPassiveItem(GameObject passiveItem)
     {
-        if (passiveItemIndex >= inventory.passiveItemSlots.Count - 1)
+        // 检查槽位是否已满，如果满了则返回
+        if (passiveItemIndex >= inventory.passiveSlots.Count - 1) // 必须减1因为列表从0开始
         {
             Debug.LogError("InventorySlots already full");
             return;
@@ -384,7 +477,7 @@ public class PlayerStats : MonoBehaviour
         
         GameObject spawnedPassiveItem = Instantiate(passiveItem, transform.position, Quaternion.identity);
         spawnedPassiveItem.transform.SetParent(transform);
-        inventory.AddPassiveItem(passiveItemIndex, spawnedPassiveItem.GetComponent<PassiveItem>());
+        // inventory.AddPassiveItem(passiveItemIndex, spawnedPassiveItem.GetComponent<PassiveItem>());
 
         passiveItemIndex++;
     }

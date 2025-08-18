@@ -68,7 +68,7 @@ public class PlayerMovement : MonoBehaviour
     private void InputManagement()
     {
         /// 如果游戏已结束，则不处理输入
-        if (GameManager.Instance.isGameOver)
+        if (GameManager.instance.isGameOver)
         {
             return;
         }
@@ -115,7 +115,7 @@ public class PlayerMovement : MonoBehaviour
     private void Move()
     {
         /// 如果游戏已结束，则停止移动
-        if (GameManager.Instance.isGameOver)
+        if (GameManager.instance.isGameOver)
         {
             return;
         }
