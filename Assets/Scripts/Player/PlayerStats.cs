@@ -36,8 +36,6 @@ public class PlayerStats : MonoBehaviour
                         health, actualStats.maxHealth
                     );
                 }
-                //TODO:
-                // UpdateHealthBar();
             }
         }
     }
@@ -219,6 +217,7 @@ public class PlayerStats : MonoBehaviour
 
     public List<LevelRange> levelRanges;
 
+    private PlayerCollector collector;
     private PlayerInventory inventory;
     public int weaponIndex;
     public int passiveItemIndex;
@@ -241,9 +240,11 @@ public class PlayerStats : MonoBehaviour
             CharacterSelector.instance.DestroySingleton();
 
         inventory = GetComponent<PlayerInventory>();
+        collector = GetComponentInChildren<PlayerCollector>();
 
         // 分配变量
         baseStats = actualStats = characterData.stats;
+        collector.SetRadius(actualStats.magnet);
         health = actualStats.maxHealth;
         playerAnimator = GetComponent<PlayerAnimator>();
         if (characterData.controller)
@@ -308,6 +309,7 @@ public class PlayerStats : MonoBehaviour
                 actualStats += p.GetBoosts();
             }
         }
+        collector.SetRadius(actualStats.magnet);
     }
 
     /// <summary>
@@ -429,6 +431,8 @@ public class PlayerStats : MonoBehaviour
             {
                 CurrentHealth = actualStats.maxHealth;
             }
+            
+            UpdateHealthBar();
         }
     }
 
@@ -446,6 +450,8 @@ public class PlayerStats : MonoBehaviour
             {
                 CurrentHealth = actualStats.maxHealth;
             }
+            
+            UpdateHealthBar();
         }
     }
     
