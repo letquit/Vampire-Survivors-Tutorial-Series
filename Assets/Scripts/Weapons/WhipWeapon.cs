@@ -1,10 +1,18 @@
 using UnityEngine;
 
+/// <summary>
+/// 鞭子武器类，继承自ProjectileWeapon。用于处理鞭子类型的攻击逻辑。
+/// </summary>
 public class WhipWeapon : ProjectileWeapon
 {
     int currentSpawnCount; // 鞭子在本次迭代中攻击了多少次。
     float currentSpawnYOffset; // 如果有超过2个鞭子，我们将开始向上偏移。
 
+    /// <summary>
+    /// 执行一次或多次鞭子攻击。
+    /// </summary>
+    /// <param name="attackCount">需要连续执行的攻击次数，默认为1。</param>
+    /// <returns>如果成功发起攻击则返回true，否则返回false。</returns>
     protected override bool Attack(int attackCount = 1)
     {
         // 如果没有分配弹道预制体，请留下警告信息。
@@ -26,24 +34,25 @@ public class WhipWeapon : ProjectileWeapon
             currentSpawnYOffset = 0f;
         }
         
-        // 否则，计算生成的弹道的角度和偏移量。
-        // 然后，如果<currentSpawnCount>是偶数（即超过1个弹道），
-        // 我们将翻转生成的方向。
+        // 计算弹道生成方向和偏移位置：
+        // - 根据角色最后移动方向决定基本方向；
+        // - 若当前已生成奇数个弹道，则翻转方向；
+        // - Y轴偏移根据当前生成计数进行调整。
         float spawnDir = Mathf.Sign(movement.lastMovedVector.x) * (currentSpawnCount % 2 != 0 ? -1 : 1);
         Vector2 spawnOffset = new Vector2(
             spawnDir * Random.Range(currentStats.spawnVariance.xMin, currentStats.spawnVariance.xMax),
             currentSpawnYOffset
         );
 
-        // 并生成一个弹道的副本。
+        // 实例化弹道预制体并设置初始属性。
         Projectile prefab = Instantiate(
             currentStats.projectilePrefab,
             owner.transform.position + (Vector3)spawnOffset,
             Quaternion.identity
         );
-        prefab.owner = owner; // 将我们自己设置为所有者。
-        
-        // 翻转弹道的精灵。
+        prefab.owner = owner; // 设置弹道的所有者。
+
+        // 如果是向左发射，翻转弹道精灵的朝向。
         if (spawnDir < 0)
         {
             prefab.transform.localScale = new Vector3(
@@ -51,20 +60,19 @@ public class WhipWeapon : ProjectileWeapon
                 prefab.transform.localScale.y,
                 prefab.transform.localScale.z
             );
-            // Debug.Log(spawnDir + " | " + prefab.transform.localScale);
         }
 
-        // 分配属性。
+        // 设置弹道关联的武器引用。
         prefab.weapon = this;
         currentCooldown = data.baseStats.cooldown;
         attackCount--;
 
-        // 确定下一个弹道应该生成的位置。
+        // 更新下次弹道生成的位置参数。
         currentSpawnCount++;
         if (currentSpawnCount > 1 && currentSpawnCount % 2 == 0)
             currentSpawnYOffset += 1;
         
-        // 我们是否执行另一次攻击？
+        // 判断是否需要继续执行剩余的攻击次数。
         if (attackCount > 0)
         {
             currentAttackCount = attackCount;

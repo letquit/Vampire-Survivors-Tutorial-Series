@@ -1,11 +1,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// 目前伤害不会随着力量属性而增加。
+/// <summary>
+/// 闪电环武器类，继承自ProjectileWeapon。
+/// 该武器会随机选择屏幕上的敌人进行攻击，并在一定范围内造成伤害。
+/// 目前伤害不会随着力量属性而增加。
+/// </summary>
 public class LightningRingWeapon : ProjectileWeapon
 {
     List<EnemyStats> allSelectedEnemies = new List<EnemyStats>();
 
+    /// <summary>
+    /// 执行一次攻击操作。
+    /// </summary>
+    /// <param name="attackCount">本次攻击的次数，默认为1。</param>
+    /// <returns>如果成功执行攻击则返回true，否则返回false。</returns>
     protected override bool Attack(int attackCount = 1)
     {
         // 如果没有分配命中效果预制体，请留下警告信息。
@@ -47,7 +56,10 @@ public class LightningRingWeapon : ProjectileWeapon
         return true;
     }
     
-    // 随机选择屏幕上的一个敌人。
+    /// <summary>
+    /// 随机从当前存活且可见的敌人列表中选取一个敌人作为攻击目标。
+    /// </summary>
+    /// <returns>选中的敌人组件，如果没有可选敌人则返回null。</returns>
     EnemyStats PickEnemy()
     {
         EnemyStats target = null;
@@ -78,7 +90,12 @@ public class LightningRingWeapon : ProjectileWeapon
         return target;
     }
 
-    // 在区域内造成伤害。
+    /// <summary>
+    /// 对指定位置周围圆形区域内的所有敌人造成伤害。
+    /// </summary>
+    /// <param name="position">伤害区域的中心点坐标。</param>
+    /// <param name="radius">伤害区域的半径。</param>
+    /// <param name="damage">造成的伤害值。</param>
     void DamageArea(Vector2 position, float radius, float damage)
     {
         Collider2D[] targets = Physics2D.OverlapCircleAll(position, radius);

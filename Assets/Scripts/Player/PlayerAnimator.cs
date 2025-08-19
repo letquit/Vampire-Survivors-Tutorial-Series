@@ -55,6 +55,10 @@ public class PlayerAnimator : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// 设置动画控制器
+    /// </summary>
+    /// <param name="c">要设置的运行时动画控制器</param>
     public void SetAnimationController(RuntimeAnimatorController c)
     {
         if (!am) am = GetComponent<Animator>();
