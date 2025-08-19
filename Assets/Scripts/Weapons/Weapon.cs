@@ -20,9 +20,9 @@ public class Weapon : Item
         [Header("视觉效果")]
         public Projectile projectilePrefab; // 若设置，则每次武器冷却完成后生成一个投射物
         public Aura auraPrefab;             // 若设置，则在武器装备时生成一个光环
-        public ParticleSystem hitEffect;    // 命中时播放的粒子效果
+        public ParticleSystem hitEffect, procEffect;    // 命中时播放的粒子效果
         public Rect spawnVariance;          // 生成位置的随机偏移范围
-
+        
         [Header("数值")]
         public float lifespan;         // 生命时间，若为0则永久存在
         public float damage;           // 基础伤害
@@ -51,6 +51,7 @@ public class Weapon : Item
             result.projectilePrefab = s2.projectilePrefab ?? s1.projectilePrefab;
             result.auraPrefab = s2.auraPrefab ?? s1.auraPrefab;
             result.hitEffect = s2.hitEffect == null ? s1.hitEffect : s2.hitEffect;
+            result.procEffect = s2.procEffect == null ? s1.procEffect : s2.procEffect;
             result.spawnVariance = s2.spawnVariance;
             result.lifespan = s1.lifespan + s2.lifespan;
             result.damage = s1.damage + s2.damage;

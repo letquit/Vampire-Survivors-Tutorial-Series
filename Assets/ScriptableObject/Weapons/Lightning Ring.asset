@@ -22,6 +22,7 @@ MonoBehaviour:
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 6540265146965529767, guid: 32731ac92cbeea54fbf140d191026390, type: 3}
+    procEffect: {fileID: 4098831412811992257, guid: 0d1d3395a586e6141a2f5f621cd29c65, type: 3}
     spawnVariance:
       serializedVersion: 2
       x: 0
@@ -45,6 +46,7 @@ MonoBehaviour:
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2
       x: 0

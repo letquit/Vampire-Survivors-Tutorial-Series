@@ -51,6 +51,8 @@ public class AuraWeapon : Weapon
         // 调用基类的升级方法，如果失败则直接返回false
         if (!base.DoLevelUp()) return false;
         
+        OnEquip();
+        
         // 如果该武器附加了光环，则更新光环效果
         if (currentAura)
         {

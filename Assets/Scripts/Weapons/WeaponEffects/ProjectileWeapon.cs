@@ -56,6 +56,11 @@ public class ProjectileWeapon : Weapon
         // 计算投射物生成时的角度
         float spawnAngle = GetSpawnAngle();
 
+        if (currentStats.procEffect)
+        {
+            Destroy(Instantiate(currentStats.procEffect, owner.transform), 5f);
+        }
+        
         // 实例化投射物预制体，并设置位置和旋转
         Projectile prefab = Instantiate(
             currentStats.projectilePrefab,

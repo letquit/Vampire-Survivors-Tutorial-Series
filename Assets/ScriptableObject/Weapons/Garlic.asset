@@ -31,7 +31,8 @@ MonoBehaviour:
     description: Damages nearby enemies. Reduces resisatance to knockback
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 8784741335017234051, guid: f943507ed123f2d4fb14b72c7deb8c6e, type: 3}
-    hitEffect: {fileID: 0}
+    hitEffect: {fileID: 4523857613544106780, guid: c261e77eaea6c9f43977f2abf9b9823f, type: 3}
+    procEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2
       x: 0
@@ -41,7 +42,7 @@ MonoBehaviour:
     lifespan: 0
     damage: 5
     damageVariance: 1
-    area: 3
+    area: 1
     speed: 0
     cooldown: 1.3
     projectileInterval: 0
@@ -55,6 +56,7 @@ MonoBehaviour:
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2
       x: 0
@@ -69,7 +71,7 @@ MonoBehaviour:
     cooldown: 0
     projectileInterval: 0
     knockback: 0
-    number: 1
+    number: 0
     piercing: 0
     maxInstances: 0
   - name: Level 3
@@ -77,6 +79,7 @@ MonoBehaviour:
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2
       x: 0
@@ -89,38 +92,17 @@ MonoBehaviour:
     area: 0
     speed: 0
     cooldown: 0
-    projectileInterval: 0
+    projectileInterval: 1
     knockback: 0
-    number: 1
+    number: 0
     piercing: 0
     maxInstances: 0
   - name: Level 4
-    description: Fires 1 more projectile.
+    description: Base Area Up by 40%. Base Damage up by 5.
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 0}
-    spawnVariance:
-      serializedVersion: 2
-      x: 0
-      y: 0
-      width: 0
-      height: 0
-    lifespan: 0
-    damage: 0
-    damageVariance: 0
-    area: 0
-    speed: 0
-    cooldown: 0
-    projectileInterval: 0
-    knockback: 0
-    number: 1
-    piercing: 0
-    maxInstances: 0
-  - name: Level 5
-    description: Passes through 1 more enemy.
-    projectilePrefab: {fileID: 0}
-    auraPrefab: {fileID: 0}
-    hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2
       x: 0
@@ -130,13 +112,105 @@ MonoBehaviour:
     lifespan: 0
     damage: 5
     damageVariance: 0
-    area: 0
+    area: 0.4
     speed: 0
     cooldown: 0
     projectileInterval: 0
     knockback: 0
     number: 0
-    piercing: 1
+    piercing: 0
+    maxInstances: 0
+  - name: Level 5
+    description: Base Area Up by 40%. Base Damage up by 5.
+    projectilePrefab: {fileID: 0}
+    auraPrefab: {fileID: 0}
+    hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
+    spawnVariance:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    lifespan: 0
+    damage: 5
+    damageVariance: 0
+    area: 0.4
+    speed: 0
+    cooldown: 0
+    projectileInterval: 0
+    knockback: 0
+    number: 0
+    piercing: 0
+    maxInstances: 0
+  - name: Level 6
+    description: Base Area Up by 40%. Base Damage up by 5.
+    projectilePrefab: {fileID: 0}
+    auraPrefab: {fileID: 0}
+    hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
+    spawnVariance:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    lifespan: 0
+    damage: 5
+    damageVariance: 0
+    area: 0.4
+    speed: 0
+    cooldown: 0
+    projectileInterval: 0
+    knockback: 0
+    number: 0
+    piercing: 0
+    maxInstances: 0
+  - name: Level 7
+    description: Base Area Up by 40%. Base Damage up by 5.
+    projectilePrefab: {fileID: 0}
+    auraPrefab: {fileID: 0}
+    hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
+    spawnVariance:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    lifespan: 0
+    damage: 5
+    damageVariance: 0
+    area: 0.4
+    speed: 0
+    cooldown: 0
+    projectileInterval: 0
+    knockback: 0
+    number: 0
+    piercing: 0
+    maxInstances: 0
+  - name: Level 8
+    description: Base Area Up by 40%. Base Damage up by 5.
+    projectilePrefab: {fileID: 0}
+    auraPrefab: {fileID: 0}
+    hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
+    spawnVariance:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    lifespan: 0
+    damage: 5
+    damageVariance: 0
+    area: 0.4
+    speed: 0
+    cooldown: 0
+    projectileInterval: 0
+    knockback: 0
+    number: 0
+    piercing: 0
     maxInstances: 0
   randomGrowth:
   - name: 
@@ -144,6 +218,7 @@ MonoBehaviour:
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2
       x: 0
@@ -166,6 +241,7 @@ MonoBehaviour:
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2
       x: 0

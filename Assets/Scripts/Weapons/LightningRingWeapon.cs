@@ -45,6 +45,11 @@ public class LightningRingWeapon : ProjectileWeapon
 
             Instantiate(currentStats.hitEffect, target.transform.position, Quaternion.identity);
         }
+        
+        if (currentStats.procEffect)
+        {
+            Destroy(Instantiate(currentStats.procEffect, owner.transform), 5f);
+        }
 
         // 如果我们有超过1次的攻击次数。
         if (attackCount > 0)

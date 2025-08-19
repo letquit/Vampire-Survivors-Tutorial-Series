@@ -31,7 +31,8 @@ MonoBehaviour:
     description: Fires quickly in the faced direction.
     projectilePrefab: {fileID: 7649448398880233765, guid: 983cd2d5476fd0e43b296ed678eb1816, type: 3}
     auraPrefab: {fileID: 0}
-    hitEffect: {fileID: 0}
+    hitEffect: {fileID: 4523857613544106780, guid: c261e77eaea6c9f43977f2abf9b9823f, type: 3}
+    procEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2
       x: 0
@@ -55,6 +56,7 @@ MonoBehaviour:
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2
       x: 0
@@ -77,6 +79,7 @@ MonoBehaviour:
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2
       x: 0
@@ -99,6 +102,7 @@ MonoBehaviour:
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2
       x: 0
@@ -121,6 +125,7 @@ MonoBehaviour:
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2
       x: 0
@@ -144,6 +149,7 @@ MonoBehaviour:
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2
       x: 0
@@ -166,6 +172,7 @@ MonoBehaviour:
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2
       x: 0
