@@ -8,4 +8,6 @@ AnimatorOverrideController:
   m_PrefabAsset: {fileID: 0}
   m_Name: PlayerPortaLadonna
   m_Controller: {fileID: 9100000, guid: 0f9851eb515dffa4da8ebf7e28c012c4, type: 2}
-  m_Clips: []
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 8ac01f3f737b9074795491a0aead8c5c, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 0960c8b16c564504882ddc63db09d608, type: 2}

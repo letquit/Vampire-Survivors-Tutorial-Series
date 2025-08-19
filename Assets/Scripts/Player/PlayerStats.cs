@@ -220,7 +220,6 @@ public class PlayerStats : MonoBehaviour
     public List<LevelRange> levelRanges;
 
     private PlayerInventory inventory;
-    private PlayerCollector collector;
     public int weaponIndex;
     public int passiveItemIndex;
 
@@ -228,21 +227,21 @@ public class PlayerStats : MonoBehaviour
     public Image healthBar;
     public Image expBar;
     public TextMeshProUGUI levelText;
-
-    private PlayerAnimator playerAnimator;
     
+    private PlayerAnimator playerAnimator;
+
     /// <summary>
     /// 初始化角色数据、基础属性和初始生命值。
     /// </summary>
     void Awake()
     {
         characterData = CharacterSelector.GetData();
-        if (CharacterSelector.instance)
+        
+        if(CharacterSelector.instance)
             CharacterSelector.instance.DestroySingleton();
 
         inventory = GetComponent<PlayerInventory>();
-        // collector = GetComponentInChildren<PlayerCollector>();
-        
+
         // 分配变量
         baseStats = actualStats = characterData.stats;
         health = actualStats.maxHealth;
@@ -411,6 +410,7 @@ public class PlayerStats : MonoBehaviour
         if (!GameManager.instance.isGameOver)
         {
             GameManager.instance.AssignLevelReachedUI(level);
+            GameManager.instance.AssignChosenWeaponsAndPassiveItemsUI(inventory.weaponSlots, inventory.passiveSlots);
             GameManager.instance.GameOver();
         }
     }

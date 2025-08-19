@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -41,12 +43,25 @@ public class CharacterSelector : MonoBehaviour
             return instance.characterData;
         else
         {
-            // 如果没有分配角色数据，则随机选择一个
-            CharacterData[] characters = Resources.FindObjectsOfTypeAll<CharacterData>();
-            if (characters.Length > 0)
+            // 如果我们在Unity编辑器中运行游戏，则随机选择一个角色
+            #if UNITY_EDITOR
+            string[] allAssetPaths = AssetDatabase.GetAllAssetPaths();
+            List<CharacterData> characters = new List<CharacterData>();
+            foreach (string assetPath in allAssetPaths)
             {
-                return characters[Random.Range(0, characters.Length)];
+                if (assetPath.EndsWith(".asset"))
+                {
+                    CharacterData characterData = AssetDatabase.LoadAssetAtPath<CharacterData>(assetPath);
+                    if (characterData != null)
+                    {
+                        characters.Add(characterData);
+                    }
+                }
             }
+
+            // 如果找到了任何角色，则随机选择一个角色
+            if (characters.Count > 0) return characters[Random.Range(0, characters.Count)];
+            #endif
         }
         return null;
     }

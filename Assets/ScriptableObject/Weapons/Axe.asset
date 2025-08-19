@@ -12,13 +12,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e683358e9ce4934cbd85ee3ebfa9db1, type: 3}
   m_Name: Axe
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
-  maxLevel: 0
+  icon: {fileID: -2070019825572486596, guid: d8af08889eb7b094294fc10933f5c295, type: 3}
+  maxLevel: 2
   evolutionData: []
-  behaviour: 
+  behaviour: AxeWeapon
   baseStats:
-    name: 
-    description: 
+    name: Axe
+    description: Hight damage, high Area scaling.
+    projectilePrefab: {fileID: 6112677982804375534, guid: 16514e675c223364bbf73d6ff20635e6, type: 3}
+    auraPrefab: {fileID: 0}
+    hitEffect: {fileID: 0}
+    spawnVariance:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    lifespan: 5
+    damage: 20
+    damageVariance: 3
+    area: 1
+    speed: 8
+    cooldown: 4
+    projectileInterval: 0.2
+    knockback: 1
+    number: 1
+    piercing: 3
+    maxInstances: 99
+  linearGrowth:
+  - name: Level 2
+    description: Fires 1 more projectile.
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 0}
@@ -36,8 +59,7 @@ MonoBehaviour:
     cooldown: 0
     projectileInterval: 0
     knockback: 0
-    number: 0
+    number: 1
     piercing: 0
     maxInstances: 0
-  linearGrowth: []
   randomGrowth: []

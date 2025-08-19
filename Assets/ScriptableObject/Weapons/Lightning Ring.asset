@@ -12,13 +12,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e683358e9ce4934cbd85ee3ebfa9db1, type: 3}
   m_Name: Lightning Ring
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
-  maxLevel: 0
+  icon: {fileID: -7161361119523956787, guid: d8af08889eb7b094294fc10933f5c295, type: 3}
+  maxLevel: 2
   evolutionData: []
-  behaviour: 
+  behaviour: LightningRingWeapon
   baseStats:
-    name: 
-    description: 
+    name: Lightning Ring
+    description: Strikes at random enemies.
+    projectilePrefab: {fileID: 0}
+    auraPrefab: {fileID: 0}
+    hitEffect: {fileID: 6540265146965529767, guid: 32731ac92cbeea54fbf140d191026390, type: 3}
+    spawnVariance:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    lifespan: 0
+    damage: 15
+    damageVariance: 2
+    area: 1
+    speed: 0
+    cooldown: 4.5
+    projectileInterval: 0.05
+    knockback: 1
+    number: 2
+    piercing: 0
+    maxInstances: 50
+  linearGrowth:
+  - name: Level 2
+    description: Fires 1 more projectile.
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 0}
@@ -36,8 +59,7 @@ MonoBehaviour:
     cooldown: 0
     projectileInterval: 0
     knockback: 0
-    number: 0
+    number: 1
     piercing: 0
     maxInstances: 0
-  linearGrowth: []
   randomGrowth: []

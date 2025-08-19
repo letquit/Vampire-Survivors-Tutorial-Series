@@ -147,19 +147,26 @@ public class GameManager : MonoBehaviour
         Destroy(textObj, duration);
         
         textObj.transform.SetParent(instance.damageTextCanvas.transform);
+        textObj.transform.SetSiblingIndex(0);
 
         WaitForEndOfFrame w = new WaitForEndOfFrame();
         float t = 0;
         float yOffset = 0;
+        Vector3 lastKnownPosition = target.position;
         while (t < duration)
         { 
-            yield return w;
-            t += Time.deltaTime;
-
+            if (!rect) break;
+            
             tmPro.color = new Color(tmPro.color.r, tmPro.color.g, tmPro.color.b, 1 - t / duration);
 
+            if (target)
+                lastKnownPosition = target.position;
+            
             yOffset += speed * Time.deltaTime;
-            rect.position = referenceCamera.WorldToScreenPoint(target.position + new Vector3(0, yOffset));
+            rect.position = referenceCamera.WorldToScreenPoint(lastKnownPosition + new Vector3(0, yOffset));
+            
+            yield return w;
+            t += Time.deltaTime;
         }
 
     }
@@ -292,7 +299,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     /// <param name="chosenWeaponsData">已选择的武器图像列表</param>
     /// <param name="chosenPassiveItemsData">已选择的被动道具图像列表</param>
-    public void AssignChosenWeaponsAndPassiveItemsUI(List<Image> chosenWeaponsData, List<Image> chosenPassiveItemsData)
+    public void AssignChosenWeaponsAndPassiveItemsUI(List<PlayerInventory.Slot> chosenWeaponsData, List<PlayerInventory.Slot> chosenPassiveItemsData)
     {
         // 检查传入的数据长度是否匹配UI容器数量
         if (chosenWeaponsData.Count != chosenWeaponsUI.Count || chosenPassiveItemsData.Count != chosenPassiveItemsUI.Count)
@@ -304,10 +311,10 @@ public class GameManager : MonoBehaviour
         // 更新武器UI显示
         for (int i = 0; i < chosenWeaponsUI.Count; i++)
         {
-            if (chosenWeaponsData[i].sprite)
+            if (chosenWeaponsData[i].image.sprite)
             {
                 chosenWeaponsUI[i].enabled = true;
-                chosenWeaponsUI[i].sprite = chosenWeaponsData[i].sprite;
+                chosenWeaponsUI[i].sprite = chosenWeaponsData[i].image.sprite;
             }
             else
             {
@@ -318,10 +325,10 @@ public class GameManager : MonoBehaviour
         // 更新被动道具UI显示
         for (int i = 0; i < chosenPassiveItemsUI.Count; i++)
         {
-            if (chosenPassiveItemsData[i].sprite)
+            if (chosenPassiveItemsData[i].image.sprite)
             {
                 chosenPassiveItemsUI[i].enabled = true;
-                chosenPassiveItemsUI[i].sprite = chosenPassiveItemsData[i].sprite;
+                chosenPassiveItemsUI[i].sprite = chosenPassiveItemsData[i].image.sprite;
             }
             else
             {

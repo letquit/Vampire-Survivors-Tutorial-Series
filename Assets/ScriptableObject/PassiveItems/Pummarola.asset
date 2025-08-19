@@ -14,6 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: -2154472756403814111, guid: 6d29a54a1c7f4bf4fae2fba69ec4f641, type: 3}
   maxLevel: 5
+  evolutionData:
+  - name: Soul Eater
+    condition: 1
+    consumes: 2
+    evolutionLevel: 2
+    catalysts:
+    - itemType: {fileID: 11400000, guid: 67853633c48a43b4d9ecb1a52c06d905, type: 2}
+      level: 2
+    outcome:
+      itemType: {fileID: 11400000, guid: 94df2f70efb67264c8545488bcf949ad, type: 2}
+      level: 1
   baseStats:
     name: Pummarola
     description: Give some regen.

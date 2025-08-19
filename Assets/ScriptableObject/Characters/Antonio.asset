@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a9b2f9db3612f14aad25b2a612b609e, type: 3}
   m_Name: Antonio
   m_EditorClassIdentifier: 
-  icon: {fileID: 3390433575002291553, guid: 5de9d50db39618d42800f68ef903f479, type: 3}
+  icon: {fileID: -1032215235, guid: 786aea45a6c13d641a2b69e60197e8d8, type: 3}
+  controller: {fileID: 22100000, guid: b6a15281e417dd540ac100bf0420d1b0, type: 2}
   name: Antonio
-  startingWeapon: {fileID: 11400000, guid: 015456e143e6cb842885a3f3ee86a3ab, type: 2}
+  startingWeapon: {fileID: 11400000, guid: eadbd2fcebe920743aed21ac0fcf89d1, type: 2}
   stats:
     maxHealth: 1000
     recovery: 0
     moveSpeed: 5
     might: 1
     speed: 1
-    magnet: 30
+    magnet: 1.8

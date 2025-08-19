@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a9b2f9db3612f14aad25b2a612b609e, type: 3}
   m_Name: Gennaro
   m_EditorClassIdentifier: 
-  icon: {fileID: 3390433575002291553, guid: 5de9d50db39618d42800f68ef903f479, type: 3}
+  icon: {fileID: 204848505, guid: 786aea45a6c13d641a2b69e60197e8d8, type: 3}
+  controller: {fileID: 22100000, guid: 4792be50c8c535e40acea0444c2bf49c, type: 2}
   name: Gennaro
   startingWeapon: {fileID: 11400000, guid: eda2f258fdd41db4184a9def94226681, type: 2}
   stats:

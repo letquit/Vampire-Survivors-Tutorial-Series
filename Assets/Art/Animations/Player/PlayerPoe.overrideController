@@ -1,0 +1,13 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: PlayerPoe
+  m_Controller: {fileID: 9100000, guid: 0f9851eb515dffa4da8ebf7e28c012c4, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 8ac01f3f737b9074795491a0aead8c5c, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 5b092f60fb0243d4c84d4fd4662c664c, type: 2}

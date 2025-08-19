@@ -12,13 +12,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e683358e9ce4934cbd85ee3ebfa9db1, type: 3}
   m_Name: Whip
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
-  maxLevel: 0
+  icon: {fileID: 2892182278619469769, guid: d8af08889eb7b094294fc10933f5c295, type: 3}
+  maxLevel: 2
   evolutionData: []
-  behaviour: ProjectileWeapon
+  behaviour: WhipWeapon
   baseStats:
-    name: 
-    description: 
+    name: Whip
+    description: Attack horizontally, passes through enemies.
+    projectilePrefab: {fileID: 2213802576156048718, guid: 7e1c2fc2758f2ae49a8d9353ae26aa28, type: 3}
+    auraPrefab: {fileID: 0}
+    hitEffect: {fileID: 0}
+    spawnVariance:
+      serializedVersion: 2
+      x: 1.1
+      y: 0
+      width: 0
+      height: 0
+    lifespan: 0.5
+    damage: 10
+    damageVariance: 2
+    area: 1
+    speed: 0
+    cooldown: 1.35
+    projectileInterval: 0.1
+    knockback: 1
+    number: 1
+    piercing: 99
+    maxInstances: 99
+  linearGrowth:
+  - name: Level 2
+    description: Fires 1 more projectile.
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 0}
@@ -36,8 +59,7 @@ MonoBehaviour:
     cooldown: 0
     projectileInterval: 0
     knockback: 0
-    number: 0
+    number: 1
     piercing: 0
     maxInstances: 0
-  linearGrowth: []
   randomGrowth: []

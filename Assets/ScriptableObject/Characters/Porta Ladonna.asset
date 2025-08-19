@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a9b2f9db3612f14aad25b2a612b609e, type: 3}
   m_Name: Porta Ladonna
   m_EditorClassIdentifier: 
-  icon: {fileID: 3390433575002291553, guid: 5de9d50db39618d42800f68ef903f479, type: 3}
+  icon: {fileID: 1539688409, guid: 786aea45a6c13d641a2b69e60197e8d8, type: 3}
+  controller: {fileID: 22100000, guid: 165996b202b590d4abf8bcf15ca59f94, type: 2}
   name: Porta Ladonna
-  startingWeapon: {fileID: 11400000, guid: 1d4794120efa8ba4cb0cc21bece6b012, type: 2}
+  startingWeapon: {fileID: 11400000, guid: 002e641a85e5b2f4eb111d41abad6232, type: 2}
   stats:
     maxHealth: 1000
     recovery: 0
     moveSpeed: 5
     might: 1
     speed: 1
-    magnet: 30
+    magnet: 1.8

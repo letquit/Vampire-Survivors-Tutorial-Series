@@ -112,9 +112,12 @@ public class PlayerInventory : MonoBehaviour
     {
         foreach (Slot s in passiveSlots)
         {
-            Passive p = s.item as Passive;
-            if (p.data == type)
-                return p;
+            if (s.item != null)  // 添加空值检查
+            {
+                Passive p = s.item as Passive;
+                if (p != null && p.data == type)
+                    return p;
+            }
         }
         return null;
     }
@@ -128,12 +131,16 @@ public class PlayerInventory : MonoBehaviour
     {
         foreach (Slot s in weaponSlots)
         {
-            Weapon w = s.item as Weapon;
-            if (w.data == type)
-                return w;
+            if (s.item != null)  // 添加空值检查
+            {
+                Weapon w = s.item as Weapon;
+                if (w != null && w.data == type)
+                    return w;
+            }
         }
         return null;
     }
+
 
     /// <summary>
     /// 从物品栏中移除指定类型的武器。
@@ -421,8 +428,8 @@ public class PlayerInventory : MonoBehaviour
                             // 如果武器已达到最高等级，则不允许升级
                             if (chosenWeaponUpgrade.maxLevel <= w.currentLevel)
                             {
-                                // DisableUpgradeUI(upgradeOption);
-                                isLevelUp = false;
+                                DisableUpgradeUI(upgradeOption);
+                                isLevelUp = true;
                                 break;
                             }
 
@@ -475,8 +482,8 @@ public class PlayerInventory : MonoBehaviour
                             // 如果被动道具已达到最高等级，则不允许升级
                             if (chosenPassiveUpgrade.maxLevel <= p.currentLevel)
                             {
-                                // DisableUpgradeUI(upgradeOption);
-                                isLevelUp = false;
+                                DisableUpgradeUI(upgradeOption);
+                                isLevelUp = true;
                                 break;
                             }
 
