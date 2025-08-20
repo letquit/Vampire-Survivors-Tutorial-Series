@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
     public GameObject pauseScreen;
     public GameObject resultsScreen;
     public GameObject levelUpScreen;
+    private int stackedLevelUps = 0;
     
     [Header("Current Stat Displays")] 
     public TextMeshProUGUI currentHealthDisplay;
@@ -59,9 +60,9 @@ public class GameManager : MonoBehaviour
     private float stopwatchTime;
     public TextMeshProUGUI stopwatchDisplay;
     
-    public bool isGameOver = false;
+    public bool isGameOver { get { return currentState == GameState.GameOver; } }
 
-    public bool choosingUpgrade;
+    public bool choosingUpgrade { get { return currentState == GameState.LevelUp; } }
 
     public GameObject playerObject;
 
@@ -99,22 +100,7 @@ public class GameManager : MonoBehaviour
                 CheckForPauseAndResume();
                 break;
             case GameState.GameOver:
-                if (!isGameOver)
-                {
-                    isGameOver = true;
-                    Time.timeScale = 0f;
-                    Debug.Log("GAME IS OVER");
-                    DisplayResults();
-                }
-                break;
             case GameState.LevelUp:
-                if (!choosingUpgrade)
-                {
-                    choosingUpgrade = true;
-                    Time.timeScale = 0f;
-                    levelUpScreen.SetActive(true);
-                    Debug.Log("LEVEL UP");
-                }
                 break;
             default:
                 Debug.LogWarning("STATE DOES NOT EXIST");
@@ -193,6 +179,7 @@ public class GameManager : MonoBehaviour
     /// <param name="newState">新的游戏状态</param>
     public void ChangeState(GameState newState)
     {
+        previousState = currentState;
         currentState = newState;
     }
 
@@ -203,11 +190,9 @@ public class GameManager : MonoBehaviour
     {
         if (currentState != GameState.Paused)
         {
-            previousState = currentState;
             ChangeState(GameState.Paused);
             Time.timeScale = 0f;
             pauseScreen.SetActive(true);
-            Debug.Log("Game is paused");
         }
     }
     
@@ -218,11 +203,9 @@ public class GameManager : MonoBehaviour
     {
         if (currentState == GameState.Paused)
         {
-            
             ChangeState(previousState);
             Time.timeScale = 1f;
             pauseScreen.SetActive(false);
-            Debug.Log("Game is resumed");
         }
     }
 
@@ -265,6 +248,8 @@ public class GameManager : MonoBehaviour
         timeSurvivedDisplay.text = string.Format("{0:00}:{1:00}", survivedMinutes, survivedSeconds);
     
         ChangeState(GameState.GameOver);
+        Time.timeScale = 0f;
+        DisplayResults();
     }
 
     /// <summary>
@@ -370,7 +355,14 @@ public class GameManager : MonoBehaviour
     public void StartLevelUp()
     {
         ChangeState(GameState.LevelUp);
-        playerObject.SendMessage("RemoveAndApplyUpgrades");
+
+        if (levelUpScreen.activeSelf) stackedLevelUps++;
+        else
+        {
+            Time.timeScale = 0f;
+            levelUpScreen.SetActive(true);
+            playerObject.SendMessage("RemoveAndApplyUpgrades");   
+        }
     }
 
     /// <summary>
@@ -378,9 +370,14 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void EndLevelUp()
     {
-        choosingUpgrade = false;
         Time.timeScale = 1f;
         levelUpScreen.SetActive(false);
         ChangeState(GameState.Gameplay);
+
+        if (stackedLevelUps > 0)
+        {
+            stackedLevelUps--;
+            StartLevelUp();
+        }
     }
 }

@@ -20,8 +20,10 @@ public class WeaponData : ItemData
     /// </summary>
     /// <param name="level">武器等级</param>
     /// <returns>指定等级的武器属性数据</returns>
-    public Weapon.Stats GetLevelData(int level)
+    public override Item.LevelData GetLevelData(int level)
     {
+        if (level <= 1) return baseStats;
+        
         // 从线性成长数组中获取下一级的属性数据
         if (level - 2 < linearGrowth.Length)
             return linearGrowth[level - 2];

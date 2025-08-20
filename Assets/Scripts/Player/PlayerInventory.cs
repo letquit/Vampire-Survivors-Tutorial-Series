@@ -60,22 +60,10 @@ public class PlayerInventory : MonoBehaviour
     public List<Slot> weaponSlots = new List<Slot>(6);      // 武器槽位列表
     public List<Slot> passiveSlots = new List<Slot>(6);     // 被动道具槽位列表
 
-    /// <summary>
-    /// 升级UI类，用于表示升级选项的UI元素。
-    /// </summary>
-    [System.Serializable]
-    public class UpgradeUI
-    {
-        public TMP_Text upgradeNameDisplay;         // 升级名称显示文本
-        public TMP_Text upgradeDescriptionDisplay;  // 升级描述显示文本
-        public Image upgradeIcon;                   // 升级图标
-        public Button upgradeButton;                // 升级按钮
-    }
-
     [Header("UI Elements")]
     public List<WeaponData> availableWeapons = new List<WeaponData>();      // 可用的武器升级选项
     public List<PassiveData> availablePassives = new List<PassiveData>();   // 可用的被动道具升级选项
-    public List<UpgradeUI> upgradeUIOptions = new List<UpgradeUI>();        // 场景中的升级UI选项列表
+    public UIUpgradeWindow upgradeWindow;
 
     private PlayerStats player; // 玩家状态组件引用
 
@@ -112,10 +100,10 @@ public class PlayerInventory : MonoBehaviour
     {
         foreach (Slot s in passiveSlots)
         {
-            if (s.item != null)  // 添加空值检查
+            if (s.item != null)
             {
                 Passive p = s.item as Passive;
-                if (p != null && p.data == type)
+                if (p && p.data == type)
                     return p;
             }
         }
@@ -131,10 +119,10 @@ public class PlayerInventory : MonoBehaviour
     {
         foreach (Slot s in weaponSlots)
         {
-            if (s.item != null)  // 添加空值检查
+            if (s.item != null)
             {
                 Weapon w = s.item as Weapon;
-                if (w != null && w.data == type)
+                if (w && w.data == type)
                     return w;
             }
         }
@@ -315,212 +303,113 @@ public class PlayerInventory : MonoBehaviour
         else if (data is PassiveData) return Add(data as PassiveData);
         return -1;
     }
-
-    /// <summary>
-    /// 升级指定槽位的武器。
-    /// </summary>
-    /// <param name="slotIndex">武器槽位索引</param>
-    /// <param name="upgradeIndex">升级选项索引（未使用）</param>
-    public void LevelUpWeapon(int slotIndex, int upgradeIndex)
-    {
-        if (weaponSlots.Count > slotIndex)
-        {
-            Weapon weapon = weaponSlots[slotIndex].item as Weapon;
-
-            // 如果武器已达到最高等级，则不升级
-            if (!weapon.DoLevelUp())
-            {
-                Debug.LogWarning(string.Format(
-                    "Failed to level up {0}.",
-                    weapon.name
-                ));
-                return;
-            }
-        }
-
-        if (GameManager.instance != null && GameManager.instance.choosingUpgrade)
-        {
-            GameManager.instance.EndLevelUp();
-        }
-    }
+    
     
     /// <summary>
-    /// 升级指定槽位的被动道具。
+    /// 应用升级选项，根据当前库存情况筛选出可用的升级项并显示升级窗口。
     /// </summary>
-    /// <param name="slotIndex">被动道具槽位索引</param>
-    /// <param name="upgradeIndex">升级选项索引（未使用）</param>
-    public void LevelUpPassiveItem(int slotIndex, int upgradeIndex)
+    void ApplyUpgradeOptions()
     {
-        if (passiveSlots.Count > slotIndex)
-        {
-            Passive p = passiveSlots[slotIndex].item as Passive;
-            if (!p.DoLevelUp())
-            {
-                Debug.LogWarning(string.Format(
-                    "Failed to level up {0}.",
-                    p.name
-                ));
-                return;
-            }
-        }
+        // <availableUpgrades> 是一个空列表，将从<allUpgrades>中过滤出来，
+        // <allUpgrades>是PlayerInventory中所有升级的列表。
+        // 并非所有升级都可以应用，因为有些可能已经达到了玩家的最大值，
+        // 或者玩家没有足够的库存槽位。
+        List<ItemData> availableUpgrades = new List<ItemData>();
+        List<ItemData> allUpgrades = new List<ItemData>(availableWeapons);
+        allUpgrades.AddRange(availablePassives);
 
-        if (GameManager.instance != null && GameManager.instance.choosingUpgrade)
-        {
-            GameManager.instance.EndLevelUp();
-        }
-        player.RecalculateStats();
-    }
-    
-    /// <summary>
-    /// 应用升级选项，确定应该显示哪些升级选项。
-    /// </summary>
-    private void ApplyUpgradeOptions()
-    {
-        // 复制可用的武器/被动道具升级列表，以便在函数中迭代
-        List<WeaponData> availableWeaponUpgrades = new List<WeaponData>(availableWeapons);
-        List<PassiveData> availablePassiveItemUpgrades = new List<PassiveData>(availablePassives);
+        // 我们需要知道还剩下多少武器/被动槽位。
+        int weaponSlotsLeft = GetSlotsLeft(weaponSlots);
+        int passiveSlotsLeft = GetSlotsLeft(passiveSlots);
 
-        // 遍历每个升级UI槽位
-        foreach (UpgradeUI upgradeOption in upgradeUIOptions)
+        // 过滤可用的武器和被动，并添加那些
+        // 可能成为选项的。
+        foreach (ItemData data in allUpgrades)
         {
-            // 如果没有更多可用升级，则退出
-            if (availableWeaponUpgrades.Count == 0 && availablePassiveItemUpgrades.Count == 0)
-                return;
-
-            // 确定此升级应该是被动道具还是主动武器
-            int upgradeType;
-            if (availableWeaponUpgrades.Count == 0)
+            // 如果存在这种类型的武器，则允许升级如果
+            // 武器的等级尚未达到最大值。
+            Item obj = Get(data);
+            if (obj)
             {
-                upgradeType = 2;
-            }
-            else if (availablePassiveItemUpgrades.Count == 0)
-            {
-                upgradeType = 1;
+                if (obj.currentLevel < data.maxLevel) availableUpgrades.Add(data);
             }
             else
             {
-                // 随机生成1到2之间的数字
-                upgradeType = UnityEngine.Random.Range(1, 3);
+                // 如果我们还没有这个物品在库存中，检查是否
+                // 我们仍然有足够的槽位来接受新物品。
+                if (data is WeaponData && weaponSlotsLeft > 0) availableUpgrades.Add(data);
+                else if (data is PassiveData && passiveSlotsLeft > 0) availableUpgrades.Add(data);
             }
-
-            // 生成主动武器升级
-            if (upgradeType == 1)
-            {
-                // 选择一个武器升级，然后移除它以避免重复选择
-                WeaponData chosenWeaponUpgrade =
-                    availableWeaponUpgrades[UnityEngine.Random.Range(0, availableWeaponUpgrades.Count)];
-                availableWeaponUpgrades.Remove(chosenWeaponUpgrade);
-
-                // 确保选择的武器数据有效
-                if (chosenWeaponUpgrade != null)
-                {
-                    // 启用UI槽位
-                    EnableUpgradeUI(upgradeOption);
-
-                    // 遍历所有现有武器。如果找到匹配项，我们将
-                    // 在按钮上挂钩事件监听器，当点击此升级选项时升级武器
-                    bool isLevelUp = false;
-                    for (int i = 0; i < weaponSlots.Count; i++)
-                    {
-                        Weapon w = weaponSlots[i].item as Weapon;
-                        if (w != null && w.data == chosenWeaponUpgrade)
-                        {
-                            // 如果武器已达到最高等级，则不允许升级
-                            if (chosenWeaponUpgrade.maxLevel <= w.currentLevel)
-                            {
-                                DisableUpgradeUI(upgradeOption);
-                                isLevelUp = true;
-                                break;
-                            }
-
-                            // 设置事件监听器，物品和等级描述为下一级的数据
-                            upgradeOption.upgradeButton.onClick.AddListener(() =>
-                                LevelUpWeapon(i, i)); // 应用按钮功能
-                            Weapon.Stats nextLevel = chosenWeaponUpgrade.GetLevelData(w.currentLevel + 1);
-                            upgradeOption.upgradeDescriptionDisplay.text = nextLevel.description;
-                            upgradeOption.upgradeNameDisplay.text = nextLevel.name;
-                            upgradeOption.upgradeIcon.sprite = chosenWeaponUpgrade.icon;
-                            isLevelUp = true;
-                            break;
-                        }
-                    }
-
-                    // 如果执行到这里，意味着我们将添加新武器，而不是升级现有武器
-                    if (!isLevelUp)
-                    {
-                        upgradeOption.upgradeButton.onClick.AddListener(() =>
-                            Add(chosenWeaponUpgrade)); // 应用按钮功能
-                        upgradeOption.upgradeDescriptionDisplay.text =
-                            chosenWeaponUpgrade.baseStats.description; // 应用初始描述
-                        upgradeOption.upgradeNameDisplay.text =
-                            chosenWeaponUpgrade.baseStats.name; // 应用初始名称
-                        upgradeOption.upgradeIcon.sprite = chosenWeaponUpgrade.icon;
-                    }
-                }
-            }
-            else if (upgradeType == 2)
-            {
-                // 注意：我们必须重新编码此系统，因为现在如果遇到已达到最高等级的武器，
-                // 它会禁用升级槽位
-                PassiveData chosenPassiveUpgrade =
-                    availablePassiveItemUpgrades[UnityEngine.Random.Range(0, availablePassiveItemUpgrades.Count)];
-                availablePassiveItemUpgrades.Remove(chosenPassiveUpgrade);
-
-                if (chosenPassiveUpgrade != null)
-                {
-                    // 启用UI槽位
-                    EnableUpgradeUI(upgradeOption);
-
-                    // 遍历所有现有被动道具。如果找到匹配项，我们将
-                    // 在按钮上挂钩事件监听器，当点击此升级选项时升级道具
-                    bool isLevelUp = false;
-                    for (int i = 0; i < passiveSlots.Count; i++)
-                    {
-                        Passive p = passiveSlots[i].item as Passive;
-                        if (p != null && p.data == chosenPassiveUpgrade)
-                        {
-                            // 如果被动道具已达到最高等级，则不允许升级
-                            if (chosenPassiveUpgrade.maxLevel <= p.currentLevel)
-                            {
-                                DisableUpgradeUI(upgradeOption);
-                                isLevelUp = true;
-                                break;
-                            }
-
-                            upgradeOption.upgradeButton.onClick.AddListener(() =>
-                                LevelUpPassiveItem(i, i)); // 应用按钮功能
-                            Passive.Modifier nextLevel = chosenPassiveUpgrade.GetLevelData(p.currentLevel + 1);
-                            upgradeOption.upgradeDescriptionDisplay.text = nextLevel.description;
-                            upgradeOption.upgradeNameDisplay.text = nextLevel.name;
-                            upgradeOption.upgradeIcon.sprite = chosenPassiveUpgrade.icon;
-                            isLevelUp = true;
-                            break;
-                        }
-                    }
-                    
-                    if (!isLevelUp) // 生成新的被动道具
-                    {
-                        upgradeOption.upgradeButton.onClick.AddListener(() => Add(chosenPassiveUpgrade)); // 应用按钮功能
-                        Passive.Modifier nextLevel = chosenPassiveUpgrade.baseStats;
-                        upgradeOption.upgradeDescriptionDisplay.text = nextLevel.description; // 应用初始描述
-                        upgradeOption.upgradeNameDisplay.text = nextLevel.name; // 应用初始名称
-                        upgradeOption.upgradeIcon.sprite = chosenPassiveUpgrade.icon;
-                    }
-                }
-            }
+        }
+        
+        // 如果我们还有可用的升级，则显示UI升级窗口。
+        int availUpgradeCount = availableUpgrades.Count;
+        if (availUpgradeCount > 0)
+        {
+            bool getExtraItem = 1f - 1f / player.Stats.luck > UnityEngine.Random.value;
+            if (getExtraItem || availUpgradeCount < 4) upgradeWindow.SetUpgrades(this, availableUpgrades, 4);
+            else upgradeWindow.SetUpgrades(this, availableUpgrades, 3, "提高你的幸运属性以有机会获得4个物品！");
+        }
+        else if (GameManager.instance != null && GameManager.instance.choosingUpgrade)
+        {
+            GameManager.instance.EndLevelUp();
         }
     }
     
     /// <summary>
-    /// 移除所有升级选项的事件监听器并禁用UI。
+    /// 检查槽位列表，查看此列表中是否有任何空的物品槽位。
     /// </summary>
-    private void RemoveUpgradeOptions()
+    /// <param name="slots">要检查的槽位列表</param>
+    /// <returns>空槽位的数量</returns>
+    private int GetSlotsLeft(List<Slot> slots)
     {
-        foreach (UpgradeUI upgradeOption in upgradeUIOptions)
+        int count = 0;
+        foreach (Slot s in slots)
         {
-            upgradeOption.upgradeButton.onClick.RemoveAllListeners();
-            DisableUpgradeUI(upgradeOption); // 调用DisableUpgradeUI方法禁用所有UI选项
+            if (s.IsEmpty()) count++;
         }
+        return count;
+    }
+
+    /// <summary>
+    /// 在玩家库存中升级选定的物品。
+    /// </summary>
+    /// <param name="item">要升级的物品实例</param>
+    /// <returns>升级成功返回true，否则返回false</returns>
+    public bool LevelUp(Item item)
+    {
+        // 尝试升级物品。
+        if (!item.DoLevelUp())
+        {
+            Debug.LogWarning(string.Format(
+                "Failed to level up {0}.",
+                item.name
+            ));
+            return false;
+        }
+
+        // 随后关闭升级屏幕。
+        if (GameManager.instance != null && GameManager.instance.choosingUpgrade)
+        {
+            GameManager.instance.EndLevelUp();
+        }
+
+        // 如果是被动技能，重新计算玩家属性。
+        if (item is Passive) player.RecalculateStats();
+
+        return true;
+    }
+    
+    /// <summary>
+    /// 根据物品数据类型升级库存中的物品。
+    /// </summary>
+    /// <param name="data">要升级的物品数据</param>
+    /// <returns>升级成功返回true，否则返回false</returns>
+    public bool LevelUp(ItemData data)
+    {
+        Item item = Get(data);
+        if (item) return LevelUp(item);
+        return false;
     }
 
     /// <summary>
@@ -528,25 +417,6 @@ public class PlayerInventory : MonoBehaviour
     /// </summary>
     public void RemoveAndApplyUpgrades()
     {
-        RemoveUpgradeOptions();
         ApplyUpgradeOptions();
-    }
-
-    /// <summary>
-    /// 禁用指定的升级UI。
-    /// </summary>
-    /// <param name="ui">要禁用的升级UI</param>
-    private void DisableUpgradeUI(UpgradeUI ui)
-    {
-        ui.upgradeNameDisplay.transform.parent.gameObject.SetActive(false);
-    }
-
-    /// <summary>
-    /// 启用指定的升级UI。
-    /// </summary>
-    /// <param name="ui">要启用的升级UI</param>
-    private void EnableUpgradeUI(UpgradeUI ui)
-    {
-        ui.upgradeNameDisplay.transform.parent.gameObject.SetActive(true);
     }
 }

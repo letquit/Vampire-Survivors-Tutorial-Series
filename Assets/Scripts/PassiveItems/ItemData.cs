@@ -83,4 +83,11 @@ public abstract class ItemData : ScriptableObject
     /// 进化数据数组
     /// </summary>
     public Evolution[] evolutionData;
+    
+    /// <summary>
+    /// 获取指定等级的数据信息
+    /// </summary>
+    /// <param name="level">目标等级</param>
+    /// <returns>对应等级的数据信息</returns>
+    public abstract Item.LevelData GetLevelData(int level);
 }

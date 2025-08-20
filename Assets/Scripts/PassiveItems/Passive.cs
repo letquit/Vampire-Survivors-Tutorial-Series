@@ -13,18 +13,8 @@ public class Passive : Item
     /// 修饰符结构体，用于定义被动技能的属性加成
     /// </summary>
     [System.Serializable]
-    public struct Modifier
+    public class Modifier : LevelData
     {
-        /// <summary>
-        /// 修饰符名称
-        /// </summary>
-        public string name;
-        
-        /// <summary>
-        /// 修饰符描述
-        /// </summary>
-        public string description;
-        
         /// <summary>
         /// 属性加成数值
         /// </summary>
@@ -67,7 +57,7 @@ public class Passive : Item
         }
 
         // 否则，将下一级的属性加成添加到当前被动技能上
-        currentBoosts += data.GetLevelData(++currentLevel).boosts;
+        currentBoosts += ((Modifier)data.GetLevelData(++currentLevel)).boosts;
         return true;
     }
 }

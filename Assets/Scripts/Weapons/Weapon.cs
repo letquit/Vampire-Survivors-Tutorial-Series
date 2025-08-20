@@ -12,11 +12,8 @@ public class Weapon : Item
     /// 武器的统计数据结构，包含武器的名称、描述、视觉效果、数值等信息。
     /// </summary>
     [Serializable]
-    public struct Stats
+    public class Stats : LevelData
     {
-        public string name;          // 武器名称
-        public string description;   // 武器描述
-
         [Header("视觉效果")]
         public Projectile projectilePrefab; // 若设置，则每次武器冷却完成后生成一个投射物
         public Aura auraPrefab;             // 若设置，则在武器装备时生成一个光环
@@ -121,7 +118,7 @@ public class Weapon : Item
         }
 
         // 否则将下一级的属性加到当前属性上
-        currentStats += data.GetLevelData(++currentLevel);
+        currentStats += (Stats)data.GetLevelData(++currentLevel);
         return true;
     }
 

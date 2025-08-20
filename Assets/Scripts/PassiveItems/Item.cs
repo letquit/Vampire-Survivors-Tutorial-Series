@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +14,12 @@ public abstract class Item : MonoBehaviour
     protected PlayerStats owner;
 
     public PlayerStats Owner { get { return owner; }}
+    
+    [Serializable]
+    public class LevelData
+    {
+        public string name, description;
+    }
     
     /// <summary>
     /// 初始化物品数据。
