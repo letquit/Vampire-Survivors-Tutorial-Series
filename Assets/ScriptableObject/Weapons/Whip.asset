@@ -22,6 +22,7 @@ MonoBehaviour:
     projectilePrefab: {fileID: 2213802576156048718, guid: 7e1c2fc2758f2ae49a8d9353ae26aa28, type: 3}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2
       x: 1.1
@@ -31,7 +32,7 @@ MonoBehaviour:
     lifespan: 0.5
     damage: 10
     damageVariance: 2
-    area: 1
+    area: 0
     speed: 0
     cooldown: 1.35
     projectileInterval: 0.1
@@ -45,6 +46,7 @@ MonoBehaviour:
     projectilePrefab: {fileID: 0}
     auraPrefab: {fileID: 0}
     hitEffect: {fileID: 0}
+    procEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2
       x: 0

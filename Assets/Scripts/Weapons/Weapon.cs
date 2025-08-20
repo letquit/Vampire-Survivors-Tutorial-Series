@@ -91,27 +91,7 @@ public class Weapon : Item
         this.data = data;
         currentStats = data.baseStats;
         movement = GetComponentInParent<PlayerMovement>();
-        currentCooldown = currentStats.cooldown;
-    }
-
-    /// <summary>
-    /// 在 Awake 阶段提前赋值统计数据，供其他脚本使用。
-    /// </summary>
-    protected virtual void Awake()
-    {
-        // 如果已分配武器数据，则初始化统计数据
-        if (data) currentStats = data.baseStats;
-    }
-
-    /// <summary>
-    /// 在 Start 阶段初始化武器，前提是已分配武器数据。
-    /// </summary>
-    protected virtual void Start()
-    {
-        if (data)
-        {
-            Initialise(data);
-        }
+        ActivateCooldown();
     }
 
     /// <summary>
@@ -122,7 +102,7 @@ public class Weapon : Item
         currentCooldown -= Time.deltaTime;
         if (currentCooldown <= 0f) // 冷却结束时执行攻击
         {
-            Attack(currentStats.number);
+            Attack(currentStats.number + owner.Stats.amount);
         }
     }
 
@@ -164,7 +144,7 @@ public class Weapon : Item
     {
         if (CanAttack())
         {
-            currentCooldown += currentStats.cooldown;
+            ActivateCooldown();
             return true;
         }
         return false;
@@ -176,7 +156,13 @@ public class Weapon : Item
     /// <returns>实际伤害值</returns>
     public virtual float GetDamage()
     {
-        return currentStats.GetDamage() * owner.CurrentMight;
+        return currentStats.GetDamage() * owner.Stats.might;
+    }
+    
+    // 获取区域，包括来自玩家属性的修改。
+    public virtual float GetArea()
+    {
+        return currentStats.area + owner.Stats.area;
     }
 
     /// <summary>
@@ -184,4 +170,20 @@ public class Weapon : Item
     /// </summary>
     /// <returns>当前武器的 Stats 结构</returns>
     public virtual Stats GetStats() { return currentStats; }
+    
+    // 刷新武器的冷却时间。
+    // 如果<strict>为true，则仅在currentCooldown < 0时刷新。
+    public virtual bool ActivateCooldown(bool strict = false)
+    {
+        // 当<strict>启用且冷却时间尚未结束时，
+        // 不要刷新冷却时间。
+        if (strict && currentCooldown > 0) return false;
+
+        // 计算冷却时间，考虑玩家角色中的冷却减少属性。
+        float actualCooldown = currentStats.cooldown * Owner.Stats.cooldown;
+
+        // 将最大冷却时间限制为实际冷却时间，因此我们不能意外多次调用此函数时将冷却时间增加到超过冷却属性。
+        currentCooldown = Mathf.Min(actualCooldown, currentCooldown + actualCooldown);
+        return true;
+    }
 }

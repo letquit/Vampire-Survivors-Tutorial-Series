@@ -45,7 +45,7 @@ public class Aura : WeaponEffect
                 {
                     // 重置冷却时间并造成伤害
                     Weapon.Stats stats = weapon.GetStats();
-                    affectedTargets[pair.Key] = stats.cooldown;
+                    affectedTargets[pair.Key] = stats.cooldown * Owner.Stats.cooldown;
                     pair.Key.TakeDamage(GetDamage(), transform.position, stats.knockback);
                     
                     if (stats.hitEffect)

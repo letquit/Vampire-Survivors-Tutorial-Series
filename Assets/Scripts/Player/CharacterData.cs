@@ -12,6 +12,7 @@ public class CharacterData : ScriptableObject
     /// </summary>
     [SerializeField]
     private Sprite icon;
+    
     /// <summary>
     /// 获取或设置角色图标
     /// </summary>
@@ -27,6 +28,7 @@ public class CharacterData : ScriptableObject
     /// </summary>
     [SerializeField]
     new string name;
+    
     /// <summary>
     /// 获取或设置角色名称
     /// </summary>
@@ -37,6 +39,7 @@ public class CharacterData : ScriptableObject
     /// </summary>
     [SerializeField]
     private WeaponData startingWeapon;
+    
     /// <summary>
     /// 获取或设置起始武器数据
     /// </summary>
@@ -48,49 +51,14 @@ public class CharacterData : ScriptableObject
     [System.Serializable]
     public struct Stats
     {
-        /// <summary>
-        /// 最大生命值
-        /// </summary>
-        public float maxHealth;
-        /// <summary>
-        /// 生命恢复速度
-        /// </summary>
-        public float recovery;
-        /// <summary>
-        /// 移动速度
-        /// </summary>
-        public float moveSpeed;
-        /// <summary>
-        /// 力量属性，影响攻击伤害
-        /// </summary>
-        public float might;
-        /// <summary>
-        /// 速度属性，影响攻击速度等
-        /// </summary>
-        public float speed;
-        /// <summary>
-        /// 磁铁属性，影响物品拾取范围
-        /// </summary>
+        public float maxHealth, recovery, armor;
+        [Range(-1, 10)] public float moveSpeed, might, area;
+        [Range(-1, 5)] public float speed, duration;
+        [Range(-1, 10)] public int amount;
+        [Range(-1, 1)] public float cooldown;
+        [Min(-1)] public float luck, growth, greed, curse;
         public float magnet;
-
-        /// <summary>
-        /// 构造函数，初始化角色属性
-        /// </summary>
-        /// <param name="maxHealth">最大生命值，默认1000</param>
-        /// <param name="recovery">生命恢复速度，默认0</param>
-        /// <param name="moveSpeed">移动速度，默认1f</param>
-        /// <param name="might">力量属性，默认1f</param>
-        /// <param name="speed">速度属性，默认1f</param>
-        /// <param name="magnet">磁铁属性，默认30f</param>
-        public Stats(float maxHealth = 1000, float recovery = 0, float moveSpeed = 1f, float might = 1f, float speed = 1f, float magnet = 30f)
-        {
-            this.maxHealth = maxHealth;
-            this.recovery = recovery;
-            this.moveSpeed = moveSpeed;
-            this.might = might;
-            this.speed = speed;
-            this.magnet = magnet;
-        }
+        public int revival;
         
         /// <summary>
         /// 重载加法运算符，用于属性叠加计算
@@ -102,9 +70,18 @@ public class CharacterData : ScriptableObject
         {
             s1.maxHealth += s2.maxHealth;
             s1.recovery += s2.recovery;
+            s1.armor += s2.armor;
             s1.moveSpeed += s2.moveSpeed;
             s1.might += s2.might;
+            s1.area += s2.area;
             s1.speed += s2.speed;
+            s1.duration += s2.duration;
+            s1.amount += s2.amount;
+            s1.cooldown += s2.cooldown;
+            s1.luck += s2.luck;
+            s1.growth += s2.growth;
+            s1.greed += s2.greed;
+            s1.curse += s2.curse;
             s1.magnet += s2.magnet;
             return s1;
         }
@@ -113,5 +90,18 @@ public class CharacterData : ScriptableObject
     /// <summary>
     /// 角色基础属性，初始化为默认值
     /// </summary>
-    public Stats stats = new Stats(1000);
+    public Stats stats = new Stats {
+        maxHealth = 100,
+        moveSpeed = 1,
+        might = 1,
+        amount = 0,
+        area = 1,
+        speed = 1,
+        duration = 1,
+        cooldown = 1,
+        luck = 1,
+        greed = 1,
+        growth = 1,
+        curse = 1
+    };
 }

@@ -238,9 +238,9 @@ public class PlayerInventory : MonoBehaviour
             // 生成武器游戏对象
             GameObject go = new GameObject(data.baseStats.name + " Controller");
             Weapon spawnedWeapon = (Weapon)go.AddComponent(weaponType);
-            spawnedWeapon.Initialise(data);
             spawnedWeapon.transform.SetParent(transform); // 设置武器为玩家的子对象
             spawnedWeapon.transform.localPosition = Vector2.zero;
+            spawnedWeapon.Initialise(data);
             spawnedWeapon.OnEquip();
 
             // 将武器分配到槽位

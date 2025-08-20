@@ -46,7 +46,7 @@ public class ProjectileWeapon : Weapon
         if (!currentStats.projectilePrefab)
         {
             Debug.LogWarning(string.Format("{0} 的投射物预制体未设置", name));
-            currentCooldown = data.baseStats.cooldown;
+            ActivateCooldown(true);
             return false;
         }
         
@@ -72,9 +72,7 @@ public class ProjectileWeapon : Weapon
         prefab.weapon = this;
         prefab.owner = owner;
 
-        // 如果本次攻击是由冷却触发的，则重置冷却时间
-        if (currentCooldown <= 0)
-            currentCooldown += currentStats.cooldown;
+        ActivateCooldown(true);
 
         attackCount--;
 

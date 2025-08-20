@@ -69,7 +69,7 @@ public class WhipWeapon : ProjectileWeapon
 
         // 设置弹道关联的武器引用。
         prefab.weapon = this;
-        currentCooldown = data.baseStats.cooldown;
+        ActivateCooldown(true);
         attackCount--;
 
         // 更新下次弹道生成的位置参数。

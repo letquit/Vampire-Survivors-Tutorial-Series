@@ -14,50 +14,101 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: -5091536770418991179, guid: 5de9d50db39618d42800f68ef903f479, type: 3}
   maxLevel: 8
+  evolutionData: []
   baseStats:
     name: Wings
-    description: Red bull gives you wings.
+    description: Character moves 10% faster.
     boosts:
       maxHealth: 0
       recovery: 0
+      armor: 0
       moveSpeed: 0.1
       might: 0
+      area: 0
       speed: 0
+      duration: 0
+      amount: 0
+      cooldown: 0
+      luck: 0
+      growth: 0
+      greed: 0
+      curse: 0
       magnet: 0
+      revival: 0
   growth:
   - name: Level 2
-    description: Red bull gives you more wings.
+    description: Movement speed increases by 10%
     boosts:
       maxHealth: 0
       recovery: 0
+      armor: 0
       moveSpeed: 0.1
       might: 0
+      area: 0
       speed: 0
+      duration: 0
+      amount: 0
+      cooldown: 0
+      luck: 0
+      growth: 0
+      greed: 0
+      curse: 0
       magnet: 0
+      revival: 0
   - name: Level 3
-    description: Red bull gives you more wings.
+    description: Movement speed increases by 10%
     boosts:
       maxHealth: 0
       recovery: 0
+      armor: 0
       moveSpeed: 0.1
       might: 0
+      area: 0
       speed: 0
+      duration: 0
+      amount: 0
+      cooldown: 0
+      luck: 0
+      growth: 0
+      greed: 0
+      curse: 0
       magnet: 0
+      revival: 0
   - name: Level 4
-    description: Red bull gives you more wings.
+    description: Movement speed increases by 10%
     boosts:
       maxHealth: 0
       recovery: 0
+      armor: 0
       moveSpeed: 0.1
       might: 0
+      area: 0
       speed: 0
+      duration: 0
+      amount: 0
+      cooldown: 0
+      luck: 0
+      growth: 0
+      greed: 0
+      curse: 0
       magnet: 0
+      revival: 0
   - name: Level 5
-    description: Red bull gives you more wings.
+    description: Movement speed increases by 10%
     boosts:
       maxHealth: 0
       recovery: 0
+      armor: 0
       moveSpeed: 0.1
       might: 0
+      area: 0
       speed: 0
+      duration: 0
+      amount: 0
+      cooldown: 0
+      luck: 0
+      growth: 0
+      greed: 0
+      curse: 0
       magnet: 0
+      revival: 0

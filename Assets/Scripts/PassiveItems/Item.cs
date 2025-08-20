@@ -12,6 +12,8 @@ public abstract class Item : MonoBehaviour
     protected PlayerInventory inventory;
     protected PlayerStats owner;
 
+    public PlayerStats Owner { get { return owner; }}
+    
     /// <summary>
     /// 初始化物品数据。
     /// </summary>

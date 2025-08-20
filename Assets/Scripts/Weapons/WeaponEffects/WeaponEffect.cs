@@ -10,6 +10,12 @@ public abstract class WeaponEffect : MonoBehaviour
     [HideInInspector] 
     public Weapon weapon;
 
+    public PlayerStats Owner {
+        get {
+            return owner;
+        }
+    }
+    
     /// <summary>
     /// 获取武器伤害值
     /// </summary>
