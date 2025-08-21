@@ -16,7 +16,6 @@ public class PlayerInventory : MonoBehaviour
     public class Slot
     {
         public Item item;       // 当前槽位中的物品
-        public Image image;     // 槽位对应的UI图像
 
         /// <summary>
         /// 将指定物品分配到该槽位，并更新UI图像。
@@ -28,14 +27,10 @@ public class PlayerInventory : MonoBehaviour
             if (item is Weapon)
             {
                 Weapon w = item as Weapon;
-                image.enabled = true;
-                image.sprite = w.data.icon;
             }
             else
             {
                 Passive p = item as Passive;
-                image.enabled = true;
-                image.sprite = p.data.icon;
             }
             Debug.Log(string.Format("Assigned {0} to player.", item.name));
         }
@@ -46,8 +41,6 @@ public class PlayerInventory : MonoBehaviour
         public void Clear()
         {
             item = null;
-            image.enabled = false;
-            image.sprite = null;
         }
         
         /// <summary>
@@ -59,6 +52,7 @@ public class PlayerInventory : MonoBehaviour
     
     public List<Slot> weaponSlots = new List<Slot>(6);      // 武器槽位列表
     public List<Slot> passiveSlots = new List<Slot>(6);     // 被动道具槽位列表
+    public UIInventoryIconsDisplay weaponUI, passiveUI;
 
     [Header("UI Elements")]
     public List<WeaponData> availableWeapons = new List<WeaponData>();      // 可用的武器升级选项
@@ -233,6 +227,7 @@ public class PlayerInventory : MonoBehaviour
 
             // 将武器分配到槽位
             weaponSlots[slotNum].Assign(spawnedWeapon);
+            weaponUI.Refresh();
 
             // 如果正在选择升级，关闭升级UI
             if (GameManager.instance != null && GameManager.instance.choosingUpgrade)
@@ -282,6 +277,7 @@ public class PlayerInventory : MonoBehaviour
 
         // 将被动道具分配到槽位
         passiveSlots[slotNum].Assign(p);
+        passiveUI.Refresh();
 
         if (GameManager.instance != null && GameManager.instance.choosingUpgrade)
         {
@@ -387,6 +383,9 @@ public class PlayerInventory : MonoBehaviour
             ));
             return false;
         }
+        
+        weaponUI.Refresh();
+        passiveUI.Refresh();
 
         // 随后关闭升级屏幕。
         if (GameManager.instance != null && GameManager.instance.choosingUpgrade)

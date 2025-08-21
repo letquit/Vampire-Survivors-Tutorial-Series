@@ -74,7 +74,6 @@ public class Weapon : Item
     }
 
     protected Stats currentStats;       // 当前武器的统计数据
-    public WeaponData data;             // 武器数据 ScriptableObject
     protected float currentCooldown;     // 当前冷却时间
     protected PlayerMovement movement;  // 玩家移动组件的引用
 

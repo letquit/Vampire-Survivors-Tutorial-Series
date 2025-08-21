@@ -6,7 +6,6 @@
 /// </summary>
 public class Passive : Item
 {
-    public PassiveData data;
     [SerializeField] CharacterData.Stats currentBoosts;
 
     /// <summary>

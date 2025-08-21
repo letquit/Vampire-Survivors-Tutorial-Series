@@ -52,8 +52,6 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI chosenCharacterName;
     public TextMeshProUGUI levelReachedDisplay;
     public TextMeshProUGUI timeSurvivedDisplay;
-    public List<Image> chosenWeaponsUI = new List<Image>(6);
-    public List<Image> chosenPassiveItemsUI = new List<Image>(6);
 
     [Header("Stopwatch")] 
     public float timeLimit;
@@ -278,50 +276,7 @@ public class GameManager : MonoBehaviour
     {
         levelReachedDisplay.text = levelReachedData.ToString();
     }
-
-    /// <summary>
-    /// 根据传入的武器与被动道具图像列表更新结果界面中的UI显示。
-    /// </summary>
-    /// <param name="chosenWeaponsData">已选择的武器图像列表</param>
-    /// <param name="chosenPassiveItemsData">已选择的被动道具图像列表</param>
-    public void AssignChosenWeaponsAndPassiveItemsUI(List<PlayerInventory.Slot> chosenWeaponsData, List<PlayerInventory.Slot> chosenPassiveItemsData)
-    {
-        // 检查传入的数据长度是否匹配UI容器数量
-        if (chosenWeaponsData.Count != chosenWeaponsUI.Count || chosenPassiveItemsData.Count != chosenPassiveItemsUI.Count)
-        {
-            Debug.Log("Chosen weapons and passive items data lists have different lengths");
-            return;
-        }
-
-        // 更新武器UI显示
-        for (int i = 0; i < chosenWeaponsUI.Count; i++)
-        {
-            if (chosenWeaponsData[i].image.sprite)
-            {
-                chosenWeaponsUI[i].enabled = true;
-                chosenWeaponsUI[i].sprite = chosenWeaponsData[i].image.sprite;
-            }
-            else
-            {
-                chosenWeaponsUI[i].enabled = false;
-            }
-        }
-
-        // 更新被动道具UI显示
-        for (int i = 0; i < chosenPassiveItemsUI.Count; i++)
-        {
-            if (chosenPassiveItemsData[i].image.sprite)
-            {
-                chosenPassiveItemsUI[i].enabled = true;
-                chosenPassiveItemsUI[i].sprite = chosenPassiveItemsData[i].image.sprite;
-            }
-            else
-            {
-                chosenPassiveItemsUI[i].enabled = false;
-            }
-        }
-    }
-
+  
     /// <summary>
     /// 更新倒计时计时器，当时间归零时触发游戏结束。
     /// </summary>

@@ -17,7 +17,6 @@ public class MapController : MonoBehaviour
     public LayerMask terrainMask;
     public GameObject currentChunk;
     private Vector3 playerLastPosition;
-    // private PlayerMovement pm;
 
     [Header("Optimization")] 
     public List<GameObject> spawnedChunks;
@@ -26,6 +25,15 @@ public class MapController : MonoBehaviour
     private float opDist;
     private float optimizerCooldown;
     public float optimizerCooldownDur;
+
+    // 定义所有需要检查的方向
+    private readonly string[] allDirections = { 
+        "Right", "Left", "Up", "Down", 
+        "Right Up", "Right Down", 
+        "Left Up", "Left Down" 
+    };
+    
+    private bool initialChunksSpawned = false;
 
     /// <summary>
     /// 初始化组件引用并生成初始道具。
@@ -41,14 +49,29 @@ public class MapController : MonoBehaviour
             propRandomizer.SpawnInitialProps();
         }
     }
-
+    
     /// <summary>
     /// 每帧更新地图区块检查和优化逻辑。
     /// </summary>
     private void Update()
     {
+        // 检查是否需要生成初始周围的地块
+        if (!initialChunksSpawned && currentChunk)
+        {
+            SpawnInitialSurroundingChunks();
+            initialChunksSpawned = true;
+        }
+        
         ChunkChecker();
         ChunkOptimizer();
+    }
+
+    /// <summary>
+    /// 在游戏开始时生成当前区块周围的地块
+    /// </summary>
+    private void SpawnInitialSurroundingChunks()
+    {
+        CheckAndSpawnChunksInAllDirections();
     }
 
     /// <summary>
@@ -64,25 +87,28 @@ public class MapController : MonoBehaviour
         Vector3 moveDir = player.transform.position - playerLastPosition;
         playerLastPosition = player.transform.position;
 
-        // 只在有明显移动时才检查，但检查所有九个方向
+        // 只在有明显移动时才检查，但检查所有方向
         if (moveDir.magnitude >= 0.1f) 
         {
-            // 检查九宫格内的所有方向
-            CheckAndSpawnChunk("Right");
-            CheckAndSpawnChunk("Left");
-            CheckAndSpawnChunk("Up");
-            CheckAndSpawnChunk("Down");
-            CheckAndSpawnChunk("Right Up");
-            CheckAndSpawnChunk("Right Down");
-            CheckAndSpawnChunk("Left Up");
-            CheckAndSpawnChunk("Left Down");
+            CheckAndSpawnChunksInAllDirections();
+        }
+    }
+    
+    /// <summary>
+    /// 检查所有方向是否存在地形区块，若不存在则生成新地块。
+    /// </summary>
+    private void CheckAndSpawnChunksInAllDirections()
+    {
+        foreach (string direction in allDirections)
+        {
+            CheckAndSpawnChunk(direction);
         }
     }
 
     /// <summary>
     /// 检查指定方向是否存在地形区块，若不存在则生成新地块。
     /// </summary>
-    /// <param name="direction">要检查的方向名称（如 "Right", "Up" 等）</param>
+    /// <param name="direction">要检查的方向名称</param>
     private void CheckAndSpawnChunk(string direction)
     {
         if (string.IsNullOrEmpty(direction)) return;
@@ -100,7 +126,7 @@ public class MapController : MonoBehaviour
     /// 根据给定的方向向量获取对应的方向名称。
     /// </summary>
     /// <param name="direction">表示移动方向的向量</param>
-    /// <returns>返回方向名称字符串，例如 "Right Up"、"Left" 等</returns>
+    /// <returns>返回方向名称字符串</returns>
     private string GetDirectionName(Vector3 direction)
     {
         if (direction == Vector3.zero) return "";
