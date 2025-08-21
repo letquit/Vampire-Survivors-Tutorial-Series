@@ -61,6 +61,8 @@ public class GameManager : MonoBehaviour
     public bool isGameOver { get { return currentState == GameState.GameOver; } }
 
     public bool choosingUpgrade { get { return currentState == GameState.LevelUp; } }
+    
+    public float GetElapsedTime() { return stopwatchTime; }
 
     public GameObject playerObject;
 

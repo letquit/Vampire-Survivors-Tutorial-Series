@@ -1,33 +1,51 @@
 using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// 敌人移动控制类，用于控制敌人向玩家移动的行为
 /// </summary>
 public class EnemyMovement : MonoBehaviour
 {
-    private EnemyStats enemy;
-    private Transform player;
+    protected EnemyStats enemy;
+    protected Transform player;
 
-    private Vector2 knockbackVelocity;
-    private float knockbackDuration;
+    protected Vector2 knockbackVelocity;
+    protected float knockbackDuration;
 
+    /// <summary>
+    /// 定义敌人移出画面后的处理方式
+    /// none: 不做任何处理
+    /// respawnAtEdge: 在画面边缘重新生成
+    /// despawn: 销毁敌人对象
+    /// </summary>
+    public enum OutOfFrameAction {none, respawnAtEdge, despawn}
+    
+    public OutOfFrameAction outOfFrameAction = OutOfFrameAction.respawnAtEdge;
+
+    protected bool spawnedOutOfFrame;
+    
     /// <summary>
     /// 初始化函数，在对象启用时执行一次
     /// 主要用于获取玩家对象的Transform组件引用
     /// </summary>
-    private void Start()
+    protected virtual void Start()
     {
+        spawnedOutOfFrame = !SpawnManager.IsWithinBoundaries(transform);
         enemy = GetComponent<EnemyStats>();
-        player = FindFirstObjectByType<PlayerMovement>().transform;
+        
+        // 在屏幕上随机选择一个玩家，而不是总是选择第一个玩家。
+        PlayerMovement[] allPlayers = FindObjectsByType<PlayerMovement>(FindObjectsSortMode.None);
+        player = allPlayers[Random.Range(0, allPlayers.Length)].transform;
     }
 
     /// <summary>
     /// 每帧更新函数，控制敌人向玩家位置移动
     /// 使用Vector2.MoveTowards方法实现平滑移动效果
     /// </summary>
-    private void Update()
+    protected virtual void Update()
     {
+        // 如果处于击退状态，则应用击退效果
         if (knockbackDuration > 0)
         {
             transform.position += (Vector3)knockbackVelocity * Time.deltaTime;
@@ -35,17 +53,60 @@ public class EnemyMovement : MonoBehaviour
         }
         else
         {
-            // 计算敌人向玩家移动的新位置
-            transform.position = Vector2.MoveTowards(transform.position, player.transform.position, enemy.currentMoveSpeed * Time.deltaTime);
+            Move();
+            HandleOutOfFrameAction();
         }
     }
 
-    public void Knockback(Vector2 velocity, float duration)
+    /// <summary>
+    /// 处理敌人移出画面边界的情况
+    /// 根据outOfFrameAction枚举值执行相应操作
+    /// </summary>
+    protected virtual void HandleOutOfFrameAction()
     {
+        // 当敌人移出画面时进行处理。
+        if (!SpawnManager.IsWithinBoundaries(transform))
+        {
+            switch (outOfFrameAction)
+            {
+                case OutOfFrameAction.none: default:
+                    break;
+                case OutOfFrameAction.respawnAtEdge:
+                    // 如果敌人移出相机画面，将其传送到画面边缘。
+                    transform.position = SpawnManager.GeneratePosition();
+                    break;
+                case OutOfFrameAction.despawn:
+                    // 如果敌人是在画面外生成的，则不销毁。
+                    if (!spawnedOutOfFrame)
+                    {
+                        Destroy(gameObject);
+                    }
+                    break;
+            }
+        } else spawnedOutOfFrame = false;
+    }
+    
+    /// <summary>
+    /// 应用击退效果
+    /// </summary>
+    /// <param name="velocity">击退速度向量</param>
+    /// <param name="duration">击退持续时间（秒）</param>
+    public virtual void Knockback(Vector2 velocity, float duration)
+    {
+        // 如果当前已有击退效果，则不重复应用
         if (knockbackDuration > 0) return;
         
         knockbackVelocity = velocity;
         knockbackDuration = duration;
     }
+    
+    /// <summary>
+    /// 控制敌人向玩家移动
+    /// 使用Vector2.MoveTowards实现平滑移动
+    /// </summary>
+    public virtual void Move()
+    {
+        // 持续向玩家移动敌人
+        transform.position = Vector2.MoveTowards(transform.position, player.transform.position, enemy.currentMoveSpeed * Time.deltaTime);
+    }
 }
-

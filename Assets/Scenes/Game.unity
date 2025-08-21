@@ -4663,91 +4663,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 608509989}
-  - component: {fileID: 608509988}
+  - component: {fileID: 608509990}
+  - component: {fileID: 608509991}
   m_Layer: 0
-  m_Name: Enemy Spawner
+  m_Name: SpawnManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &608509988
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 608509987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d7885e8967608347b268c6cf00f8f23, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  minSpawnDistance: 8
-  maxSpawnDistance: 10
-  waves:
-  - waveName: Wave 1
-    enemyGroups:
-    - enemyName: Bat
-      enemyCount: 5
-      spawnCount: 0
-      enemyPrefab: {fileID: 663451398103869204, guid: b7ab234b9310a824f8db7ca2f5a8f005, type: 3}
-    waveQuota: 0
-    spawnInterval: 1
-    spawnCount: 0
-  - waveName: Wave 2
-    enemyGroups:
-    - enemyName: Red Bat
-      enemyCount: 2
-      spawnCount: 0
-      enemyPrefab: {fileID: 663451398103869204, guid: 46dbced5954b9224ba8dc1eecf568f7c, type: 3}
-    waveQuota: 0
-    spawnInterval: 3
-    spawnCount: 0
-  - waveName: Wave 3
-    enemyGroups:
-    - enemyName: Bat
-      enemyCount: 1
-      spawnCount: 0
-      enemyPrefab: {fileID: 663451398103869204, guid: b7ab234b9310a824f8db7ca2f5a8f005, type: 3}
-    - enemyName: Red Bat
-      enemyCount: 3
-      spawnCount: 0
-      enemyPrefab: {fileID: 663451398103869204, guid: b7ab234b9310a824f8db7ca2f5a8f005, type: 3}
-    waveQuota: 0
-    spawnInterval: 1
-    spawnCount: 0
-  - waveName: Wave 4
-    enemyGroups:
-    - enemyName: Bat
-      enemyCount: 2
-      spawnCount: 0
-      enemyPrefab: {fileID: 663451398103869204, guid: b7ab234b9310a824f8db7ca2f5a8f005, type: 3}
-    - enemyName: Red Bat
-      enemyCount: 4
-      spawnCount: 0
-      enemyPrefab: {fileID: 663451398103869204, guid: b7ab234b9310a824f8db7ca2f5a8f005, type: 3}
-    waveQuota: 0
-    spawnInterval: 1
-    spawnCount: 0
-  - waveName: Wave 5
-    enemyGroups:
-    - enemyName: Bat
-      enemyCount: 3
-      spawnCount: 0
-      enemyPrefab: {fileID: 663451398103869204, guid: b7ab234b9310a824f8db7ca2f5a8f005, type: 3}
-    - enemyName: Red Bat
-      enemyCount: 4
-      spawnCount: 0
-      enemyPrefab: {fileID: 663451398103869204, guid: b7ab234b9310a824f8db7ca2f5a8f005, type: 3}
-    waveQuota: 0
-    spawnInterval: 4
-    spawnCount: 0
-  currentWaveCount: 0
-  enemiesAlive: 0
-  maxEnemiesAllowed: 10
-  maxEnemiesReached: 0
-  waveInterval: 10
 --- !u!4 &608509989
 Transform:
   m_ObjectHideFlags: 0
@@ -4763,6 +4687,41 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &608509990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 608509987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 658a0adbbaed0e548b08808c87942f82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data:
+  - {fileID: 11400000, guid: 593e93f45d60eb94698845215707ba30, type: 2}
+  - {fileID: 11400000, guid: c12b85b7a32da6a4db9c75ee70402d5a, type: 2}
+  - {fileID: 11400000, guid: 35e8272f904e6e3499b61248220ed484, type: 2}
+  referenceCamera: {fileID: 519420031}
+  maximumEnemyCount: 300
+--- !u!114 &608509991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 608509987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02bc24bc4d7f1b846adbd6873e90b93c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  events:
+  - {fileID: 11400000, guid: 936ec8fa225574d48ab99de4e9989ffd, type: 2}
+  - {fileID: 11400000, guid: 789ec15732bcee64f86e69dfd948c753, type: 2}
+  firstTriggerDelay: 10
+  triggerInterval: 10
 --- !u!1 &625930411
 GameObject:
   m_ObjectHideFlags: 0

@@ -172,6 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ee3392c07611b546a15710ebd382bd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  outOfFrameAction: 1
 --- !u!114 &-4035013812406659977
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,11 +185,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67f59d07ea7f78b4d9c2f50c53ba4fa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyData: {fileID: 11400000, guid: e969da4eb9e7a5b46a89f2756269aa44, type: 2}
-  currentMoveSpeed: 0
-  currentHealth: 0
-  currentDamage: 0
-  despawnDistance: 20
+  currentMoveSpeed: 1.5
+  currentHealth: 16
+  currentDamage: 5
+  damageColor: {r: 1, g: 0, b: 0, a: 1}
+  damageFlashDuration: 0.2
+  deathFadeTime: 0.6
 --- !u!114 &-4524081301311461132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,6 +203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d52effa30a75aac4187b38201abb78ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  active: 0
   drops:
   - name: Blur Gem
     itemPrefab: {fileID: 3439579302793350099, guid: ab06859cdab8f5143ae1a462fb98765d, type: 3}

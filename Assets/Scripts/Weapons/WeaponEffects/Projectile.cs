@@ -77,7 +77,7 @@ public class Projectile : WeaponEffect
         float aimAngle; // 确定瞄准角度
 
         // 查找场景中所有的敌人
-        EnemyStats[] targets = FindObjectsOfType<EnemyStats>();
+        EnemyStats[] targets =  FindObjectsByType<EnemyStats>(FindObjectsSortMode.None);
 
         // 如果存在敌人，则随机选择一个作为目标；否则随机选择一个角度
         if (targets.Length > 0)

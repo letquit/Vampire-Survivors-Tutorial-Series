@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class DropRateManager : MonoBehaviour
 {
+    public bool active = false;
     public List<Drops> drops;
 
     /// <summary>
@@ -15,6 +16,7 @@ public class DropRateManager : MonoBehaviour
     /// </summary>
     private void OnDestroy()
     {
+        if(!active) return;
         // 检查游戏对象所在的场景是否已加载，如果未加载则直接返回
         if (!gameObject.scene.isLoaded)
         {

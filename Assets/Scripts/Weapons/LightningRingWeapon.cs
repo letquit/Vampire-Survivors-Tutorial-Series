@@ -32,7 +32,7 @@ public class LightningRingWeapon : ProjectileWeapon
         // 刷新选定敌人的数组。
         if (currentCooldown <= 0)
         {
-            allSelectedEnemies = new List<EnemyStats>(FindObjectsOfType<EnemyStats>());
+            allSelectedEnemies = new List<EnemyStats>(FindObjectsByType<EnemyStats>(FindObjectsSortMode.None));
             ActivateCooldown();
             currentAttackCount = attackCount;
         }

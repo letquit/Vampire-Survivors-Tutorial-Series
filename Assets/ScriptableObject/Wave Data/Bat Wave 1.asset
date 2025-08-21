@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df730712866b9dd42bf5f43001b99702, type: 3}
+  m_Name: Bat Wave 1
+  m_EditorClassIdentifier: 
+  possibleSpawnPrefabs:
+  - {fileID: 663451398103869204, guid: b7ab234b9310a824f8db7ca2f5a8f005, type: 3}
+  - {fileID: 663451398103869204, guid: b7ab234b9310a824f8db7ca2f5a8f005, type: 3}
+  - {fileID: 663451398103869204, guid: b7ab234b9310a824f8db7ca2f5a8f005, type: 3}
+  - {fileID: 663451398103869204, guid: 46dbced5954b9224ba8dc1eecf568f7c, type: 3}
+  spawnInterval: {x: 1, y: 2}
+  spawnsPerTick: {x: 4, y: 5}
+  duration: 10
+  startingCount: 25
+  totalSpawns: 100
+  exitConditions: 1
+  mustKillAll: 1
+  spawnCount: 0

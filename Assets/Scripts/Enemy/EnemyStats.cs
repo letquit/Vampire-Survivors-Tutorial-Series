@@ -9,18 +9,11 @@ using Random = UnityEngine.Random;
 [RequireComponent(typeof(SpriteRenderer))]
 public class EnemyStats : MonoBehaviour
 {
-    public EnemyScriptableObject enemyData;
-    
-    [HideInInspector]
     public float currentMoveSpeed;
-    [HideInInspector]
     public float currentHealth;
-    [HideInInspector]
     public float currentDamage;
 
-    public float despawnDistance = 20f;
     private Transform player;
-    private EnemySpawner enemySpawner;
 
     [Header("Damage Feedback")]
     public Color damageColor = new Color(1, 0, 0, 1);
@@ -29,6 +22,8 @@ public class EnemyStats : MonoBehaviour
     private Color originalColor;
     private SpriteRenderer sr;
     private EnemyMovement movement;
+
+    public static int count;
     
     /// <summary>
     /// 在对象唤醒时初始化敌人的各项属性值
@@ -36,9 +31,7 @@ public class EnemyStats : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        currentMoveSpeed = enemyData.moveSpeed;
-        currentHealth = enemyData.maxHealth;
-        currentDamage = enemyData.damage;
+        count++;
     }
 
     /// <summary>
@@ -47,23 +40,10 @@ public class EnemyStats : MonoBehaviour
     private void Start()
     {
         player = FindFirstObjectByType<PlayerStats>().transform;
-        enemySpawner = FindFirstObjectByType<EnemySpawner>();
-
         sr = GetComponent<SpriteRenderer>();
         originalColor = sr.color;
         
         movement = GetComponent<EnemyMovement>();
-    }
-
-    /// <summary>
-    /// 每帧检查敌人与玩家的距离，如果超出设定的消失距离则重新定位敌人位置
-    /// </summary>
-    private void Update()
-    {
-        if (Vector2.Distance(transform.position, player.position) >= despawnDistance)
-        {
-            ReturnEnemy();
-        }
     }
 
     /// <summary>
@@ -112,6 +92,9 @@ public class EnemyStats : MonoBehaviour
     /// </summary>
     private void Kill()
     {
+        DropRateManager drops = GetComponent<DropRateManager>();
+        if (drops) drops.active = true;
+        
         StartCoroutine(KillFade());
     }
 
@@ -154,30 +137,6 @@ public class EnemyStats : MonoBehaviour
     /// </summary>
     private void OnDestroy()
     {
-        if (enemySpawner != null)
-        {
-            enemySpawner.OnEnemyKilled();
-        }
-    }
-    
-    /// <summary>
-    /// 将敌人重新定位到玩家周围的随机位置
-    /// 如果存在敌人生成器，则使用其定义的生成范围；否则使用默认范围
-    /// </summary>
-    private void ReturnEnemy()
-    {
-        // 使用EnemySpawner的生成范围设置
-        if (enemySpawner != null)
-        {
-            transform.position = player.position + 
-                EnemyUtilities.GetRandomEnemyPosition(
-                    enemySpawner.minSpawnDistance, 
-                    enemySpawner.maxSpawnDistance);
-        }
-        else
-        {
-            // 如果找不到EnemySpawner，则使用默认值
-            transform.position = player.position + EnemyUtilities.GetRandomEnemyPosition();
-        }
+        count--;
     }
 }

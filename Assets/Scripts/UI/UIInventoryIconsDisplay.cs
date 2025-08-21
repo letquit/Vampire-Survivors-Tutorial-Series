@@ -58,7 +58,7 @@ public class UIInventoryIconsDisplay : MonoBehaviour
     void Reset()
     {
         slotTemplate = transform.GetChild(0).gameObject;
-        inventory = FindObjectOfType<PlayerInventory>();
+        inventory = FindFirstObjectByType<PlayerInventory>();
     }
 
     /// <summary>
