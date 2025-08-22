@@ -27,6 +27,17 @@ public class ChargingEnemyMovement : EnemyMovement
     public override void Move()
     {
         // 按照固定冲锋方向移动敌人，移动距离 = 速度 × 时间
-        transform.position += (Vector3)chargeDirection * enemy.currentMoveSpeed * Time.deltaTime;
+        transform.position += (Vector3)chargeDirection * stats.Actual.moveSpeed * Time.deltaTime;
+    }
+    
+    /// <summary>
+    /// 充电型敌人不接受击退效果
+    /// </summary>
+    /// <param name="velocity">击退速度向量</param>
+    /// <param name="duration">击退持续时间（秒）</param>
+    public override void Knockback(Vector2 velocity, float duration)
+    {
+        // 充电型敌人不受击退影响，因此不执行任何操作
+        return;
     }
 }

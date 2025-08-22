@@ -5,10 +5,11 @@ using Random = UnityEngine.Random;
 /// <summary>
 /// 敌人移动控制类，用于控制敌人向玩家移动的行为
 /// </summary>
-public class EnemyMovement : MonoBehaviour
+public class EnemyMovement : Sortable
 {
-    protected EnemyStats enemy;
+    protected EnemyStats stats;
     protected Transform player;
+    protected Rigidbody2D rb;
 
     protected Vector2 knockbackVelocity;
     protected float knockbackDuration;
@@ -22,17 +23,24 @@ public class EnemyMovement : MonoBehaviour
     public enum OutOfFrameAction {none, respawnAtEdge, despawn}
     
     public OutOfFrameAction outOfFrameAction = OutOfFrameAction.respawnAtEdge;
-
+    
+    [Flags]
+    public enum KnockbackVariance { duration = 1, velocity = 2}
+    public KnockbackVariance knockbackVariance = KnockbackVariance.velocity;
+    
     protected bool spawnedOutOfFrame;
     
     /// <summary>
     /// 初始化函数，在对象启用时执行一次
     /// 主要用于获取玩家对象的Transform组件引用
     /// </summary>
-    protected virtual void Start()
+    protected override void Start()
     {
+        base.Start();
+        rb = GetComponent<Rigidbody2D>();
+        
         spawnedOutOfFrame = !SpawnManager.IsWithinBoundaries(transform);
-        enemy = GetComponent<EnemyStats>();
+        stats = GetComponent<EnemyStats>();
         
         // 在屏幕上随机选择一个玩家，而不是总是选择第一个玩家。
         PlayerMovement[] allPlayers = FindObjectsByType<PlayerMovement>(FindObjectsSortMode.None);
@@ -96,9 +104,24 @@ public class EnemyMovement : MonoBehaviour
         // 如果当前已有击退效果，则不重复应用
         if (knockbackDuration > 0) return;
         
-        knockbackVelocity = velocity;
-        knockbackDuration = duration;
+        // 如果击退类型设置为无，则忽略击退。
+        if (knockbackVariance == 0) return;
+        
+        // 检查stats对象是否存在
+        if (stats == null) return;
+
+        // 仅在乘数不是0或1时更改因子。
+        float pow = 1;
+        bool reducesVelocity = (knockbackVariance & KnockbackVariance.velocity) > 0,
+            reducesDuration = (knockbackVariance & KnockbackVariance.duration) > 0;
+
+        if (reducesVelocity && reducesDuration) pow = 0.5f;
+
+        // 检查要影响的击退值。
+        knockbackVelocity = velocity * (reducesVelocity ? Mathf.Pow(stats.Actual.knockbackMultiplier, pow) : 1);
+        knockbackDuration = duration * (reducesDuration ? Mathf.Pow(stats.Actual.knockbackMultiplier, pow) : 1);
     }
+
     
     /// <summary>
     /// 控制敌人向玩家移动
@@ -106,7 +129,24 @@ public class EnemyMovement : MonoBehaviour
     /// </summary>
     public virtual void Move()
     {
-        // 持续向玩家移动敌人
-        transform.position = Vector2.MoveTowards(transform.position, player.transform.position, enemy.currentMoveSpeed * Time.deltaTime);
+        // 如果存在刚体，则使用它来移动而不是直接移动位置。
+        // 这样可以优化性能。
+        if (rb)
+        {
+            rb.MovePosition(Vector2.MoveTowards(
+                rb.position,
+                player.transform.position,
+                stats.Actual.moveSpeed * Time.deltaTime
+            ));
+        }
+        else
+        {
+            // 持续将敌人向玩家移动
+            transform.position = Vector2.MoveTowards(
+                transform.position,
+                player.transform.position,
+                stats.Actual.moveSpeed * Time.deltaTime
+            );
+        }
     }
 }

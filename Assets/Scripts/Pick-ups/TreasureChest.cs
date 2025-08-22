@@ -35,8 +35,12 @@ public class TreasureChest : MonoBehaviour
         // 遍历所有武器槽位，检查武器是否可以进化
         foreach (PlayerInventory.Slot s in inventory.weaponSlots)
         {
+            // 检查槽位是否为空
+            if (s.IsEmpty()) continue;
+            
             Weapon w = s.item as Weapon;
-            if (w.data.evolutionData == null) continue; // 如果武器无法进化则跳过
+            // 检查武器和武器数据是否存在
+            if (w == null || w.data == null || w.data.evolutionData == null) continue; // 如果武器无法进化则跳过
 
             // 遍历该武器的所有可能进化路径
             foreach (ItemData.Evolution e in w.data.evolutionData)
@@ -52,4 +56,3 @@ public class TreasureChest : MonoBehaviour
         }
     }
 }
-

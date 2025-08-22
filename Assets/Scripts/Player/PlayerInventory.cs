@@ -32,7 +32,7 @@ public class PlayerInventory : MonoBehaviour
             {
                 Passive p = item as Passive;
             }
-            Debug.Log(string.Format("Assigned {0} to player.", item.name));
+            // Debug.Log(string.Format("Assigned {0} to player.", item.name));
         }
 
         /// <summary>

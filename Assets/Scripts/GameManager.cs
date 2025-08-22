@@ -57,20 +57,63 @@ public class GameManager : MonoBehaviour
     public float timeLimit;
     private float stopwatchTime;
     public TextMeshProUGUI stopwatchDisplay;
+
+    private PlayerStats[] players;
     
+    /// <summary>
+    /// 获取游戏是否已结束。
+    /// </summary>
     public bool isGameOver { get { return currentState == GameState.GameOver; } }
 
+    /// <summary>
+    /// 获取当前是否处于升级选择状态。
+    /// </summary>
     public bool choosingUpgrade { get { return currentState == GameState.LevelUp; } }
     
+    /// <summary>
+    /// 获取已经经过的时间（秒）。
+    /// </summary>
+    /// <returns>从游戏开始到现在的总时间（秒）。</returns>
     public float GetElapsedTime() { return stopwatchTime; }
 
-    public GameObject playerObject;
+    /// <summary>
+    /// 累加所有玩家的诅咒属性并返回该值。
+    /// </summary>
+    /// <returns>所有玩家诅咒值之和加1的结果。</returns>
+    public static float GetCumulativeCurse()
+    {
+        if (!instance) return 1;
 
+        float totalCurse = 0;
+        foreach (PlayerStats p in instance.players)
+        {
+            totalCurse += p.Actual.curse;
+        }
+        return 1 + totalCurse;
+    }
+    
+    /// <summary>
+    /// 累加所有玩家的等级并返回该值。
+    /// </summary>
+    /// <returns>所有玩家等级之和。</returns>
+    public static int GetCumulativeLevels()
+    {
+        if (!instance) return 1;
+
+        int totalLevel = 0;
+        foreach (PlayerStats p in instance.players)
+        {
+            totalLevel += p.level;
+        }
+        return totalLevel;
+    }
+    
     /// <summary>
     /// 初始化单例实例，并禁用所有屏幕UI。
     /// </summary>
     private void Awake()
     {
+        players = FindObjectsByType<PlayerStats>(FindObjectsSortMode.None);
         if (instance == null)
         {
             instance = this;
@@ -291,7 +334,8 @@ public class GameManager : MonoBehaviour
         if (stopwatchTime <= 0)
         {
             stopwatchTime = 0;
-            playerObject.SendMessage("Kill");
+            foreach (PlayerStats p in players)
+                p.SendMessage("Kill");
         }
     }
 
@@ -318,7 +362,8 @@ public class GameManager : MonoBehaviour
         {
             Time.timeScale = 0f;
             levelUpScreen.SetActive(true);
-            playerObject.SendMessage("RemoveAndApplyUpgrades");   
+            foreach (PlayerStats p in players)
+                p.SendMessage("RemoveAndApplyUpgrades");
         }
     }
 

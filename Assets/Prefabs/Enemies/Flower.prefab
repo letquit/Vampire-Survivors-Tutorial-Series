@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 976458815150694154}
   - component: {fileID: 2955756498774277372}
   - component: {fileID: 8230038019036644858}
+  - component: {fileID: -5171447143521441647}
   m_Layer: 0
   m_Name: Flower
   m_TagString: Enemy
@@ -172,7 +173,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ee3392c07611b546a15710ebd382bd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outOfFrameAction: 1
+  outOfFrameAction: 0
+  knockbackVariance: -1
 --- !u!114 &2955756498774277372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,9 +187,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67f59d07ea7f78b4d9c2f50c53ba4fa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentMoveSpeed: 1
-  currentHealth: 10
-  currentDamage: 3
+  baseStats:
+    maxHealth: 100
+    moveSpeed: 0.2
+    damage: 3
+    knockbackMultiplier: 0.1
+    resistances:
+      freeze: 0
+      kill: 0
+      debuff: 0
+    curseBoosts: 0
+    levelBoosts: 0
   damageColor: {r: 1, g: 0, b: 0, a: 1}
   damageFlashDuration: 0.2
   deathFadeTime: 0.6
@@ -207,4 +217,31 @@ MonoBehaviour:
   drops:
   - name: Blur Gem
     itemPrefab: {fileID: 3439579302793350099, guid: ab06859cdab8f5143ae1a462fb98765d, type: 3}
-    dropRate: 100
+    dropRate: 50
+--- !u!50 &-5171447143521441647
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6247150505566450115}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4

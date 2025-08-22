@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 /// <summary>
 /// 拾取物品类，用于处理玩家拾取物品的逻辑
 /// </summary>
-public class Pickup : MonoBehaviour
+public class Pickup : Sortable
 {
     /// <summary>
     /// 物品被收集后的存活时间（秒）
@@ -73,8 +73,9 @@ public class Pickup : MonoBehaviour
     /// <summary>
     /// 初始化浮动动画的初始偏移量
     /// </summary>
-    protected virtual void Start()
+    protected override void Start()
     {
+        base.Start();
         initialPosition = transform.position;
         initialOffset = Random.Range(0, bobbingAnimation.frequency);
     }

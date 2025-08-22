@@ -16,6 +16,7 @@ public class SpawnManager : MonoBehaviour
 
     float spawnTimer; // 用于确定何时生成下一组敌人的计时器。
     float currentWaveDuration = 0f;
+    public bool boostedByCurse = true;
 
     public static SpawnManager instance;
 
@@ -60,7 +61,7 @@ public class SpawnManager : MonoBehaviour
             // 如果不满足生成条件，则不生成敌人。
             if (!CanSpawn())
             {
-                spawnTimer += data[currentWaveIndex].GetSpawnInterval();
+                ActivateCooldown();
                 return;
             }
 
@@ -78,9 +79,17 @@ public class SpawnManager : MonoBehaviour
                 currentWaveSpawnCount++;
             }
 
-            // 重新生成生成计时器。
-            spawnTimer += data[currentWaveIndex].GetSpawnInterval();
+            ActivateCooldown();
         }
+    }
+    
+    /// <summary>
+    /// 根据当前波次配置激活冷却时间，可能受到诅咒加成影响。
+    /// </summary>
+    public void ActivateCooldown()
+    {
+        float curseBoost = boostedByCurse ? GameManager.GetCumulativeCurse() : 1;
+        spawnTimer += data[currentWaveIndex].GetSpawnInterval() / curseBoost;
     }
 
     /// <summary>

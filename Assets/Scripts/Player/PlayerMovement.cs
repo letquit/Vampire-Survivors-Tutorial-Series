@@ -6,7 +6,7 @@ using UnityEngine;
 /// 玩家移动控制类，用于处理玩家角色的二维移动逻辑
 /// 该类通过监听输入轴来控制刚体的移动，并记录最后的移动方向
 /// </summary>
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : Sortable
 {
     public const float DEFAULT_MOVESPEED = 5f;
     
@@ -38,8 +38,9 @@ public class PlayerMovement : MonoBehaviour
     /// 初始化函数，在游戏对象启用时调用
     /// 获取并缓存Rigidbody2D组件引用
     /// </summary>
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         player = GetComponent<PlayerStats>();
         rb = GetComponent<Rigidbody2D>();
         lastMovedVector = new Vector2(1, 0f);

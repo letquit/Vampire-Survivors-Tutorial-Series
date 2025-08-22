@@ -27,6 +27,14 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 获取当前实际属性值的只读副本。
+    /// </summary>
+    public CharacterData.Stats Actual
+    {
+        get { return actualStats; }
+    }
+
     private float health;
 
     #region 当前属性访问器
@@ -136,6 +144,7 @@ public class PlayerStats : MonoBehaviour
 
     /// <summary>
     /// 根据被动道具重新计算实际属性值。
+    /// 遍历所有被动槽位中的道具，累加其提供的属性加成。
     /// </summary>
     public void RecalculateStats()
     {

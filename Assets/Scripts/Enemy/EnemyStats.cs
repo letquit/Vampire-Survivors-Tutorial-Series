@@ -9,20 +9,214 @@ using Random = UnityEngine.Random;
 [RequireComponent(typeof(SpriteRenderer))]
 public class EnemyStats : MonoBehaviour
 {
-    public float currentMoveSpeed;
-    public float currentHealth;
-    public float currentDamage;
+    /// <summary>
+    /// 敌人抗性结构体，包含冻结、击杀和减益效果的抗性值
+    /// </summary>
+    [Serializable]
+    public class Resistances
+    {
+        /// <summary>
+        /// 冻结抗性，范围在0到1之间
+        /// </summary>
+        [Range(0f, 1f)] public float freeze;
+        
+        /// <summary>
+        /// 击杀抗性，范围在0到1之间
+        /// </summary>
+        [Range(0f, 1f)] public float kill;
+        
+        /// <summary>
+        /// 减益效果抗性，范围在0到1之间
+        /// </summary>
+        [Range(0f, 1f)] public float debuff;
+        
+        /// <summary>
+        /// 重载乘法运算符，用于按因子缩放抗性值
+        /// </summary>
+        /// <param name="r">要缩放的抗性对象</param>
+        /// <param name="factor">缩放因子</param>
+        /// <returns>缩放后的抗性对象</returns>
+        public static Resistances operator *(Resistances r, float factor)
+        {
+            r.freeze = Mathf.Min(1, r.freeze * factor);
+            r.kill = Mathf.Min(1, r.kill * factor);
+            r.debuff = Mathf.Min(1, r.debuff * factor);
+            return r;
+        }
+    }
 
+    /// <summary>
+    /// 敌人基础属性结构体，包含生命值、移动速度、伤害等属性
+    /// </summary>
+    [Serializable]
+    public struct Stats
+    {
+        /// <summary>
+        /// 最大生命值，最小值为0
+        /// </summary>
+        [Min(0)] public float maxHealth;
+        
+        /// <summary>
+        /// 移动速度
+        /// </summary>
+        public float moveSpeed;
+        
+        /// <summary>
+        /// 伤害值
+        /// </summary>
+        public float damage;
+        
+        /// <summary>
+        /// 击退倍数
+        /// </summary>
+        public float knockbackMultiplier;
+        
+        /// <summary>
+        /// 抗性属性
+        /// </summary>
+        public Resistances resistances;
+        
+        /// <summary>
+        /// 可增强属性的枚举，使用位标志表示不同属性
+        /// </summary>
+        [Flags]
+        public enum Boostable { 
+            /// <summary>
+            /// 生命值属性
+            /// </summary>
+            health = 1, 
+            
+            /// <summary>
+            /// 移动速度属性
+            /// </summary>
+            moveSpeed = 2, 
+            
+            /// <summary>
+            /// 伤害属性
+            /// </summary>
+            damage = 4, 
+            
+            /// <summary>
+            /// 击退倍数属性
+            /// </summary>
+            knockbackMultiplier = 8, 
+            
+            /// <summary>
+            /// 抗性属性
+            /// </summary>
+            resistances = 16 
+        }
+        
+        /// <summary>
+        /// 诅咒增强的属性
+        /// </summary>
+        public Boostable curseBoosts;
+        
+        /// <summary>
+        /// 等级增强的属性
+        /// </summary>
+        public Boostable levelBoosts;
+
+        /// <summary>
+        /// 根据增强类型和因子增强属性值
+        /// </summary>
+        /// <param name="s1">要增强的属性结构体</param>
+        /// <param name="factor">增强因子</param>
+        /// <param name="boostable">要增强的属性类型</param>
+        /// <returns>增强后的属性结构体</returns>
+        private static Stats Boost(Stats s1, float factor, Boostable boostable)
+        {
+            if ((boostable & Boostable.health) != 0) s1.maxHealth *= factor;
+            if ((boostable & Boostable.moveSpeed) != 0) s1.moveSpeed *= factor;
+            if ((boostable & Boostable.damage) != 0) s1.damage *= factor;
+            if ((boostable & Boostable.knockbackMultiplier) != 0) s1.knockbackMultiplier /= factor;
+            if ((boostable & Boostable.resistances) != 0) s1.resistances *= factor;
+            return s1;
+        }
+
+        /// <summary>
+        /// 重载乘法运算符，用于增强诅咒效果
+        /// </summary>
+        /// <param name="s1">要增强的属性结构体</param>
+        /// <param name="factor">增强因子</param>
+        /// <returns>增强后的属性结构体</returns>
+        public static Stats operator *(Stats s1, float factor) { return Boost(s1, factor, s1.curseBoosts); }
+
+        /// <summary>
+        /// 重载异或运算符，用于增强等级效果
+        /// </summary>
+        /// <param name="s1">要增强的属性结构体</param>
+        /// <param name="factor">增强因子</param>
+        /// <returns>增强后的属性结构体</returns>
+        public static Stats operator ^(Stats s1, float factor) { return Boost(s1, factor, s1.levelBoosts); }
+    }
+    
+    /// <summary>
+    /// 敌人的基础属性值
+    /// </summary>
+    public Stats baseStats = new Stats { maxHealth = 10, moveSpeed = 1, damage = 3, knockbackMultiplier = 1 };
+    
+    /// <summary>
+    /// 敌人的实际属性值（经过计算后的最终属性）
+    /// </summary>
+    private Stats actualStats;
+    
+    /// <summary>
+    /// 获取敌人的实际属性值
+    /// </summary>
+    public Stats Actual
+    {
+        get { return actualStats; }
+    }
+
+    /// <summary>
+    /// 敌人当前生命值
+    /// </summary>
+    private float currentHealth;
+
+    /// <summary>
+    /// 玩家对象的变换组件引用
+    /// </summary>
     private Transform player;
 
+    /// <summary>
+    /// 受伤反馈相关属性
+    /// </summary>
     [Header("Damage Feedback")]
+    
+    /// <summary>
+    /// 受伤时的颜色
+    /// </summary>
     public Color damageColor = new Color(1, 0, 0, 1);
+    
+    /// <summary>
+    /// 受伤闪烁持续时间
+    /// </summary>
     public float damageFlashDuration = 0.2f;
+    
+    /// <summary>
+    /// 死亡淡出时间
+    /// </summary>
     public float deathFadeTime = 0.6f;
+    
+    /// <summary>
+    /// 原始颜色
+    /// </summary>
     private Color originalColor;
+    
+    /// <summary>
+    /// 精灵渲染器组件引用
+    /// </summary>
     private SpriteRenderer sr;
+    
+    /// <summary>
+    /// 敌人移动组件引用
+    /// </summary>
     private EnemyMovement movement;
 
+    /// <summary>
+    /// 敌人计数器，用于统计当前场景中的敌人数量
+    /// </summary>
     public static int count;
     
     /// <summary>
@@ -39,11 +233,22 @@ public class EnemyStats : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        player = FindFirstObjectByType<PlayerStats>().transform;
+        RecalculateStats();
+        currentHealth = actualStats.maxHealth;
         sr = GetComponent<SpriteRenderer>();
         originalColor = sr.color;
         
         movement = GetComponent<EnemyMovement>();
+    }
+    
+    /// <summary>
+    /// 根据各种因素计算敌人的实际属性
+    /// </summary>
+    public void RecalculateStats()
+    {
+        float curse = GameManager.GetCumulativeCurse(),
+            level = GameManager.GetCumulativeLevels();
+        actualStats = (baseStats * curse) ^ level;
     }
 
     /// <summary>
@@ -55,6 +260,17 @@ public class EnemyStats : MonoBehaviour
     /// <param name="knockbackDuration">击退持续时间，默认为0.2f</param>
     public void TakeDamage(float dmg, Vector2 sourcePosition, float knockbackForce = 5f, float knockbackDuration = 0.2f) 
     {
+        // 如果伤害正好等于最大生命值，我们假设这是一个瞬间击杀，并检查杀伤抗性以确定是否可以躲避这次伤害。
+        if (Mathf.Approximately(dmg, actualStats.maxHealth))
+        {
+            // 投掷骰子以检查是否可以躲避伤害。
+            // 获取一个介于0到1之间的随机值，如果该数值低于杀伤抗性，则我们避免被击杀。
+            if (Random.value < actualStats.resistances.kill)
+            {
+                return; // 不承受伤害。
+            }
+        }
+        
         currentHealth -= dmg;
         StartCoroutine(DamageFlash());
 
@@ -124,11 +340,10 @@ public class EnemyStats : MonoBehaviour
     /// <param name="other">碰撞的另一个游戏对象的碰撞信息</param>
     private void OnCollisionStay2D(Collision2D other)
     {
-        // 检查碰撞的对象是否为玩家
-        if (other.gameObject.CompareTag("Player"))
+        // 检查是否有我们可以造成伤害的 PlayerStats 对象。
+        if (other.collider.TryGetComponent(out PlayerStats p))
         {
-            PlayerStats player = other.gameObject.GetComponent<PlayerStats>();
-            player.TakeDamage(currentDamage);
+            p.TakeDamage(Actual.damage);
         }
     }
 
