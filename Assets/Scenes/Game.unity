@@ -1757,6 +1757,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66210a609e9dd9e4cba2d1dd24e2d59e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sortingActive: 1
+  minimumDistance: 0.2
   lastHorizontalVector: 0
   lastVerticalVector: 0
   moveDir: {x: 0, y: 0}
@@ -1898,14 +1900,14 @@ MonoBehaviour:
     magnet: 0
     revival: 0
   actualStats:
-    maxHealth: 0
+    maxHealth: 200
     recovery: 0
     armor: 0
-    moveSpeed: 0
+    moveSpeed: 1
     might: 0
     area: 0
     speed: 0
-    duration: 0
+    duration: 1
     amount: 0
     cooldown: 0
     luck: 0
@@ -1933,8 +1935,6 @@ MonoBehaviour:
   - startLevel: 41
     endLevel: 9999
     experienceCapIncrease: 2400
-  weaponIndex: 0
-  passiveItemIndex: 0
   healthBar: {fileID: 1486935203}
   expBar: {fileID: 1882065090}
   levelText: {fileID: 80690053}
@@ -4666,7 +4666,7 @@ GameObject:
   - component: {fileID: 608509990}
   - component: {fileID: 608509991}
   m_Layer: 0
-  m_Name: SpawnManager
+  m_Name: Enemy Spawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4705,6 +4705,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 35e8272f904e6e3499b61248220ed484, type: 2}
   referenceCamera: {fileID: 519420031}
   maximumEnemyCount: 300
+  boostedByCurse: 1
 --- !u!114 &608509991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4718,9 +4719,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   events:
-  - {fileID: 11400000, guid: 936ec8fa225574d48ab99de4e9989ffd, type: 2}
   - {fileID: 11400000, guid: 789ec15732bcee64f86e69dfd948c753, type: 2}
-  firstTriggerDelay: 10
+  - {fileID: 11400000, guid: 936ec8fa225574d48ab99de4e9989ffd, type: 2}
+  firstTriggerDelay: 0
   triggerInterval: 10
 --- !u!1 &625930411
 GameObject:
@@ -13449,7 +13450,6 @@ MonoBehaviour:
   timeSurvivedDisplay: {fileID: 790745454}
   timeLimit: 60
   stopwatchDisplay: {fileID: 1501206888}
-  playerObject: {fileID: 253802138}
 --- !u!4 &2133565550
 Transform:
   m_ObjectHideFlags: 0

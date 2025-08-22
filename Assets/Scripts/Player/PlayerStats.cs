@@ -5,10 +5,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// 玩家状态管理类，继承自 MonoBehaviour。
+/// 玩家状态管理类，继承自 EntityStats。
 /// 负责管理玩家的生命值、经验值、等级、武器生成以及无敌状态等核心属性和逻辑。
 /// </summary>
-public class PlayerStats : MonoBehaviour
+public class PlayerStats : EntityStats
 {
     private CharacterData characterData;
     public CharacterData.Stats baseStats;
@@ -34,8 +34,6 @@ public class PlayerStats : MonoBehaviour
     {
         get { return actualStats; }
     }
-
-    private float health;
 
     #region 当前属性访问器
     /// <summary>
@@ -73,8 +71,6 @@ public class PlayerStats : MonoBehaviour
 
     private PlayerCollector collector;
     private PlayerInventory inventory;
-    public int weaponIndex;
-    public int passiveItemIndex;
 
     [Header("UI")]
     public Image healthBar;
@@ -110,8 +106,9 @@ public class PlayerStats : MonoBehaviour
     /// <summary>
     /// 启动时添加初始武器、初始化经验上限并更新UI显示。
     /// </summary>
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         // 生成初始武器
         inventory.Add(characterData.StartingWeapon);
 
@@ -127,8 +124,9 @@ public class PlayerStats : MonoBehaviour
     /// <summary>
     /// 每帧更新无敌计时器，并执行恢复生命值的逻辑。
     /// </summary>
-    private void Update()
+    protected override void Update()
     {
+        base.Update();
         // 更新无敌时间
         if (invincibilityTimer > 0)
         {
@@ -146,7 +144,7 @@ public class PlayerStats : MonoBehaviour
     /// 根据被动道具重新计算实际属性值。
     /// 遍历所有被动槽位中的道具，累加其提供的属性加成。
     /// </summary>
-    public void RecalculateStats()
+    public override void RecalculateStats()
     {
         actualStats = baseStats;
         foreach (PlayerInventory.Slot s in inventory.passiveSlots)
@@ -157,6 +155,32 @@ public class PlayerStats : MonoBehaviour
                 actualStats += p.GetBoosts();
             }
         }
+        
+        // 创建一个变量来存储所有累积的倍数值。
+        CharacterData.Stats multiplier = new CharacterData.Stats
+        {
+            maxHealth = 1f, recovery = 1f, armor = 1f, moveSpeed = 1f, might = 1f,
+            area = 1f, speed = 1f, duration = 1f, amount = 1, cooldown = 1f,
+            luck = 1f, growth = 1f, greed = 1f, curse = 1f, magnet = 1f, revival = 1
+        };
+
+        foreach (Buff b in activeBuffs)
+        {
+            BuffData.Stats bd = b.GetData();
+            switch (bd.modifierType)
+            {
+                case BuffData.ModifierType.additive:
+                    // 将增益效果的加法修饰符添加到实际统计数据中。
+                    actualStats += bd.playerModifier;
+                    break;
+                case BuffData.ModifierType.multiplicative:
+                    // 将增益效果的乘法修饰符应用到倍数变量上。
+                    multiplier *= bd.playerModifier;
+                    break;
+            }
+        }
+        actualStats *= multiplier;
+        
         collector.SetRadius(actualStats.magnet);
     }
 
@@ -225,7 +249,7 @@ public class PlayerStats : MonoBehaviour
     /// 处理玩家受到伤害的逻辑，包括减血、播放特效、进入无敌状态和死亡判断。
     /// </summary>
     /// <param name="dmg">受到的伤害值。</param>
-    public void TakeDamage(float dmg)
+    public override void TakeDamage(float dmg)
     {
         // 如果玩家当前不是无敌状态，则减少生命值并启动无敌
         if (!isInvincible)
@@ -269,7 +293,7 @@ public class PlayerStats : MonoBehaviour
     /// <summary>
     /// 处理玩家死亡逻辑，调用游戏结束方法。
     /// </summary>
-    public void Kill()
+    public override void Kill()
     {
         if (!GameManager.instance.isGameOver)
         {
@@ -282,7 +306,7 @@ public class PlayerStats : MonoBehaviour
     /// 恢复指定数量的生命值，不超过最大生命值。
     /// </summary>
     /// <param name="amount">要恢复的生命值数量。</param>
-    public void RestoreHealth(int amount)
+    public override void RestoreHealth(float amount)
     {
         if (CurrentHealth < actualStats.maxHealth)
         {

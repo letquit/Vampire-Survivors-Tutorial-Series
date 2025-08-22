@@ -33,6 +33,8 @@ public class Weapon : Item
         public int piercing;           // 穿透次数
         public int maxInstances;       // 最大实例数量
 
+        public EntityStats.BuffInfo[] appliedBuffs;
+        
         /// <summary>
         /// 重载加法运算符，用于将两个 Stats 结构相加。
         /// 主要用于升级武器时叠加属性。
@@ -60,6 +62,9 @@ public class Weapon : Item
             result.piercing = s1.piercing + s2.piercing;
             result.projectileInterval = s1.projectileInterval + s2.projectileInterval;
             result.knockback = s1.knockback + s2.knockback;
+            result.appliedBuffs = s2.appliedBuffs == null || s2.appliedBuffs.Length <= 0
+                ? s1.appliedBuffs
+                : s2.appliedBuffs;
             return result;
         }
 
@@ -127,6 +132,7 @@ public class Weapon : Item
     /// <returns>是否可以攻击</returns>
     public virtual bool CanAttack()
     {
+        if (Mathf.Approximately(owner.Stats.might, 0)) return false;
         return currentCooldown <= 0;
     }
 
@@ -155,7 +161,10 @@ public class Weapon : Item
         return currentStats.GetDamage() * owner.Stats.might;
     }
     
-    // 获取区域，包括来自玩家属性的修改。
+    /// <summary>
+    /// 获取武器的攻击范围，包括来自玩家属性的修改。
+    /// </summary>
+    /// <returns>最终攻击范围</returns>
     public virtual float GetArea()
     {
         return currentStats.area + owner.Stats.area;
@@ -167,8 +176,12 @@ public class Weapon : Item
     /// <returns>当前武器的 Stats 结构</returns>
     public virtual Stats GetStats() { return currentStats; }
     
-    // 刷新武器的冷却时间。
-    // 如果<strict>为true，则仅在currentCooldown < 0时刷新。
+    /// <summary>
+    /// 刷新武器的冷却时间。
+    /// 如果 strict 为 true，则仅在 currentCooldown 小于等于 0 时刷新。
+    /// </summary>
+    /// <param name="strict">是否启用严格模式</param>
+    /// <returns>是否成功激活冷却</returns>
     public virtual bool ActivateCooldown(bool strict = false)
     {
         // 当<strict>启用且冷却时间尚未结束时，
@@ -181,5 +194,16 @@ public class Weapon : Item
         // 将最大冷却时间限制为实际冷却时间，因此我们不能意外多次调用此函数时将冷却时间增加到超过冷却属性。
         currentCooldown = Mathf.Min(actualCooldown, currentCooldown + actualCooldown);
         return true;
+    }
+    
+    /// <summary>
+    /// 使武器将其增益应用到目标的 EntityStats 对象上。
+    /// </summary>
+    /// <param name="e">目标实体的状态对象</param>
+    public void ApplyBuffs(EntityStats e)
+    {
+        // 将所有分配的增益应用到目标上。
+        foreach (EntityStats.BuffInfo b in GetStats().appliedBuffs)
+            e.ApplyBuff(b, owner.Actual.duration);
     }
 }

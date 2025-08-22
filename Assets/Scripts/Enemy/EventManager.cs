@@ -107,17 +107,33 @@ public class EventManager : MonoBehaviour
         // 获取所有可能事件的列表。
         List<EventData> possibleEvents = new List<EventData>(events);
 
-        // 随机选择一个事件并检查是否可以使用。
-        // 一直这样做，直到我们找到一个合适的事件。
-        EventData result = possibleEvents[Random.Range(0, possibleEvents.Count)];
-        while (!result.IsActive())
+        // 将事件中的事件添加到可能的事件中，仅当事件处于活动状态时。
+        foreach (EventData e in events)
         {
-            possibleEvents.Remove(result);
-            if (possibleEvents.Count > 0)
-                result = events[Random.Range(0, possibleEvents.Count)];
-            else
-                return null;
+            if (e.IsActive())
+            {
+                possibleEvents.Add(e);
+            }
         }
-        return result;
+        // 从可能的事件中随机选择一个事件进行播放
+        if (possibleEvents.Count > 0)
+        {
+            EventData result = possibleEvents[Random.Range(0, possibleEvents.Count)];
+            return result;
+        }
+        return null;
+        
+        // // 随机选择一个事件并检查是否可以使用。
+        // // 一直这样做，直到我们找到一个合适的事件。
+        // EventData result = possibleEvents[Random.Range(0, possibleEvents.Count)];
+        // while (!result.IsActive())
+        // {
+        //     possibleEvents.Remove(result);
+        //     if (possibleEvents.Count > 0)
+        //         result = events[Random.Range(0, possibleEvents.Count)];
+        //     else
+        //         return null;
+        // }
+        // return result;
     }
 }

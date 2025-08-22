@@ -125,10 +125,13 @@ public class Projectile : WeaponEffect
             // 根据伤害来源决定击退方向的起点位置
             Vector3 source = damageSource == DamageSource.owner && owner ? owner.transform.position : transform.position;
 
-            // 对敌人造成伤害并销毁投射物
+            // 对敌人造成伤害
             es.TakeDamage(GetDamage(), source);
 
             Weapon.Stats stats = weapon.GetStats();
+            
+            weapon.ApplyBuffs(es);
+            
             piercing--;
             if (stats.hitEffect)
             {
