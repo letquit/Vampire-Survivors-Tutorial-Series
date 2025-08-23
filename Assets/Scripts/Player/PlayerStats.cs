@@ -106,6 +106,10 @@ public class PlayerStats : EntityStats
     protected override void Start()
     {
         base.Start();
+        
+        if (UILevelSelector.globalBuff && !UILevelSelector.globalBuffAffectsPlayer)
+            ApplyBuff(UILevelSelector.globalBuff);
+        
         // 生成初始武器
         inventory.Add(characterData.StartingWeapon);
 

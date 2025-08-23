@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 场景控制类，用于管理场景切换功能
 /// </summary>
+[Obsolete]
 public class SceneController : MonoBehaviour
 {
     /// <summary>

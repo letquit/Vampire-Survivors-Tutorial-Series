@@ -95,7 +95,7 @@ public class UICharacterSelector : MonoBehaviour
     {
         // 更新角色选择屏幕中的统计字段。
         selected = statsUI.character = character;
-        statsUI.UpdateStatFields();
+        statsUI.UpdateFields();
 
         // 更新描述框内容。
         characterFullName.text = character.FullName;

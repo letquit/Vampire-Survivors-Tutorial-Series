@@ -13010,18 +13010,13 @@ MonoBehaviour:
   pauseScreen: {fileID: 2006450531}
   resultsScreen: {fileID: 895066456}
   levelUpScreen: {fileID: 1902839270}
-  currentHealthDisplay: {fileID: 0}
-  currentRecoveryDisplay: {fileID: 0}
-  currentMoveSpeedDisplay: {fileID: 0}
-  currentMightDisplay: {fileID: 0}
-  currentProjectileSpeedDisplay: {fileID: 0}
-  currentMagnetDisplay: {fileID: 0}
   chosenCharacterImage: {fileID: 328527594}
   chosenCharacterName: {fileID: 849339244}
   levelReachedDisplay: {fileID: 1034324633}
   timeSurvivedDisplay: {fileID: 790745454}
-  timeLimit: 60
+  timeLimit: 600
   stopwatchDisplay: {fileID: 1501206888}
+  reaperPrefab: {fileID: 663451398103869204, guid: 8f2fbbbd4cea4724c8ab4e4657e721d1, type: 3}
 --- !u!4 &2133565550
 Transform:
   m_ObjectHideFlags: 0

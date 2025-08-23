@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// 游戏管理器类，用于控制游戏状态、暂停、结束以及UI显示等功能。
@@ -38,14 +39,6 @@ public class GameManager : MonoBehaviour
     public GameObject resultsScreen;
     public GameObject levelUpScreen;
     private int stackedLevelUps = 0;
-    
-    [Header("Current Stat Displays")] 
-    public TextMeshProUGUI currentHealthDisplay;
-    public TextMeshProUGUI currentRecoveryDisplay;
-    public TextMeshProUGUI currentMoveSpeedDisplay;
-    public TextMeshProUGUI currentMightDisplay;
-    public TextMeshProUGUI currentProjectileSpeedDisplay;
-    public TextMeshProUGUI currentMagnetDisplay;
 
     [Header("Results Screen Displays")] 
     public Image chosenCharacterImage;
@@ -57,6 +50,9 @@ public class GameManager : MonoBehaviour
     public float timeLimit;
     private float stopwatchTime;
     public TextMeshProUGUI stopwatchDisplay;
+    
+    private bool levelEnded = false;
+    public GameObject reaperPrefab;
 
     private PlayerStats[] players;
     
@@ -114,6 +110,9 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         players = FindObjectsByType<PlayerStats>(FindObjectsSortMode.None);
+        
+        timeLimit = UILevelSelector.currentLevel.timeLimit;
+        
         if (instance == null)
         {
             instance = this;
@@ -321,34 +320,59 @@ public class GameManager : MonoBehaviour
     {
         levelReachedDisplay.text = levelReachedData.ToString();
     }
-  
+
+    /// <summary>
+    /// 获取一个随机玩家的位置。
+    /// </summary>
+    /// <returns>随机玩家的二维坐标位置</returns>
+    public Vector2 GetRandomPlayerLocation()
+    {
+        int chosenPlayer = Random.Range(0, players.Length);
+        return new Vector2(players[chosenPlayer].transform.position.x, players[chosenPlayer].transform.position.y);
+    }
+    
     /// <summary>
     /// 更新倒计时计时器，当时间归零时触发游戏结束。
     /// </summary>
     private void UpdateStopwatch()
     {
-        stopwatchTime -= Time.deltaTime;
+        // 减少时间，考虑关卡速度设置
+        stopwatchTime -= Time.deltaTime * UILevelSelector.currentLevel.clockSpeed;
 
         UpdateStopwatchDisplay();
-    
-        if (stopwatchTime <= 0)
+
+        // 当时间归零或以下时结束关卡
+        if (stopwatchTime <= 0 && !levelEnded)
         {
-            stopwatchTime = 0;
-            foreach (PlayerStats p in players)
-                p.SendMessage("Kill");
+            levelEnded = true;
+            
+            // 禁用生成管理器并清除所有敌人
+            FindFirstObjectByType<SpawnManager>()?.gameObject.SetActive(false);
+            foreach (EnemyStats e in FindObjectsByType<EnemyStats>(FindObjectsSortMode.None))
+                e.SendMessage("Kill");
+
+            // 生成死神
+            Vector2 reaperOffset = Random.insideUnitCircle * 50f;
+            Vector2 spawnPosition = GetRandomPlayerLocation() + reaperOffset;
+            Instantiate(reaperPrefab, spawnPosition, Quaternion.identity);
         }
     }
+
 
     /// <summary>
     /// 更新倒计时UI显示。
     /// </summary>
     private void UpdateStopwatchDisplay()
     {
-        int minutes = Mathf.FloorToInt(stopwatchTime / 60);
-        int seconds = Mathf.FloorToInt(stopwatchTime % 60);
-    
+        // 确保显示的时间不会为负数
+        float displayTime = Mathf.Max(0, stopwatchTime);
+        
+        int minutes = Mathf.FloorToInt(displayTime / 60);
+        int seconds = Mathf.FloorToInt(displayTime % 60);
+
         stopwatchDisplay.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
+
 
     /// <summary>
     /// 开始升级流程，切换到升级状态并通知玩家对象处理升级逻辑。
