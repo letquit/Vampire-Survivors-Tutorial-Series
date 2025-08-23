@@ -15,9 +15,11 @@ MonoBehaviour:
   icon: {fileID: 204848505, guid: 786aea45a6c13d641a2b69e60197e8d8, type: 3}
   controller: {fileID: 22100000, guid: 4792be50c8c535e40acea0444c2bf49c, type: 2}
   name: Gennaro
+  fullName: Gennaro Belpaese.
+  characterDescription: Permanent +1 projectile (All weapons)
   startingWeapon: {fileID: 11400000, guid: eda2f258fdd41db4184a9def94226681, type: 2}
   stats:
-    maxHealth: 100
+    maxHealth: 120
     recovery: 0
     armor: 0
     moveSpeed: 1
@@ -25,11 +27,11 @@ MonoBehaviour:
     area: 1
     speed: 1
     duration: 1
-    amount: 0
+    amount: 1
     cooldown: 1
     luck: 1
     growth: 1
     greed: 1
     curse: 1
-    magnet: 1.8
+    magnet: 1
     revival: 0

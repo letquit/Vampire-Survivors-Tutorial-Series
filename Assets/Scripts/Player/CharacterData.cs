@@ -27,13 +27,36 @@ public class CharacterData : ScriptableObject
     /// 角色名称
     /// </summary>
     [SerializeField]
-    new string name;
+    private new string name;
     
     /// <summary>
     /// 获取或设置角色名称
     /// </summary>
     public string Name { get => name; private set => name = value; }
 
+    /// <summary>
+    /// 角色全名
+    /// </summary>
+    [SerializeField] 
+    private string fullName;
+
+    /// <summary>
+    /// 获取或设置角色全名
+    /// </summary>
+    public string FullName { get => fullName; private set => fullName = value; }
+    
+    /// <summary>
+    /// 角色描述文本
+    /// </summary>
+    [SerializeField]
+    [TextArea]
+    private string characterDescription;
+
+    /// <summary>
+    /// 获取或设置角色描述文本
+    /// </summary>
+    public string CharacterDescription { get => characterDescription; private set => characterDescription = value; }
+    
     /// <summary>
     /// 起始武器数据
     /// </summary>
@@ -51,13 +74,95 @@ public class CharacterData : ScriptableObject
     [System.Serializable]
     public struct Stats
     {
-        public float maxHealth, recovery, armor;
-        [Range(-1, 10)] public float moveSpeed, might, area;
-        [Range(-1, 5)] public float speed, duration;
-        [Range(-1, 10)] public int amount;
-        [Range(-1, 1)] public float cooldown;
-        [Min(-1)] public float luck, growth, greed, curse;
+        /// <summary>
+        /// 最大生命值
+        /// </summary>
+        public float maxHealth;
+
+        /// <summary>
+        /// 生命恢复速度
+        /// </summary>
+        public float recovery;
+
+        /// <summary>
+        /// 护甲值
+        /// </summary>
+        public float armor;
+
+        /// <summary>
+        /// 移动速度，范围在-1到10之间
+        /// </summary>
+        [Range(-1, 10)] 
+        public float moveSpeed;
+
+        /// <summary>
+        /// 力量值，影响攻击伤害，范围在-1到10之间
+        /// </summary>
+        [Range(-1, 10)] 
+        public float might;
+
+        /// <summary>
+        /// 攻击范围，范围在-1到10之间
+        /// </summary>
+        [Range(-1, 10)] 
+        public float area;
+
+        /// <summary>
+        /// 攻击速度，范围在-1到5之间
+        /// </summary>
+        [Range(-1, 5)] 
+        public float speed;
+
+        /// <summary>
+        /// 技能持续时间，范围在-1到5之间
+        /// </summary>
+        [Range(-1, 5)] 
+        public float duration;
+
+        /// <summary>
+        /// 攻击数量，整数类型，范围在-1到10之间
+        /// </summary>
+        [Range(-1, 10)] 
+        public int amount;
+
+        /// <summary>
+        /// 技能冷却时间倍率，范围在-1到1之间
+        /// </summary>
+        [Range(-1, 1)] 
+        public float cooldown;
+
+        /// <summary>
+        /// 幸运值，最小值为-1
+        /// </summary>
+        [Min(-1)] 
+        public float luck;
+
+        /// <summary>
+        /// 成长值，最小值为-1
+        /// </summary>
+        [Min(-1)] 
+        public float growth;
+
+        /// <summary>
+        /// 贪婪值，最小值为-1
+        /// </summary>
+        [Min(-1)] 
+        public float greed;
+
+        /// <summary>
+        /// 诅咒值，最小值为-1
+        /// </summary>
+        [Min(-1)] 
+        public float curse;
+
+        /// <summary>
+        /// 磁力值，影响物品拾取范围
+        /// </summary>
         public float magnet;
+
+        /// <summary>
+        /// 复活次数
+        /// </summary>
         public int revival;
         
         /// <summary>
@@ -147,4 +252,3 @@ public class CharacterData : ScriptableObject
         curse = 1
     };
 }
-

@@ -8,9 +8,10 @@ using UnityEngine;
 /// UIStatsDisplay 类用于在 UI 中显示玩家的统计数据。
 /// 它会自动更新文本字段以反映 PlayerStats 对象中的当前值。
 /// </summary>
-public class UIStatsDisplay : MonoBehaviour
+public class UIStatDisplay : MonoBehaviour
 {
     public PlayerStats player; // 此统计显示正在渲染的玩家统计数据。
+    public CharacterData character;
     public bool displayCurrentHealth = false;
     public bool updateInEditor = false;
     TextMeshProUGUI statNames, statValues;
@@ -32,12 +33,23 @@ public class UIStatsDisplay : MonoBehaviour
     }
 
     /// <summary>
+    /// 获取要显示的统计数据。优先使用 PlayerStats，如果没有则使用 CharacterData。
+    /// </summary>
+    /// <returns>返回 CharacterData.Stats 结构体实例。</returns>
+    public CharacterData.Stats GetDisplayedStats()
+    {
+        if (player) return player.Stats;
+        else if (character) return character.stats;
+        return new CharacterData.Stats();
+    }
+
+    /// <summary>
     /// 更新统计名称和值的文本字段内容。
     /// 遍历 CharacterData.Stats 的所有公共实例字段，并根据属性格式化输出。
     /// </summary>
     public void UpdateStatFields()
     {
-        if (!player) return;
+        if (!player & !character) return;
 
         // 获取用于渲染统计名称和统计值的两个文本对象的引用。
         if (!statNames) statNames = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
@@ -61,7 +73,7 @@ public class UIStatsDisplay : MonoBehaviour
             names.AppendLine(field.Name);
 
             // 获取统计值。
-            object val = field.GetValue(player.Stats);
+            object val = field.GetValue(GetDisplayedStats());
             float fval = val is int ? (int)val : (float)val;
             
             // 如果它有属性分配并且是浮点数，则以百分比形式打印。

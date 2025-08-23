@@ -15,6 +15,8 @@ MonoBehaviour:
   icon: {fileID: -895127927, guid: 786aea45a6c13d641a2b69e60197e8d8, type: 3}
   controller: {fileID: 22100000, guid: bdf8d2db94c0f6a4983a4c11fe74452a, type: 2}
   name: Lama
+  fullName: Lama Ladonna
+  characterDescription: Permanent +1 projectile (All weapons)
   startingWeapon: {fileID: 11400000, guid: ef662bdafe03a4f459a247f6c6bdb83f, type: 2}
   stats:
     maxHealth: 100

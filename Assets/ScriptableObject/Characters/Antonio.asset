@@ -15,6 +15,8 @@ MonoBehaviour:
   icon: {fileID: -1032215235, guid: 786aea45a6c13d641a2b69e60197e8d8, type: 3}
   controller: {fileID: 22100000, guid: b6a15281e417dd540ac100bf0420d1b0, type: 2}
   name: Antonio
+  fullName: Antonio Belpaese
+  characterDescription: Permanent +1 projectile (All weapons)
   startingWeapon: {fileID: 11400000, guid: eadbd2fcebe920743aed21ac0fcf89d1, type: 2}
   stats:
     maxHealth: 100

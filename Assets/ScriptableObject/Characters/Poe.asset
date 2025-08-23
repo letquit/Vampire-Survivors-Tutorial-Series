@@ -15,6 +15,8 @@ MonoBehaviour:
   icon: {fileID: 1691469241, guid: 786aea45a6c13d641a2b69e60197e8d8, type: 3}
   controller: {fileID: 22100000, guid: bac6c3071f89f004abd9b6124bc98a80, type: 2}
   name: Poe
+  fullName: Poe Ratcho
+  characterDescription: Permanent +1 Area
   startingWeapon: {fileID: 11400000, guid: 67853633c48a43b4d9ecb1a52c06d905, type: 2}
   stats:
     maxHealth: 100

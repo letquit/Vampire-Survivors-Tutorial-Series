@@ -222,4 +222,4 @@ MonoBehaviour:
   drops:
   - name: Blur Gem
     itemPrefab: {fileID: 3439579302793350099, guid: ab06859cdab8f5143ae1a462fb98765d, type: 3}
-    dropRate: 100
+    dropRate: 75
