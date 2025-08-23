@@ -30,7 +30,7 @@ namespace Editor
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            if ((selector != null && GUILayout.Button("生成可选择的角色"))
+            if (selector != null && GUILayout.Button("生成可选择的角色"))
             {
                 CreateTogglesForCharacterData();
             }
