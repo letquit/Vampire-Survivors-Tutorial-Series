@@ -185,6 +185,6 @@ public class UISceneDataDisplay : UIPropertyDisplay
     /// </summary>
     private void Reset()
     {
-        levelSelector = FindObjectOfType<UILevelSelector>();
+        levelSelector = FindFirstObjectByType<UILevelSelector>();
     }
 }

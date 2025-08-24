@@ -115,11 +115,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d52effa30a75aac4187b38201abb78ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   drops:
   - name: Red Potion
     itemPrefab: {fileID: 767526044589934936, guid: ca8370abe4905e245a559e32197481b6, type: 3}
-    dropRate: 100
+    dropRate: 50
+  - name: Coin
+    itemPrefab: {fileID: 5553767087610741826, guid: 9ad858a781a5d254ca1b0f7a1ac9a806, type: 3}
+    dropRate: 44
+  - name: Coinbag
+    itemPrefab: {fileID: 3201015933727726019, guid: a2e8f5278f11efc4182551f302b60fde, type: 3}
+    dropRate: 5
+  - name: Big Coinbag
+    itemPrefab: {fileID: 5920899402484787005, guid: 26a8b149437277146ae84eac588facd3, type: 3}
+    dropRate: 1
 --- !u!70 &7391206834046451717
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
