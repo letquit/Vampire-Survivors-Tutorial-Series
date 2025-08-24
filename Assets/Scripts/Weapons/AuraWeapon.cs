@@ -48,10 +48,10 @@ public class AuraWeapon : Weapon
     /// 调用基类升级方法，如果升级成功则更新光环的缩放大小
     /// </summary>
     /// <returns>升级是否成功执行</returns>
-    public override bool DoLevelUp()
+    public override bool DoLevelUp(bool updateUI = true)
     {
         // 调用基类的升级方法，如果失败则直接返回false
-        if (!base.DoLevelUp()) return false;
+        if (!base.DoLevelUp(updateUI)) return false;
         
         OnEquip();
         

@@ -44,9 +44,9 @@ public class Passive : Item
     /// 将被动技能等级提升1级，并重新计算对应的属性加成
     /// </summary>
     /// <returns>升级成功返回true，如果已达到最高等级则返回false</returns>
-    public override bool DoLevelUp()
+    public override bool DoLevelUp(bool updateUI = true)
     {
-        base.DoLevelUp();
+        base.DoLevelUp(updateUI);
 
         // 如果已经到达最高等级，则阻止继续升级
         if (!CanLevelUp())

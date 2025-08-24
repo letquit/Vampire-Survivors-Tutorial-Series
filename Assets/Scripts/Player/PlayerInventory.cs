@@ -53,7 +53,7 @@ public class PlayerInventory : MonoBehaviour
     public List<Slot> weaponSlots = new List<Slot>(6);      // 武器槽位列表
     public List<Slot> passiveSlots = new List<Slot>(6);     // 被动道具槽位列表
     public UIInventoryIconsDisplay weaponUI, passiveUI;
-
+    
     [Header("UI Elements")]
     public List<WeaponData> availableWeapons = new List<WeaponData>();      // 可用的武器升级选项
     public List<PassiveData> availablePassives = new List<PassiveData>();   // 可用的被动道具升级选项
@@ -194,7 +194,7 @@ public class PlayerInventory : MonoBehaviour
     /// </summary>
     /// <param name="data">要添加的武器数据</param>
     /// <returns>添加成功的槽位索引，失败返回-1</returns>
-    public int Add(WeaponData data)
+    public int Add(WeaponData data, bool updateUI = true)
     {
         int slotNum = -1;
 
@@ -227,7 +227,7 @@ public class PlayerInventory : MonoBehaviour
 
             // 将武器分配到槽位
             weaponSlots[slotNum].Assign(spawnedWeapon);
-            weaponUI.Refresh();
+            if(updateUI) weaponUI.Refresh();
 
             // 如果正在选择升级，关闭升级UI
             if (GameManager.instance != null && GameManager.instance.choosingUpgrade)
@@ -251,7 +251,7 @@ public class PlayerInventory : MonoBehaviour
     /// </summary>
     /// <param name="data">要添加的被动道具数据</param>
     /// <returns>添加成功的槽位索引，失败返回-1</returns>
-    public int Add(PassiveData data)
+    public int Add(PassiveData data, bool updateUI = true)
     {
         int slotNum = -1;
 
@@ -277,7 +277,7 @@ public class PlayerInventory : MonoBehaviour
 
         // 将被动道具分配到槽位
         passiveSlots[slotNum].Assign(p);
-        passiveUI.Refresh();
+        if(updateUI) passiveUI.Refresh();
 
         if (GameManager.instance != null && GameManager.instance.choosingUpgrade)
         {
@@ -293,10 +293,10 @@ public class PlayerInventory : MonoBehaviour
     /// </summary>
     /// <param name="data">要添加的物品数据</param>
     /// <returns>添加成功的槽位索引，失败返回-1</returns>
-    public int Add(ItemData data)
+    public int Add(ItemData data, bool updateUI = true)
     {
-        if (data is WeaponData) return Add(data as WeaponData);
-        else if (data is PassiveData) return Add(data as PassiveData);
+        if (data is WeaponData) return Add(data as WeaponData, updateUI);
+        else if (data is PassiveData) return Add(data as PassiveData, updateUI);
         return -1;
     }
     
@@ -366,13 +366,164 @@ public class PlayerInventory : MonoBehaviour
         }
         return count;
     }
+    
+    
+    /// <summary>
+    /// 获取指定类型物品的剩余槽位数量。
+    /// </summary>
+    /// <typeparam name="T">物品类型，必须继承自Item</typeparam>
+    /// <returns>剩余槽位数量</returns>
+    public int GetSlotsLeft<T>() where T : Item { return GetSlotsLeft(new List<Slot>(GetSlots<T>())); }
 
+    /// <summary>
+    /// 获取指定类型物品数据的剩余槽位数量。
+    /// </summary>
+    /// <typeparam name="T">物品数据类型，必须继承自ItemData</typeparam>
+    /// <returns>剩余槽位数量</returns>
+    public int GetSlotsLeftFor<T>() where T : ItemData { return GetSlotsLeft(new List<Slot>(GetSlotsFor<T>())); }
+    
+    /// <summary>
+    /// 根据物品数据类型获取对应的槽位数组。
+    /// </summary>
+    /// <typeparam name="T">物品数据类型，必须继承自ItemData</typeparam>
+    /// <returns>对应类型的槽位数组</returns>
+    public Slot[] GetSlotsFor<T>() where T : ItemData
+    {
+        if (typeof(T) == typeof(PassiveData))
+        {
+            return passiveSlots.ToArray();
+        }
+        else if (typeof(T) == typeof(WeaponData))
+        {
+            return weaponSlots.ToArray();
+        }
+        else if (typeof(T) == typeof(ItemData))
+        {
+            List<Slot> s = new List<Slot>(passiveSlots);
+            s.AddRange(weaponSlots);
+            return s.ToArray();
+        }
+
+        // 如果你有其他物品的子类，你需要在上面添加额外的情况以防止此消息触发。此消息旨在帮助开发者定位需要更新的代码部分。
+        Debug.LogWarning("提供给GetSlotsFor()调用的泛型类型没有编码行为。");
+        return null;
+    }
+    
+    /// <summary>
+    /// 根据物品类型获取对应的槽位数组。
+    /// </summary>
+    /// <typeparam name="T">物品类型，必须继承自Item</typeparam>
+    /// <returns>对应类型的槽位数组</returns>
+    public Slot[] GetSlots<T>() where T : Item
+    {
+        // 检查要返回的槽位集。
+        // 如果你获取物品，它将同时给你武器和被动物品的槽位。
+        switch (typeof(T).ToString())
+        {
+            case "Passive":
+                return passiveSlots.ToArray();
+            case "Weapon":
+                return weaponSlots.ToArray();
+            case "Item":
+                List<Slot> s = new List<Slot>(passiveSlots);
+                s.AddRange(weaponSlots);
+                return s.ToArray();
+        }
+
+        // 如果你有其他物品的子类，你需要在上面添加额外的情况以防止此消息触发。此消息旨在帮助开发者定位需要更新的代码部分。
+        Debug.LogWarning("提供给GetSlots()调用的泛型类型没有编码行为。");
+        return null;
+    }
+
+    /// <summary>
+    /// 获取指定类型的所有可用物品数据。
+    /// </summary>
+    /// <typeparam name="T">物品数据类型，必须继承自ItemData</typeparam>
+    /// <returns>可用物品数据数组</returns>
+    public T[] GetAvailable<T>() where T : ItemData
+    {
+        if (typeof(T) == typeof(PassiveData))
+        {
+            return availablePassives.ToArray() as T[];
+        }
+        else if (typeof(T) == typeof(WeaponData))
+        {
+            return availableWeapons.ToArray() as T[];
+        }
+        else if (typeof(T) == typeof(ItemData))
+        {
+            List<ItemData> list = new List<ItemData>(availablePassives);
+            list.AddRange(availableWeapons);
+            return list.ToArray() as T[];
+        }
+
+        Debug.LogWarning("提供给GetAvailable()调用的泛型类型没有编码行为。");
+        return null;
+    }
+    
+    /// <summary>
+    /// 获取指定类型的所有未拥有物品数据。
+    /// </summary>
+    /// <typeparam name="T">物品数据类型，必须继承自ItemData</typeparam>
+    /// <returns>未拥有物品数据数组</returns>
+    public T[] GetUnowned<T>() where T : ItemData
+    {
+        // 获取所有可用物品。
+        var available = GetAvailable<T>();
+
+        if (available == null || available.Length == 0)
+            return new T[0]; // 如果为空或空，则返回空数组
+
+        List<T> list = new List<T>(available);
+
+        // 检查我们所有的插槽，并移除列表中在插槽中找到的所有物品。
+        var slots = GetSlotsFor<T>();
+        if (slots != null)
+        {
+            foreach (Slot s in slots)
+            {
+                if (s?.item?.data != null && list.Contains(s.item.data as T))
+                    list.Remove(s.item.data as T);
+            }
+        }
+
+        return list.ToArray();
+    }
+    
+    /// <summary>
+    /// 获取指定类型的所有可进化物品。
+    /// </summary>
+    /// <typeparam name="T">物品类型，必须继承自Item</typeparam>
+    /// <returns>可进化物品数组</returns>
+    public T[] GetEvolvables<T>() where T : Item
+    {
+        // 检查所有插槽，并找到所有可以进化的物品。
+        List<T> result = new List<T>();
+        foreach (Slot s in GetSlots<T>())
+            if (s.item is T t && t.CanEvolve(0).Length > 0) result.Add(t);
+        return result.ToArray();
+    }
+
+    /// <summary>
+    /// 获取指定类型的所有可升级物品。
+    /// </summary>
+    /// <typeparam name="T">物品类型，必须继承自Item</typeparam>
+    /// <returns>可升级物品数组</returns>
+    public T[] GetUpgradables<T>() where T : Item
+    {
+        // 检查所有插槽，并找到所有还可以升级的物品。
+        List<T> result = new List<T>();
+        foreach (Slot s in GetSlots<T>())
+            if (s.item is T t && t.CanLevelUp()) result.Add(t);
+        return result.ToArray();
+    }
+    
     /// <summary>
     /// 在玩家库存中升级选定的物品。
     /// </summary>
     /// <param name="item">要升级的物品实例</param>
     /// <returns>升级成功返回true，否则返回false</returns>
-    public bool LevelUp(Item item)
+    public bool LevelUp(Item item, bool updateUI = true)
     {
         // 尝试升级物品。
         if (!item.DoLevelUp())
@@ -384,8 +535,11 @@ public class PlayerInventory : MonoBehaviour
             return false;
         }
         
-        weaponUI.Refresh();
-        passiveUI.Refresh();
+        if(updateUI)
+        {
+            weaponUI.Refresh();
+            passiveUI.Refresh();
+        }
 
         // 随后关闭升级屏幕。
         if (GameManager.instance != null && GameManager.instance.choosingUpgrade)
@@ -404,10 +558,10 @@ public class PlayerInventory : MonoBehaviour
     /// </summary>
     /// <param name="data">要升级的物品数据</param>
     /// <returns>升级成功返回true，否则返回false</returns>
-    public bool LevelUp(ItemData data)
+    public bool LevelUp(ItemData data, bool updateUI = true)
     {
         Item item = Get(data);
-        if (item) return LevelUp(item);
+        if (item) return LevelUp(item, updateUI);
         return false;
     }
 
@@ -419,3 +573,4 @@ public class PlayerInventory : MonoBehaviour
         ApplyUpgradeOptions();
     }
 }
+

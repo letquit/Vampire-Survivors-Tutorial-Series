@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e683358e9ce4934cbd85ee3ebfa9db1, type: 3}
   m_Name: Lightning Ring
   m_EditorClassIdentifier: 
-  icon: {fileID: -7161361119523956787, guid: d8af08889eb7b094294fc10933f5c295, type: 3}
+  icon: {fileID: 3930423849678603485, guid: d8af08889eb7b094294fc10933f5c295, type: 3}
   maxLevel: 2
   evolutionData: []
   behaviour: LightningRingWeapon

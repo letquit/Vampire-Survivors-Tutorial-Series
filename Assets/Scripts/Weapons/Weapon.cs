@@ -111,9 +111,9 @@ public class Weapon : Item
     /// 武器升级一级，并更新对应属性。
     /// </summary>
     /// <returns>是否成功升级</returns>
-    public override bool DoLevelUp()
+    public override bool DoLevelUp(bool updateUI = true)
     {
-        base.DoLevelUp();
+        base.DoLevelUp(updateUI);
         // 若已达到最大等级则不允许继续升级
         if (!CanLevelUp())
         {

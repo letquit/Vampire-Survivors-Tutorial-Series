@@ -12,7 +12,7 @@ using Random = UnityEngine.Random;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    
+
     /// <summary>
     /// 游戏状态枚举，包含游戏进行中、暂停和游戏结束三种状态。
     /// </summary>
@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
         Paused,
         GameOver,
         LevelUp,
+        TreasureChest
     }
 
     public GameState currentState;
@@ -46,6 +47,12 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI levelReachedDisplay;
     public TextMeshProUGUI timeSurvivedDisplay;
 
+    private const float DEFAULT_TIME_LIMIT = 1800f;
+    private const float DEFAULT_CLOCK_SPEED = 1f;
+    private float ClockSpeed => UILevelSelector.currentLevel?.clockSpeed ?? DEFAULT_CLOCK_SPEED;
+    private float TimeLimit => UILevelSelector.currentLevel?.timeLimit ?? DEFAULT_TIME_LIMIT;
+
+    
     [Header("Stopwatch")] 
     public float timeLimit;
     private float stopwatchTime;
@@ -85,7 +92,7 @@ public class GameManager : MonoBehaviour
         {
             totalCurse += p.Actual.curse;
         }
-        return 1 + totalCurse;
+        return Mathf.Max(1, totalCurse); // 修改为使用Mathf.Max(1, totalCurse)
     }
     
     /// <summary>
@@ -101,7 +108,7 @@ public class GameManager : MonoBehaviour
         {
             totalLevel += p.level;
         }
-        return totalLevel;
+        return Mathf.Max(1, totalLevel); // 修改为使用Mathf.Max(1, totalLevel)
     }
     
     /// <summary>
@@ -111,7 +118,7 @@ public class GameManager : MonoBehaviour
     {
         players = FindObjectsByType<PlayerStats>(FindObjectsSortMode.None);
         
-        timeLimit = UILevelSelector.currentLevel.timeLimit;
+        timeLimit = TimeLimit;
         
         if (instance == null)
         {
@@ -123,7 +130,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         } 
         
-        stopwatchTime = timeLimit;
+        stopwatchTime = timeLimit; // 保留倒计时初始化
         DisableScreens();
     }
 
@@ -135,6 +142,8 @@ public class GameManager : MonoBehaviour
         switch (currentState)
         {
             case GameState.Gameplay:
+                // 添加Time.timeScale = 1; 确保游戏正常运行
+                Time.timeScale = 1;
                 CheckForPauseAndResume();
                 UpdateStopwatch();
                 break;
@@ -142,6 +151,10 @@ public class GameManager : MonoBehaviour
                 CheckForPauseAndResume();
                 break;
             case GameState.GameOver:
+            case GameState.TreasureChest:
+                // 添加Time.timeScale = 0; 确保游戏完全停止
+                Time.timeScale = 0;
+                break;
             case GameState.LevelUp:
                 break;
             default:
@@ -284,6 +297,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void GameOver()
     {
+        // 保留第一个脚本的时间计算方式
         float timeSurvived = timeLimit - stopwatchTime;
         int survivedMinutes = Mathf.FloorToInt(timeSurvived / 60);
         int survivedSeconds = Mathf.FloorToInt(timeSurvived % 60);
@@ -292,6 +306,21 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.GameOver);
         Time.timeScale = 0f;
         DisplayResults();
+        
+        // 将所有玩家的所有硬币保存到存档文件中。
+        foreach (PlayerStats p in players)
+        {
+            p.GetComponentInChildren<PlayerCollector>().SaveCoinsToStash();
+        }
+
+        // 将所有玩家的硬币添加到他们的保存文件中，因为游戏已经结束。
+        foreach(PlayerStats p in players)
+        {
+            if(p.TryGetComponent(out PlayerCollector c))
+            {
+                c.SaveCoinsToStash();
+            }
+        }
     }
 
     /// <summary>
@@ -336,8 +365,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void UpdateStopwatch()
     {
-        // 减少时间，考虑关卡速度设置
-        stopwatchTime -= Time.deltaTime * UILevelSelector.currentLevel.clockSpeed;
+        // 保留第一个脚本的倒计时逻辑
+        stopwatchTime -= Time.deltaTime * ClockSpeed;
 
         UpdateStopwatchDisplay();
 
@@ -346,7 +375,6 @@ public class GameManager : MonoBehaviour
         {
             levelEnded = true;
             
-            // 禁用生成管理器并清除所有敌人
             FindFirstObjectByType<SpawnManager>()?.gameObject.SetActive(false);
             foreach (EnemyStats e in FindObjectsByType<EnemyStats>(FindObjectsSortMode.None))
                 e.SendMessage("Kill");

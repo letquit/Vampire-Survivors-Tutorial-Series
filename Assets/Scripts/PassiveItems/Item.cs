@@ -42,15 +42,16 @@ public abstract class Item : MonoBehaviour
     /// <summary>
     /// 获取当前可以进化的所有进化选项。
     /// </summary>
+    /// <param name="levelUpAmount">当前物品将要提升的等级数，默认为1。</param>
     /// <returns>返回一个数组，包含当前可以进行的所有进化选项。</returns>
-    public virtual ItemData.Evolution[] CanEvolve()
+    public virtual ItemData.Evolution[] CanEvolve(int levelUpAmount = 1)
     {
         List<ItemData.Evolution> possibleEvolutions = new List<ItemData.Evolution>();
 
         // 遍历所有进化选项，检查是否满足进化条件。
         foreach (ItemData.Evolution e in evolutionData)
         {
-            if (CanEvolve(e)) possibleEvolutions.Add(e);
+            if (CanEvolve(e, levelUpAmount)) possibleEvolutions.Add(e);
         }
 
         return possibleEvolutions.ToArray();
@@ -90,8 +91,9 @@ public abstract class Item : MonoBehaviour
     /// </summary>
     /// <param name="evolutionData">要执行的进化选项数据。</param>
     /// <param name="levelUpAmount">当前物品将要提升的等级数，默认为1。</param>
+    /// <param name="updateUI">是否更新UI界面，默认为true。</param>
     /// <returns>如果成功执行进化返回true，否则返回false。</returns>
-    public virtual bool AttemptEvolution(ItemData.Evolution evolutionData, int levelUpAmount = 1)
+    public virtual bool AttemptEvolution(ItemData.Evolution evolutionData, int levelUpAmount = 1, bool updateUI = true)
     {
         if (!CanEvolve(evolutionData, levelUpAmount))
             return false;
@@ -112,7 +114,7 @@ public abstract class Item : MonoBehaviour
         else if (this is Weapon && consumeWeapons) inventory.Remove((this as Weapon).data, true);
 
         // 将进化结果添加到背包中。
-        inventory.Add(evolutionData.outcome.itemType);
+        inventory.Add(evolutionData.outcome.itemType, updateUI);
 
         return true;
     }
@@ -129,8 +131,9 @@ public abstract class Item : MonoBehaviour
     /// <summary>
     /// 执行物品升级操作，并尝试触发自动进化。
     /// </summary>
+    /// <param name="updateUI">是否更新UI界面，默认为true。</param>
     /// <returns>始终返回true。</returns>
-    public virtual bool DoLevelUp()
+    public virtual bool DoLevelUp(bool updateUI = true)
     {
         if (evolutionData == null) return true;
 
@@ -138,7 +141,7 @@ public abstract class Item : MonoBehaviour
         foreach (ItemData.Evolution e in evolutionData)
         {
             if (e.condition == ItemData.Evolution.Condition.auto)
-                AttemptEvolution(e);
+                AttemptEvolution(e, 1, updateUI);
         }
         return true;
     }
