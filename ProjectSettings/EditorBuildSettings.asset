@@ -24,5 +24,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Level 3 - Dairy Plant.unity
     guid: c3874b7ad957d784bb1defb879efb5aa
   m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: 276a3e148f6e70c4b821c5e456299a7d, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 3590b91b4603b465dbb4216d601bff33, type: 3}
+    com.unity.localization.settings: {fileID: 11400000, guid: 6eb95bbb38d112b4cb1987c7061949ab, type: 2}
   m_UseUCBPForAssetBundles: 0
