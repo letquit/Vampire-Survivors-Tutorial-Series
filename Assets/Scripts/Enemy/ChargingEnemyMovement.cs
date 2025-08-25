@@ -19,6 +19,30 @@ public class ChargingEnemyMovement : EnemyMovement
         // 计算敌人生成时玩家相对于敌人的位置方向，并标准化为单位向量
         chargeDirection = (player.transform.position - transform.position).normalized;
     }
+    
+    protected override void Update()
+    {
+        switch (currentState)
+        {
+            case EnemyState.Knockback:
+                if (knockbackDuration > 0)
+                {
+                    transform.position += (Vector3)knockbackVelocity * Time.deltaTime;
+                    knockbackDuration -= Time.deltaTime;
+                }
+                else
+                {
+                    currentState = previousState;
+                }
+                break;
+            
+            case EnemyState.Moving:
+            case EnemyState.Charging:
+                Move();
+                HandleOutOfFrameAction();
+                break;
+        }
+    }
 
     /// <summary>
     /// 执行敌人移动逻辑

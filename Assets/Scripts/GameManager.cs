@@ -248,6 +248,14 @@ public class GameManager : MonoBehaviour
             ChangeState(GameState.Paused);
             Time.timeScale = 0f;
             pauseScreen.SetActive(true);
+            
+            SpawnManager.instance?.Pause();
+            
+            // 通知所有玩家进入暂停状态
+            foreach (PlayerStats player in players)
+            {
+                player.OnGamePause();
+            }
         }
     }
     
@@ -261,6 +269,14 @@ public class GameManager : MonoBehaviour
             ChangeState(previousState);
             Time.timeScale = 1f;
             pauseScreen.SetActive(false);
+            
+            SpawnManager.instance?.Resume();
+            
+            // 通知所有玩家恢复状态
+            foreach (PlayerStats player in players)
+            {
+                player.OnGameResume();
+            }
         }
     }
 
@@ -408,14 +424,19 @@ public class GameManager : MonoBehaviour
     public void StartLevelUp()
     {
         ChangeState(GameState.LevelUp);
-
+        
         if (levelUpScreen.activeSelf) stackedLevelUps++;
         else
         {
             Time.timeScale = 0f;
             levelUpScreen.SetActive(true);
-            foreach (PlayerStats p in players)
-                p.SendMessage("RemoveAndApplyUpgrades");
+            
+            // 通知所有玩家进入升级状态
+            foreach (PlayerStats player in players)
+            {
+                player.OnLevelUpStart();
+                player.SendMessage("RemoveAndApplyUpgrades");
+            }
         }
     }
 
@@ -427,7 +448,13 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
         levelUpScreen.SetActive(false);
         ChangeState(GameState.Gameplay);
-
+        
+        // 通知所有玩家结束升级状态
+        foreach (PlayerStats player in players)
+        {
+            player.OnLevelUpEnd();
+        }
+        
         if (stackedLevelUps > 0)
         {
             stackedLevelUps--;

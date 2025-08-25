@@ -13,7 +13,23 @@ public class EnemyMovement : Sortable
 
     protected Vector2 knockbackVelocity;
     protected float knockbackDuration;
-
+    
+    public bool IsKnockbacked => currentState == EnemyState.Knockback;
+    public EnemyState CurrentState => currentState;
+    
+    public enum EnemyState 
+    {
+        Idle,
+        Moving,
+        Charging,
+        Knockback,
+        Dead
+    }
+    
+    protected EnemyState currentState = EnemyState.Moving;
+    protected EnemyState previousState = EnemyState.Moving;
+    
+    
     /// <summary>
     /// 定义敌人移出画面后的处理方式
     /// none: 不做任何处理
@@ -53,18 +69,28 @@ public class EnemyMovement : Sortable
     /// </summary>
     protected virtual void Update()
     {
-        // 如果处于击退状态，则应用击退效果
-        if (knockbackDuration > 0)
+        switch (currentState)
         {
-            transform.position += (Vector3)knockbackVelocity * Time.deltaTime;
-            knockbackDuration -= Time.deltaTime;
-        }
-        else
-        {
-            Move();
-            HandleOutOfFrameAction();
+            case EnemyState.Knockback:
+                if (knockbackDuration > 0)
+                {
+                    transform.position += (Vector3)knockbackVelocity * Time.deltaTime;
+                    knockbackDuration -= Time.deltaTime;
+                }
+                else
+                {
+                    currentState = previousState;
+                }
+                break;
+                
+            case EnemyState.Moving:
+            case EnemyState.Charging:
+                Move();
+                HandleOutOfFrameAction();
+                break;
         }
     }
+
 
     /// <summary>
     /// 处理敌人移出画面边界的情况
@@ -120,7 +146,12 @@ public class EnemyMovement : Sortable
         // 检查要影响的击退值。
         knockbackVelocity = velocity * (reducesVelocity ? Mathf.Pow(stats.Actual.knockbackMultiplier, pow) : 1);
         knockbackDuration = duration * (reducesDuration ? Mathf.Pow(stats.Actual.knockbackMultiplier, pow) : 1);
+        
+        // 更改状态为击退状态
+        previousState = currentState;
+        currentState = EnemyState.Knockback;
     }
+
 
     
     /// <summary>

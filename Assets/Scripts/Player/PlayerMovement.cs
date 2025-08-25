@@ -8,6 +8,20 @@ using UnityEngine;
 /// </summary>
 public class PlayerMovement : Sortable
 {
+    // 玩家状态枚举
+    public enum PlayerState
+    {
+        Normal,
+        Invincible,
+        Knockback,
+        Dead,
+        LevelUp,
+        Paused
+    }
+    
+    public PlayerState currentState = PlayerState.Normal;
+    public PlayerState previousState = PlayerState.Normal;
+    
     public const float DEFAULT_MOVESPEED = 5f;
     
     //Movement
@@ -33,6 +47,10 @@ public class PlayerMovement : Sortable
     //References
     private Rigidbody2D rb;
     private PlayerStats player;
+    
+    // 击退相关变量
+    private Vector2 knockbackVelocity;
+    private float knockbackDuration;
 
     /// <summary>
     /// 初始化函数，在游戏对象启用时调用
@@ -52,7 +70,23 @@ public class PlayerMovement : Sortable
     /// </summary>
     private void Update()
     {
-        InputManagement();
+        switch (currentState)
+        {
+            case PlayerState.Normal:
+            case PlayerState.Invincible:
+            case PlayerState.LevelUp:
+                InputManagement();
+                break;
+                
+            case PlayerState.Knockback:
+                HandleKnockback();
+                break;
+                
+            case PlayerState.Dead:
+            case PlayerState.Paused:
+                moveDir = Vector2.zero;
+                break;
+        }
     }
 
     /// <summary>
@@ -61,7 +95,23 @@ public class PlayerMovement : Sortable
     /// </summary>
     private void FixedUpdate()
     {
-        Move();
+        switch (currentState)
+        {
+            case PlayerState.Normal:
+            case PlayerState.Invincible:
+            case PlayerState.LevelUp:
+                Move();
+                break;
+                
+            case PlayerState.Knockback:
+                MoveWithKnockback();
+                break;
+                
+            case PlayerState.Dead:
+            case PlayerState.Paused:
+                // 不移动
+                break;
+        }
     }
 
     /// <summary>
@@ -124,5 +174,78 @@ public class PlayerMovement : Sortable
         }
         
         rb.linearVelocity = moveDir * DEFAULT_MOVESPEED * player.Stats.moveSpeed;
+    }
+    
+    /// <summary>
+    /// 处理击退效果
+    /// </summary>
+    private void HandleKnockback()
+    {
+        if (knockbackDuration > 0)
+        {
+            knockbackDuration -= Time.deltaTime;
+        }
+        else
+        {
+            // 击退结束，恢复到之前状态
+            currentState = previousState;
+        }
+    }
+    
+    /// <summary>
+    /// 带击退效果的移动
+    /// </summary>
+    private void MoveWithKnockback()
+    {
+        if (rb)
+        {
+            rb.MovePosition(rb.position + knockbackVelocity * Time.fixedDeltaTime);
+        }
+        else
+        {
+            transform.position += (Vector3)knockbackVelocity * Time.fixedDeltaTime;
+        }
+        Move(); // 也可以同时保持正常移动
+    }
+    
+    /// <summary>
+    /// 应用击退效果
+    /// </summary>
+    /// <param name="velocity">击退速度</param>
+    /// <param name="duration">击退持续时间</param>
+    public void Knockback(Vector2 velocity, float duration)
+    {
+        previousState = currentState;
+        currentState = PlayerState.Knockback;
+        knockbackVelocity = velocity;
+        knockbackDuration = duration;
+    }
+    
+    /// <summary>
+    /// 检查玩家是否处于可移动状态
+    /// </summary>
+    public bool CanMove()
+    {
+        return currentState == PlayerState.Normal || 
+               currentState == PlayerState.Invincible || 
+               currentState == PlayerState.LevelUp;
+    }
+    
+    /// <summary>
+    /// 检查玩家是否处于无敌状态
+    /// </summary>
+    public bool IsInvincible()
+    {
+        return currentState == PlayerState.Invincible || 
+               currentState == PlayerState.Dead ||
+               player != null && player.GetType().GetField("isInvincible")?.GetValue(player) as bool? == true;
+    }
+    
+    /// <summary>
+    /// 检查玩家是否已经死亡
+    /// </summary>
+    public bool IsDead()
+    {
+        return currentState == PlayerState.Dead;
     }
 }

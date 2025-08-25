@@ -14,7 +14,7 @@ public class PlayerStats : EntityStats
     public CharacterData.Stats baseStats;
     [SerializeField] 
     private CharacterData.Stats actualStats;
-
+    private PlayerMovement movement;
     /// <summary>
     /// 获取或设置当前实际属性值。
     /// </summary>
@@ -107,6 +107,8 @@ public class PlayerStats : EntityStats
     {
         base.Start();
         
+        movement = GetComponent<PlayerMovement>();
+        
         if (UILevelSelector.globalBuff && !UILevelSelector.globalBuffAffectsPlayer)
             ApplyBuff(UILevelSelector.globalBuff);
         
@@ -128,14 +130,26 @@ public class PlayerStats : EntityStats
     protected override void Update()
     {
         base.Update();
-        // 更新无敌时间
+        
+        // 更新无敌状态
         if (invincibilityTimer > 0)
         {
             invincibilityTimer -= Time.deltaTime;
+            // 确保状态正确设置
+            if (movement.currentState != PlayerMovement.PlayerState.Invincible && invincibilityTimer > 0)
+            {
+                movement.previousState = movement.currentState;
+                movement.currentState = PlayerMovement.PlayerState.Invincible;
+            }
         }
         else if (isInvincible)
         {
             isInvincible = false;
+            // 恢复正常状态
+            if (movement.currentState == PlayerMovement.PlayerState.Invincible)
+            {
+                movement.currentState = movement.previousState;
+            }
         }
         
         Recover();
@@ -253,7 +267,7 @@ public class PlayerStats : EntityStats
     public override void TakeDamage(float dmg)
     {
         // 如果玩家当前不是无敌状态，则减少生命值并启动无敌
-        if (!isInvincible)
+        if (!isInvincible && movement.currentState != PlayerMovement.PlayerState.Dead)
         {
             // 在造成伤害之前考虑护甲。
             dmg -= actualStats.armor;
@@ -279,6 +293,10 @@ public class PlayerStats : EntityStats
 
             invincibilityTimer = invincibilityDuration;
             isInvincible = true;
+            
+            // 设置无敌状态
+            movement.previousState = movement.currentState;
+            movement.currentState = PlayerMovement.PlayerState.Invincible;
         }
     }
 
@@ -298,8 +316,38 @@ public class PlayerStats : EntityStats
     {
         if (!GameManager.instance.isGameOver)
         {
+            movement.currentState = PlayerMovement.PlayerState.Dead;
             GameManager.instance.AssignLevelReachedUI(level);
             GameManager.instance.GameOver();
+        }
+    }
+    // 添加方法来处理游戏暂停状态
+    public void OnGamePause()
+    {
+        movement.previousState = movement.currentState;
+        movement.currentState = PlayerMovement.PlayerState.Paused;
+    }
+    
+    public void OnGameResume()
+    {
+        if (movement.currentState == PlayerMovement.PlayerState.Paused)
+        {
+            movement.currentState = movement.previousState;
+        }
+    }
+    
+    // 添加方法来处理升级状态
+    public void OnLevelUpStart()
+    {
+        movement.previousState = movement.currentState;
+        movement.currentState = PlayerMovement.PlayerState.LevelUp;
+    }
+    
+    public void OnLevelUpEnd()
+    {
+        if (movement.currentState == PlayerMovement.PlayerState.LevelUp)
+        {
+            movement.currentState = movement.previousState;
         }
     }
 

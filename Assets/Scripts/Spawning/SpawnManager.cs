@@ -5,6 +5,22 @@ using UnityEngine;
 /// </summary>
 public class SpawnManager : MonoBehaviour
 {
+    // 添加状态枚举
+    public enum SpawnState
+    {
+        Waiting,        // 等待开始
+        Spawning,       // 生成敌人中
+        WaveActive,     // 波次进行中
+        WaveComplete,   // 波次完成
+        Cooldown,       // 冷却时间
+        Paused,         // 暂停状态
+        Finished        // 所有波次完成
+    }
+    
+    // 当前状态
+    private SpawnState currentState = SpawnState.Waiting;
+    private SpawnState previousState = SpawnState.Waiting;
+    
     int currentWaveIndex; // 当前波的索引 [记住，列表从0开始]
     int currentWaveSpawnCount = 0; // 跟踪当前波已经生成了多少敌人。
 
@@ -21,6 +37,17 @@ public class SpawnManager : MonoBehaviour
     public static SpawnManager instance;
 
     /// <summary>
+    /// 获取当前生成状态
+    /// </summary>
+    public SpawnState CurrentState => currentState;
+    
+    /// <summary>
+    /// 检查生成器是否处于活动状态
+    /// </summary>
+    public bool IsActive => currentState != SpawnState.Finished && 
+                           currentState != SpawnState.Paused;
+
+    /// <summary>
     /// 初始化单例实例。
     /// 如果场景中存在多个SpawnManager实例，会输出警告信息。
     /// </summary>
@@ -28,6 +55,7 @@ public class SpawnManager : MonoBehaviour
     {
         if (instance) Debug.LogWarning("场景中有多个Spawn Manager！请移除多余的实例。");
         instance = this;
+        currentState = SpawnState.Waiting;
     }
 
     /// <summary>
@@ -35,6 +63,52 @@ public class SpawnManager : MonoBehaviour
     /// 包括计时器更新、波次切换判断以及敌人生成处理。
     /// </summary>
     void Update()
+    {
+        switch (currentState)
+        {
+            case SpawnState.Waiting:
+                UpdateWaitingState();
+                break;
+                
+            case SpawnState.Spawning:
+                UpdateSpawningState();
+                break;
+                
+            case SpawnState.WaveActive:
+                UpdateWaveActiveState();
+                break;
+                
+            case SpawnState.Cooldown:
+                UpdateCooldownState();
+                break;
+                
+            case SpawnState.WaveComplete:
+                UpdateWaveCompleteState();
+                break;
+                
+            case SpawnState.Paused:
+                // 暂停状态下不执行任何操作
+                break;
+                
+            case SpawnState.Finished:
+                // 完成状态下不执行任何操作
+                break;
+        }
+    }
+    
+    /// <summary>
+    /// 更新等待状态
+    /// </summary>
+    private void UpdateWaitingState()
+    {
+        // 可以添加一些初始化逻辑
+        currentState = SpawnState.Spawning;
+    }
+    
+    /// <summary>
+    /// 更新生成状态
+    /// </summary>
+    private void UpdateSpawningState()
     {
         // 每帧更新生成计时器。
         spawnTimer -= Time.deltaTime;
@@ -45,23 +119,14 @@ public class SpawnManager : MonoBehaviour
             // 检查我们是否准备好进入下一波。
             if (HasWaveEnded())
             {
-                currentWaveIndex++;
-                currentWaveDuration = currentWaveSpawnCount = 0;
-
-                // 如果已经通过所有波次，禁用此组件。
-                if (currentWaveIndex >= data.Length)
-                {
-                    Debug.Log("所有波次已生成！关闭。", this);
-                    enabled = false;
-                }
-
+                currentState = SpawnState.WaveComplete;
                 return;
             }
 
             // 如果不满足生成条件，则不生成敌人。
             if (!CanSpawn())
             {
-                ActivateCooldown();
+                currentState = SpawnState.Cooldown;
                 return;
             }
 
@@ -79,7 +144,58 @@ public class SpawnManager : MonoBehaviour
                 currentWaveSpawnCount++;
             }
 
+            currentState = SpawnState.Cooldown;
+        }
+    }
+    
+    /// <summary>
+    /// 更新波次活动状态
+    /// </summary>
+    private void UpdateWaveActiveState()
+    {
+        currentWaveDuration += Time.deltaTime;
+        
+        // 检查波次是否结束
+        if (HasWaveEnded())
+        {
+            currentState = SpawnState.WaveComplete;
+        }
+    }
+    
+    /// <summary>
+    /// 更新冷却状态
+    /// </summary>
+    private void UpdateCooldownState()
+    {
+        // 每帧更新生成计时器。
+        spawnTimer -= Time.deltaTime;
+        currentWaveDuration += Time.deltaTime;
+
+        if (spawnTimer <= 0)
+        {
             ActivateCooldown();
+            currentState = SpawnState.Spawning;
+        }
+    }
+    
+    /// <summary>
+    /// 更新波次完成状态
+    /// </summary>
+    private void UpdateWaveCompleteState()
+    {
+        currentWaveIndex++;
+        currentWaveDuration = currentWaveSpawnCount = 0;
+
+        // 如果已经通过所有波次，禁用此组件。
+        if (currentWaveIndex >= data.Length)
+        {
+            Debug.Log("所有波次已生成！关闭。", this);
+            currentState = SpawnState.Finished;
+            enabled = false;
+        }
+        else
+        {
+            currentState = SpawnState.Spawning;
         }
     }
     
@@ -196,4 +312,73 @@ public class SpawnManager : MonoBehaviour
         if (viewport.y < 0f || viewport.y > 1f) return false;
         return true;
     }
+    
+    /// <summary>
+    /// 暂停生成管理器
+    /// </summary>
+    public void Pause()
+    {
+        if (currentState != SpawnState.Finished)
+        {
+            previousState = currentState;
+            currentState = SpawnState.Paused;
+        }
+    }
+    
+    /// <summary>
+    /// 恢复生成管理器
+    /// </summary>
+    public void Resume()
+    {
+        if (currentState == SpawnState.Paused)
+        {
+            currentState = previousState;
+        }
+    }
+    
+    /// <summary>
+    /// 强制进入下一波
+    /// </summary>
+    public void ForceNextWave()
+    {
+        currentState = SpawnState.WaveComplete;
+    }
+    
+    /// <summary>
+    /// 重置生成管理器到初始状态
+    /// </summary>
+    public void ResetSpawnManager()
+    {
+        currentWaveIndex = 0;
+        currentWaveSpawnCount = 0;
+        currentWaveDuration = 0f;
+        spawnTimer = 0f;
+        currentState = SpawnState.Waiting;
+        enabled = true;
+    }
+    
+    /// <summary>
+    /// 获取当前波次信息
+    /// </summary>
+    public WaveData GetCurrentWave()
+    {
+        if (currentWaveIndex >= 0 && currentWaveIndex < data.Length)
+            return data[currentWaveIndex];
+        return null;
+    }
+    
+    /// <summary>
+    /// 获取当前波次索引
+    /// </summary>
+    public int GetCurrentWaveIndex() => currentWaveIndex;
+    
+    /// <summary>
+    /// 获取当前波次已生成的敌人数量
+    /// </summary>
+    public int GetCurrentWaveSpawnCount() => currentWaveSpawnCount;
+    
+    /// <summary>
+    /// 获取当前波次持续时间
+    /// </summary>
+    public float GetCurrentWaveDuration() => currentWaveDuration;
 }
