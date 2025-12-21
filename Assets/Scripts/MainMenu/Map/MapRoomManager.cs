@@ -47,7 +47,7 @@ public class MapRoomManager : MonoBehaviour
     /// </summary>
     private void OnDisable()
     {
-        SceneManager. sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ public class MapRoomManager : MonoBehaviour
     /// <param name="sceneName">要显示的场景名称，如果为空则使用当前激活场景的名称</param>
     public void RevealRoom(string sceneName = null)
     {
-        string targetScene = sceneName ??  SceneManager.GetActiveScene().name;
+        string targetScene = sceneName ?? SceneManager.GetActiveScene().name;
 
         // 遍历所有房间，找到对应场景且未被显示的房间进行显示
         for (int i = 0; i < _rooms.Length; i++)
