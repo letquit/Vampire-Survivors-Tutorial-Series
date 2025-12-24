@@ -2,11 +2,8 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 3
-  tags:
-  - Enemy
-  - Prop
-  - Ground
+  serializedVersion: 2
+  tags: []
   layers:
   - Default
   - TransparentFX
@@ -14,11 +11,9 @@ TagManager:
   - 
   - Water
   - UI
-  - Terrain
-  - Wall
-  - Ground
-  - Map
-  - Collectables
+  - character
+  - interactable
+  - bottom
   - 
   - 
   - 
@@ -40,18 +35,21 @@ TagManager:
   - 
   - 
   - 
+  - 
+  - InteractiveObject
   m_SortingLayers:
+  - name: Bottom
+    uniqueID: 1161173501
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Background
-    uniqueID: 3947767189
+  - name: Objects
+    uniqueID: 1471039481
     locked: 0
-  - name: Midground
-    uniqueID: 961139167
+  - name: ObjectsFront
+    uniqueID: 3561676937
     locked: 0
   - name: Foreground
-    uniqueID: 1676190177
+    uniqueID: 1304480043
     locked: 0
-  m_RenderingLayers:
-  - Default
