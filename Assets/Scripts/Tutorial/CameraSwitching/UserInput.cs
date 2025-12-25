@@ -22,6 +22,11 @@ public class UserInput : MonoBehaviour
     /// </summary>
     private InputAction _mousePositionAction;
 
+    private Vector2 _lastMousePos;
+
+    public delegate void MouseMovedAction();
+    public static event MouseMovedAction OnMouseMovedAction;
+
     /// <summary>
     /// 游戏手柄控制方案名称
     /// </summary>
@@ -53,6 +58,18 @@ public class UserInput : MonoBehaviour
     private void Update()
     { 
         MousePosition = _mousePositionAction.ReadValue<Vector2>();
+        
+        if (MousePosition != _lastMousePos)
+        {
+            MouseMovedEvent();
+        }
+        
+        _lastMousePos = MousePosition;
+    }
+
+    public void MouseMovedEvent()
+    {
+        OnMouseMovedAction?.Invoke();
     }
 
     /// <summary>
@@ -78,5 +95,42 @@ public class UserInput : MonoBehaviour
     public void SwitchControls(PlayerInput input)
     {
         CurrentControlScheme = input.currentControlScheme;
+    }
+    
+    /// <summary>
+    /// UI移动输入方向（用于菜单导航）
+    /// </summary>
+    public static Vector2 MoveInput
+    {
+        get
+        {
+            Vector2 input = Vector2.zero;
+            
+            // 读取键盘 WASD 和方向键输入
+            if (Keyboard.current != null)
+            {
+                if (Keyboard.current.wKey. isPressed || Keyboard.current. upArrowKey.isPressed)
+                    input. y = 1;
+                else if (Keyboard. current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed)
+                    input.y = -1;
+                
+                if (Keyboard.current. dKey.isPressed || Keyboard.current. rightArrowKey. isPressed)
+                    input.x = 1;
+                else if (Keyboard.current.aKey.isPressed || Keyboard.current. leftArrowKey. isPressed)
+                    input.x = -1;
+            }
+            
+            // 读取游戏手柄左摇杆输入
+            if (Gamepad.current != null)
+            {
+                Vector2 stick = Gamepad. current.leftStick. ReadValue();
+                if (stick.magnitude > 0.5f)
+                {
+                    input = stick. normalized;
+                }
+            }
+            
+            return input;
+        }
     }
 }

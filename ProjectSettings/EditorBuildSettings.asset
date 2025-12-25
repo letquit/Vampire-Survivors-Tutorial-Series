@@ -35,5 +35,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Tutorial/SMLW/Room4.unity
     guid: f65563b140cf73d42b5ffc5bc2ddd339
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: 276a3e148f6e70c4b821c5e456299a7d, type: 2}
   m_UseUCBPForAssetBundles: 0

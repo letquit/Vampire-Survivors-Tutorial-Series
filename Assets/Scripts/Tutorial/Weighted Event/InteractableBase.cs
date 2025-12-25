@@ -7,7 +7,6 @@ using UnityEngine.InputSystem;
 public abstract class InteractableBase : MonoBehaviour
 {
     [Header("Interactable Settings")]
-    [SerializeField] private string interactionPrompt = "Press E to interact";
     [SerializeField] private float interactionDistance = 2f;
     [SerializeField] public GameObject interactableFloatingIcon;
 
