@@ -26,6 +26,13 @@ public class InitializeUpgrades : MonoBehaviour
             buttonRef.upgradeButtonText.text = upgrades[currentIndex].upgradeButtonText;
             buttonRef.upgradeDescriptionText.SetText(upgrades[currentIndex].upgradeButtonDescription, upgrades[currentIndex].upgradeAmount);
             buttonRef.upgradeCostText.text = "Cost: " + upgrades[currentIndex].currentUpgradeCost;
+            
+            // 绑定按钮点击事件
+            CookieUpgrade upgrade = upgrades[currentIndex];
+            buttonRef.upgradeButton.onClick.AddListener(() =>
+            {
+                CookieManager.Instance.OnUpgradeButtonClick(upgrade, buttonRef);
+            });
         }
     }
 }
