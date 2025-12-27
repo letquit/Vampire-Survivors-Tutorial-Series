@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87be16d59581aa4478b21963196b1697, type: 3}
+  m_Name: Cookies Per Second 4
+  m_EditorClassIdentifier: Assembly-CSharp::CookieUpgradePerSecond
+  upgradeAmount: 50000
+  originalUpgradeCost: 4500000
+  currentUpgradeCost: 4500000
+  costIncreaseMultiplierPerPurchase: 0.08
+  upgradeButtonText: 50,000 CPS
+  upgradeButtonDescription: Increase your cookies per second by {0}
