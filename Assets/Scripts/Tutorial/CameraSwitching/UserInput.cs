@@ -16,6 +16,16 @@ public class UserInput : MonoBehaviour
     /// 当前鼠标在屏幕上的位置
     /// </summary>
     public static Vector2 MousePosition;
+
+    public static Vector2 Movement;
+    public static bool JumpWasPressed;
+    public static bool JumpIsHeld;
+    public static bool JumpWasReleased;
+    public static bool RunIsHeld;
+
+    private InputAction _moveAction;
+    private InputAction _jumpAction;
+    private InputAction _runAction;
     
     /// <summary>
     /// 鼠标位置输入动作
@@ -50,6 +60,9 @@ public class UserInput : MonoBehaviour
         PlayerInput = GetComponent<PlayerInput>();
         
         _mousePositionAction = PlayerInput.actions["MousePosition"];
+        _moveAction = PlayerInput.actions["Move"];
+        _jumpAction = PlayerInput.actions["Jump"];
+        _runAction = PlayerInput.actions["Run"];
     }
     
     /// <summary>
@@ -65,6 +78,14 @@ public class UserInput : MonoBehaviour
         }
         
         _lastMousePos = MousePosition;
+        
+        Movement = _moveAction.ReadValue<Vector2>();
+        
+        JumpWasPressed = _jumpAction.WasPressedThisFrame();
+        JumpIsHeld = _jumpAction.IsPressed();
+        JumpWasReleased = _jumpAction.WasReleasedThisFrame();
+        
+        RunIsHeld = _runAction.IsPressed();
     }
 
     public void MouseMovedEvent()

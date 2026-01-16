@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 3549188}
   - component: {fileID: 3549186}
   - component: {fileID: 3549187}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: plank8
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -454,7 +454,7 @@ GameObject:
   - component: {fileID: 100104299}
   - component: {fileID: 100104297}
   - component: {fileID: 100104298}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: plank9
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -702,7 +702,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04e38cc9da9a6fe4f92f4a294af069ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChestInteractable
-  interactionPrompt: Press E to interact
   interactionDistance: 2
   interactableFloatingIcon: {fileID: 1159616200}
   lidSpriteRenderer: {fileID: 113427963}
@@ -859,7 +858,7 @@ GameObject:
   - component: {fileID: 147315152}
   - component: {fileID: 147315154}
   - component: {fileID: 147315153}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: endingAnchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1303,7 +1302,7 @@ GameObject:
   - component: {fileID: 213570289}
   - component: {fileID: 213570287}
   - component: {fileID: 213570288}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: plank1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1551,7 +1550,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04e38cc9da9a6fe4f92f4a294af069ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChestInteractable
-  interactionPrompt: Press E to interact
   interactionDistance: 2
   interactableFloatingIcon: {fileID: 1211892337}
   lidSpriteRenderer: {fileID: 216195050}
@@ -1792,7 +1790,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 354553028}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bridge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1903,7 +1901,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04e38cc9da9a6fe4f92f4a294af069ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChestInteractable
-  interactionPrompt: Press E to interact
   interactionDistance: 2
   interactableFloatingIcon: {fileID: 1467356991}
   lidSpriteRenderer: {fileID: 363855856}
@@ -2062,7 +2059,7 @@ GameObject:
   - component: {fileID: 387328792}
   - component: {fileID: 387328790}
   - component: {fileID: 387328791}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: plank6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2246,7 +2243,7 @@ GameObject:
   - component: {fileID: 417031864}
   - component: {fileID: 417031862}
   - component: {fileID: 417031863}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: plank4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3099,7 +3096,7 @@ GameObject:
   - component: {fileID: 698099114}
   - component: {fileID: 698099112}
   - component: {fileID: 698099113}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: plank5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3604,7 +3601,7 @@ GameObject:
   - component: {fileID: 914985068}
   - component: {fileID: 914985066}
   - component: {fileID: 914985067}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: plank7
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3960,7 +3957,7 @@ GameObject:
   - component: {fileID: 975401905}
   - component: {fileID: 975401903}
   - component: {fileID: 975401904}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: plank10
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4454,7 +4451,7 @@ GameObject:
   - component: {fileID: 1145272031}
   - component: {fileID: 1145272029}
   - component: {fileID: 1145272030}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: plank2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5241,7 +5238,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1326969604}
   - component: {fileID: 1326969603}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: startingAnchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5519,7 +5516,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04e38cc9da9a6fe4f92f4a294af069ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChestInteractable
-  interactionPrompt: Press E to interact
   interactionDistance: 2
   interactableFloatingIcon: {fileID: 1900543728}
   lidSpriteRenderer: {fileID: 1345756888}
@@ -6473,7 +6469,7 @@ GameObject:
   - component: {fileID: 1655416610}
   - component: {fileID: 1655416608}
   - component: {fileID: 1655416609}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: plank3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
